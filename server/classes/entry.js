@@ -63,3 +63,4 @@ class Entry {
 }
 
 module.exports = { Entry, entryUsers };
+// 要らないコメントああああああああああああああああああああああああああああああ
