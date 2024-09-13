@@ -1,4 +1,4 @@
-const { games } = require("../classed/gameState");
+const { games } = require("../classes/gameState");
 
 function gameNameSpaceHandler(io) {
   const gameNameSpace = io.of("/game");
@@ -10,7 +10,7 @@ function gameNameSpaceHandler(io) {
         if (!games[gameId].gameNameSpace) {
           games[gameId].gameNameSpace = gameNameSpace;
         }
-        const gameState = games[gameId].getGameState;
+        const gameState = games[gameId].getGameState();
         callback({
           gameState: gameState,
         });

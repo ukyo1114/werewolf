@@ -12,6 +12,11 @@ const messageModel = mongoose.Schema(
     channel: {
       type: mongoose.Schema.Types.ObjectId,
     },
+    messageType: {
+      type: String,
+      enum: ["normal", "werewolf", "spectator"],
+      default: "normal",
+    },
   },
   { timestamps: true }
 );

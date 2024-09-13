@@ -4,8 +4,9 @@ const createError  = require('http-errors');
 const dotenv       = require('dotenv');
 const connectDB    = require('./config/db');
 const userRoutes = require("./routes/userRoutes");
-const channelRoutes = require("./routes/channelRoutes");
+const { router: channelRoutes } = require("./routes/channelRoutes");
 const messageRoutes = require("./routes/messageRoutes");
+const gameRoutes = require("./routes/gameRoutes");
 const socketHandler = require("./socketHandlers/socketHandler");
 
 const app = express();
@@ -25,6 +26,7 @@ app.get('/', (req, res) => {
 app.use("/api/user", userRoutes);
 app.use("/api/channel", channelRoutes);
 app.use("/api/message", messageRoutes);
+app.use("/api/game", gameRoutes);
 
 // HTTPサーバーの作成
 const server = http.createServer(app);
