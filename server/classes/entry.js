@@ -1,4 +1,5 @@
-const Game = require('../models/gameModel');
+const Game = require("../models/gameModel");
+const { GameState } = require("./gameState");
 
 const entryUsers = {};
 
@@ -10,12 +11,12 @@ class Entry {
     this.inProgress = false;
   }
 
-  register(socketId, user) {
+  async register(socketId, userId) {
     if (!this.inProgress) {
-      this.users.set(socketId, user);
+      this.users.set(socketId, userId);
       if (this.users.size === 10) {
         this.inProgress = true;
-        this.startGame();
+        await this.startGame();
       }
       this.entryUpdate();
     }
@@ -29,12 +30,13 @@ class Entry {
   }
 
   userList() {
-    return Array.from(this.users.values());
+    const usersFromMap = Array.from(this.users.values());
+    return usersFromMap;
   }
 
   entryUpdate() {
     try {
-      this.entryNameSpace.in(this.channelId).emit('entry update', this.userList());
+      this.entryNameSpace.in(this.channelId).emit("entry update", this.userList());
     } catch (error) {
       console.error(`Error during entry update for channel ${this.channelId}:`, error.message);
     }
@@ -45,16 +47,16 @@ class Entry {
       const game = await Game.create({
         users: this.userList(),
         channel: this.channelId,
-        result: 'running'
+        result: "running"
       });
       const fullGame = await Game.findOne({ _id: game._id})
-      .populate('users', '_id name pic');
-      // GameState.createGame(fullGame);
+        .populate("users", "_id name pic");
+      GameState.createGame(fullGame);
       for (const socketId of this.users.keys()) {
         this.entryNameSpace.to(socketId).emit("game start", fullGame);
       }
     } catch (error) {
-      console.error('Error creating game:', error.message);
+      console.error("Error creating game:", error.message);
     } finally {
       this.users = new Map();
       this.inProgress = false;
@@ -63,4 +65,3 @@ class Entry {
 }
 
 module.exports = { Entry, entryUsers };
-// 要らないコメントああああああああああああああああああああああああああああああ
