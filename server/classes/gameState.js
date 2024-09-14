@@ -55,11 +55,11 @@ class GameState {
     const currentPhase = this.phases.currentPhase;
     let timer;
     if (currentPhase === "pre") {
-      timer = 10;// aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+      timer = 30;
     } else if (currentPhase === "day") {
-      timer = 10/*  * 60 */;
+      timer = 10 * 60;
     } else if (currentPhase === "night") {
-      timer = 10/* 3 * 60 */;
+      timer = 3 * 60;
     }
     setTimeout(() => {
       //console.log(this.phases);
