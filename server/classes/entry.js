@@ -1,45 +1,46 @@
 const Game = require("../models/gameModel");
 const { GameState } = require("./gameState");
+const EventEmitter = require("events");
+const entryEvents = new EventEmitter();
 
 const entryUsers = {};
 
 class Entry {
-  constructor (channelId) {
+  constructor(channelId) {
     this.channelId = channelId;
-    this.entryNameSpace = null; 
-    this.users = new Map();
-    this.inProgress = false;
+    this.users = [];
+    this.isGameStarting = false;
   }
 
   async register(socketId, userId) {
-    if (!this.inProgress) {
-      this.users.set(socketId, userId);
-      if (this.users.size === 10) {
-        this.inProgress = true;
-        await this.startGame();
-      }
-      this.entryUpdate();
+    if (this.isGameStarting) return;
+    this.users.push({
+      socketId: socketId,
+      userId: userId,
+    });
+    if (this.users.length === 10) {
+      // Magic Number
+      this.isGameStarting = true;
+      await this.startGame();
     }
+    this.entryUpdate();
   }
 
   cancel(socketId) {
-    if (!this.inProgress) {
-      this.users.delete(socketId);
-      this.entryUpdate();
-    }
+    if (this.isGameStarting) return;
+    this.users = this.users.filter((user) => user.socketId !== socketId);
+    this.entryUpdate();
   }
 
   userList() {
-    const usersFromMap = Array.from(this.users.values());
-    return usersFromMap;
+    return this.users.map((user) => user.userId);
   }
 
   entryUpdate() {
-    try {
-      this.entryNameSpace.in(this.channelId).emit("entry update", this.userList());
-    } catch (error) {
-      console.error(`Error during entry update for channel ${this.channelId}:`, error.message);
-    }
+    entryEvents.emit("entry update", {
+      channelId: this.channelId,
+      userList: this.userList(),
+    });
   }
 
   async startGame() {
@@ -47,21 +48,34 @@ class Entry {
       const game = await Game.create({
         users: this.userList(),
         channel: this.channelId,
-        result: "running"
+        result: "running",
       });
-      const fullGame = await Game.findOne({ _id: game._id})
-        .populate("users", "_id name pic");
+      const fullGame = await Game.findOne({ _id: game._id }).populate(
+        "users",
+        "_id name pic",
+      );
       GameState.createGame(fullGame);
-      for (const socketId of this.users.keys()) {
-        this.entryNameSpace.to(socketId).emit("game start", fullGame);
-      }
+
+      entryEvents.emit("game start", {
+        socketIds: this.users.map((user) => user.socketId),
+        fullGame: fullGame,
+      });
     } catch (error) {
-      console.error("Error creating game:", error.message);
+      console.error("ゲームの作成に失敗したようです。", error.message);
+      entryEvents.emit("game error", {
+        channelId: this.channelId,
+        message: "ゲームの作成に失敗したようです。",
+        error: error.message,
+      });
     } finally {
-      this.users = new Map();
-      this.inProgress = false;
+      this.reset();
     }
+  }
+
+  reset() {
+    this.users = [];
+    this.isGameStarting = false;
   }
 }
 
-module.exports = { Entry, entryUsers };
+module.exports = { Entry, entryUsers, entryEvents };

@@ -15,10 +15,10 @@ const gameModel = mongoose.Schema(
     result: {
       type: String,
       enum: ["running", "villagersWin", "werewolvesWin", "villageAbandoned"],
-      default: "running"
-    }
+      default: "running",
+    },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const Game = mongoose.model("Game", gameModel);
