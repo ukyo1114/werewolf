@@ -1,4 +1,4 @@
-const { games } = require("../classes/gameState");
+const { games, gameEvents } = require("../classes/gameState");
 
 function gameNameSpaceHandler(io) {
   const gameNameSpace = io.of("/game");
@@ -20,6 +20,15 @@ function gameNameSpaceHandler(io) {
         });
       }
     });
+  });
+
+  gameEvents.on("update game state", (gameState) => {
+    const { gameId } = gameState;
+    try {
+      gameNameSpace.to(gameId).emit("update game state", gameState);
+    } catch (error) {
+      console.error("gameStateの通知に失敗したようです。", error.message);
+    }
   });
 }
 

@@ -1,10 +1,10 @@
-const express = require('express');
-const http = require('http');
-const createError  = require('http-errors');
-const dotenv       = require('dotenv');
-const connectDB    = require('./config/db');
+const express = require("express");
+const http = require("http");
+const createError = require("http-errors");
+const dotenv = require("dotenv");
+const connectDB = require("./config/db");
 const userRoutes = require("./routes/userRoutes");
-const { router: channelRoutes } = require("./routes/channelRoutes");
+const channelRoutes = require("./routes/channelRoutes");
 const messageRoutes = require("./routes/messageRoutes");
 const gameRoutes = require("./routes/gameRoutes");
 const socketHandler = require("./socketHandlers/socketHandler");
@@ -19,8 +19,8 @@ app.use(express.json()); // JSONリクエストボディの解析
 app.use(express.urlencoded({ extended: true })); // URLエンコードされたデータの解析
 
 // ルートの設定
-app.get('/', (req, res) => {
-  res.send('Hello, World!');
+app.get("/", (req, res) => {
+  res.send("Hello, World!");
 });
 
 app.use("/api/user", userRoutes);
@@ -44,7 +44,7 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500);
   res.json({
     message: err.message,
-    stack: process.env.NODE_ENV === 'production' ? null : err.stack,
+    stack: process.env.NODE_ENV === "production" ? null : err.stack,
   });
 });
 

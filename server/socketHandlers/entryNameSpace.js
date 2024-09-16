@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 
-const { Entry, entryUsers } = require("../classes/entry");
+const { Entry, entryUsers, entryEvents } = require("../classes/entry");
 
 function entryNameSpaseHandler(io) {
   const entryNameSpace = io.of("/entry");
@@ -16,7 +16,7 @@ function entryNameSpaseHandler(io) {
       socket.user = await User.findById(decoded.id).select("_id");
       next();
     } catch (error) {
-      return next (new Error("Authentication error"));
+      return next(new Error("Authentication error"));
     }
   });
 
@@ -31,10 +31,10 @@ function entryNameSpaseHandler(io) {
         entryUsers[channelId].entryNameSpace = entryNameSpace;
       }
       callback({
-        users: entryUsers[channelId].userList()
+        users: entryUsers[channelId].userList(),
       });
     });
-  
+
     socket.on("register entry", () => {
       const userId = socket.user._id.toString();
       const channelId = socket.channelId;
@@ -42,14 +42,14 @@ function entryNameSpaseHandler(io) {
         entryUsers[channelId].register(socket.id, userId);
       }
     });
-  
+
     socket.on("cancel entry", () => {
       const channelId = socket.channelId;
       if (entryUsers[channelId]) {
         entryUsers[channelId].cancel(socket.id);
       }
     });
-  
+
     socket.on("disconnect", () => {
       const channelId = socket.channelId;
       if (channelId && entryUsers[channelId]) {
@@ -64,6 +64,41 @@ function entryNameSpaseHandler(io) {
         delete entryUsers[channelId];
         console.log(`Deleted empty channel: ${channelId}`);
       }
+    }
+  });
+
+  entryEvents.on("entry update", (data) => {
+    const { channelId, userList } = data;
+    try {
+      entryNameSpace.to(channelId).emit("entry update", userList);
+    } catch (error) {
+      console.error(
+        "エントリーを更新する通知に失敗したようです。",
+        error.message,
+      );
+    }
+  });
+
+  entryEvents.on("game start", (data) => {
+    const { socketIds, fullGame } = data;
+    try {
+      socketIds.forEach((socketId) => {
+        entryNameSpace.to(socketId).emit("game start", fullGame);
+      });
+    } catch (error) {
+      console.error("ゲームを作成する通知に失敗したようです。", error.message);
+    }
+  });
+
+  entryEvents.on("game error", (data) => {
+    const { channelId } = data;
+    try {
+      entryNameSpace.to(channelId).emit("game error", data);
+    } catch (error) {
+      console.error(
+        "ゲーム作成エラーの通知に失敗したようです。",
+        error.message,
+      );
     }
   });
 }

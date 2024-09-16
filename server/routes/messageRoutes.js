@@ -41,7 +41,7 @@ const sendMessage = asyncHandler(async (req, res) => {
     sender: req.user._id,
     content: content,
     channel: channelId,
-    messageType: req.messageType
+    messageType: req.messageType,
   };
   try {
     var message = await Message.create(newMessage);
@@ -59,8 +59,13 @@ const checkGameState = (req, res, next) => {
     req.messageType = "normal";
     return next();
   }
-  const player = games[channelId].players.find(player => player._id === userId);
-  if (!player) return res.status(403).json({ error: "プレイヤーが確認できないようです。" });
+  const player = games[channelId].players.find(
+    (player) => player._id === userId,
+  );
+  if (!player)
+    return res
+      .status(403)
+      .json({ error: "プレイヤーが確認できないようです。" });
   const currentPhase = games[channelId].phases.currentPhase;
   if (currentPhase === "pre" || currentPhase === "end") {
     req.messageType = "normal";
@@ -72,7 +77,7 @@ const checkGameState = (req, res, next) => {
   }
   if (currentPhase === "night" && player.status === "alive") {
     if (player.role !== "werewolf") {
-      req.messageType = "forbidden"
+      req.messageType = "forbidden";
       return next();
     } else {
       req.messageType = "werewolf";
@@ -91,30 +96,31 @@ const getMessages = async (req, res) => {
     if (messageId) {
       message = await Message.findById(messageId);
       if (!message) {
-        return res.status(404).json({ message: "Message not found"});
+        return res.status(404).json({ message: "Message not found" });
       }
     }
     const query = { channel: channelId };
     if (!games[channelId]) {
-      query.messageType = { $in: ["normal", "werewolf", "spectator"]};
+      query.messageType = { $in: ["normal", "werewolf", "spectator"] };
     } else if (req.messageType === "spectator") {
-      query.messageType = { $in: ["normal", "werewolf", "spectator"]};
-    } else if (games[channelId]?.players.some(
-      player => player._id === req.user._id.toString() && player.role === "werewolf"
-    )) {
-      query.messageType = { $in: ["normal", "werewolf"]};
+      query.messageType = { $in: ["normal", "werewolf", "spectator"] };
+    } else if (
+      games[channelId]?.players.some(
+        (player) =>
+          player._id === req.user._id.toString() && player.role === "werewolf",
+      )
+    ) {
+      query.messageType = { $in: ["normal", "werewolf"] };
     } else {
-      query.messageType = { $in: ["normal"]};
+      query.messageType = { $in: ["normal"] };
     }
     if (message) {
       query.createdAt = { $lte: message.createdAt };
     }
-    let messages = await Message.find(query)
-      .sort({ createdAt: -1 })
-      .limit(50);
-      if (messageId) {
-        messages = messages.filter((msg) => msg._id.toString() !== messageId);
-      }
+    let messages = await Message.find(query).sort({ createdAt: -1 }).limit(50);
+    if (messageId) {
+      messages = messages.filter((msg) => msg._id.toString() !== messageId);
+    }
     res.json(messages);
   } catch (error) {
     res.status(400);
@@ -130,26 +136,28 @@ const connect = async (req, res) => {
     if (messageId) {
       message = await Message.findById(messageId);
       if (!message) {
-        return res.status(404).json({ message: "Message not found"});
+        return res.status(404).json({ message: "Message not found" });
       }
     }
     const query = { channel: channelId };
     if (!games[channelId]) {
-      query.messageType = { $in: ["normal", "werewolf", "spectator"]};
+      query.messageType = { $in: ["normal", "werewolf", "spectator"] };
     } else if (req.messageType === "spectator") {
-      query.messageType = { $in: ["normal", "werewolf", "spectator"]};
-    } else if (games[channelId]?.players.some(
-      player => player._id === req.user._id.toString() && player.role === "werewolf"
-    )) {
-      query.messageType = { $in: ["normal", "werewolf"]};
+      query.messageType = { $in: ["normal", "werewolf", "spectator"] };
+    } else if (
+      games[channelId]?.players.some(
+        (player) =>
+          player._id === req.user._id.toString() && player.role === "werewolf",
+      )
+    ) {
+      query.messageType = { $in: ["normal", "werewolf"] };
     } else {
-      query.messageType = { $in: ["normal"]};
+      query.messageType = { $in: ["normal"] };
     }
     if (message) {
       query.createdAt = { $gt: message.createdAt };
     }
-    let messages = await Message.find(query)
-      .sort({ createdAt: -1 });
+    let messages = await Message.find(query).sort({ createdAt: -1 });
     res.json(messages);
   } catch (error) {
     res.status(400);

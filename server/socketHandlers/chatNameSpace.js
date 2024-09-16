@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 const Channel = require("../models/channelModel");
-const { channelEvents } = require("../routes/channelRoutes");
+const { channelEvents } = require("../controllers/channelController");
 
 function chatNameSpaseHandler(io) {
   const chatNameSpace = io.of("/chat");
@@ -17,7 +17,7 @@ function chatNameSpaseHandler(io) {
       console.log(socket.user._id);
       next();
     } catch (error) {
-      return next (new Error("Authentication error"));
+      return next(new Error("Authentication error"));
     }
   });
 
@@ -27,7 +27,9 @@ function chatNameSpaseHandler(io) {
       socket.join(channelId);
       socket.channelId = channelId;
       try {
-        const user = await User.findById(socket.user._id).select("_id name pic");
+        const user = await User.findById(socket.user._id).select(
+          "_id name pic",
+        );
         socket.to(channelId).emit("user joined", user);
         // console.log("Room joined: " + channelId);
       } catch (error) {

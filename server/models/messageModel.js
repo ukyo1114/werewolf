@@ -18,7 +18,7 @@ const messageModel = mongoose.Schema(
       default: "normal",
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 const Message = mongoose.model("Message", messageModel);
 module.exports = Message;

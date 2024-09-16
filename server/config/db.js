@@ -1,12 +1,12 @@
-const mongoose = require('mongoose');
-const dotenv   = require('dotenv');
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
 
 dotenv.config();
 
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
-    console.log('MongoDB Connected: localhost');
+    console.log("MongoDB Connected: localhost");
   } catch (err) {
     console.error(`Error: ${err.message}`);
     process.exit(1);
