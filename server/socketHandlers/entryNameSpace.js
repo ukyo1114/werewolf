@@ -27,9 +27,6 @@ function entryNameSpaseHandler(io) {
       if (!entryUsers[channelId]) {
         entryUsers[channelId] = new Entry(channelId);
       }
-      if (!entryUsers[channelId].entryNameSpace) {
-        entryUsers[channelId].entryNameSpace = entryNameSpace;
-      }
       callback({
         users: entryUsers[channelId].userList(),
       });
@@ -54,17 +51,8 @@ function entryNameSpaseHandler(io) {
       const channelId = socket.channelId;
       if (channelId && entryUsers[channelId]) {
         entryUsers[channelId].cancel(socket.id);
-        checkAndDeleteEmptyChannel(channelId);
       }
     });
-
-    function checkAndDeleteEmptyChannel(channelId) {
-      const room = entryNameSpace.adapter.rooms.get(channelId);
-      if (!room || room.size === 0) {
-        delete entryUsers[channelId];
-        console.log(`Deleted empty channel: ${channelId}`);
-      }
-    }
   });
 
   entryEvents.on("entry update", (data) => {
@@ -72,10 +60,7 @@ function entryNameSpaseHandler(io) {
     try {
       entryNameSpace.to(channelId).emit("entry update", userList);
     } catch (error) {
-      console.error(
-        "エントリーを更新する通知に失敗したようです。",
-        error.message,
-      );
+      console.error(error.message);
     }
   });
 
@@ -86,7 +71,7 @@ function entryNameSpaseHandler(io) {
         entryNameSpace.to(socketId).emit("game start", fullGame);
       });
     } catch (error) {
-      console.error("ゲームを作成する通知に失敗したようです。", error.message);
+      console.error(error.message);
     }
   });
 
@@ -95,10 +80,7 @@ function entryNameSpaseHandler(io) {
     try {
       entryNameSpace.to(channelId).emit("game error", data);
     } catch (error) {
-      console.error(
-        "ゲーム作成エラーの通知に失敗したようです。",
-        error.message,
-      );
+      console.error(error.message);
     }
   });
 }

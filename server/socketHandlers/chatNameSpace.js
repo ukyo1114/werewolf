@@ -26,15 +26,6 @@ function chatNameSpaseHandler(io) {
     socket.on("join channel", async (channelId) => {
       socket.join(channelId);
       socket.channelId = channelId;
-      try {
-        const user = await User.findById(socket.user._id).select(
-          "_id name pic",
-        );
-        socket.to(channelId).emit("user joined", user);
-        // console.log("Room joined: " + channelId);
-      } catch (error) {
-        console.error("Error while joining channel", error);
-      }
     });
 
     socket.on("new message", (newMessageReceived) => {
@@ -47,27 +38,29 @@ function chatNameSpaseHandler(io) {
     });
 
     socket.on("disconnect", async () => {
-      const channelId = socket.channelId;
-      if (channelId) {
-        try {
-          const channel = await Channel.findById(channelId).select("users");
-          if (channel) {
-            socket.to(channelId).emit("update users", channel.users);
-          } else {
-            console.error(`Channel with ID ${channelId} not found.`); //ゲーム中の挙動に注意
-          }
-        } catch (error) {
-          console.error(`Error updating users for channel ${channelId}`);
-        }
-      }
       console.log("USER DISCONNECTED !");
     });
   });
 
-  channelEvents.on("blockUsers updated", (data) => {
-    const { channelId, blockUsers } = data;
-    chatNameSpace.to(channelId).emit("update blockUsers", blockUsers);
+  channelEvents.on("user added", (data) => {
+    const { channelId, user } = data;
+    chatNameSpace.to(channelId).emit("user added", user);
   });
+
+  channelEvents.on("user left", (data) => {
+    const { channelId, userId } = data;
+    chatNameSpace.to(channelId).emit("user left", userId);
+  });
+
+  channelEvents.on("add blockUser", (data) => {
+    const { channelId, blockUser } = data;
+    chatNameSpace.to(channelId).emit("add blockUser", blockUser);
+  });
+
+  channelEvents.on("cancel blockUser", (data) => {
+    const { channelId, blockUser } = data;
+    chatNameSpace.to(channelId).emit("cancel blockUser", blockUser);
+  })
 }
 
 module.exports = chatNameSpaseHandler;

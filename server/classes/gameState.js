@@ -513,6 +513,16 @@ class GameState {
       throw new Error("襲撃履歴の取得に失敗したようです。");
     }
   }
+
+  static isUserInGame(userId) {
+    const game = Object.values(games).find((game) => 
+      game.players.some((player) => player._id === userId)
+    );
+    if (game && game.result === "running") {
+      return true;
+    }
+    return false;
+  }
 }
 
 module.exports = { games, GameState, gameEvents };
