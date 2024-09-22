@@ -15,10 +15,10 @@ const {
 } = require("../controllers/gameController");
 
 router.get("/getUserState/:gameId", protect, getUserState);
-router.put("/vote", protect, receiveVote);
-router.put("/fortune", protect, receiveFortuneTarget);
-router.put("/guard", protect, receiveGuardTarget);
-router.put("/attack", protect, receiveAttackTarget);
+router.post("/vote", protect, receiveVote);
+router.post("/fortune", protect, receiveFortuneTarget);
+router.post("/guard", protect, receiveGuardTarget);
+router.post("/attack", protect, receiveAttackTarget);
 router.get("/getvotehistory/:gameId", protect, getVoteHistory);
 router.get("/getfortuneresult/:gameId", protect, getFortuneResult);
 router.get("/getmediumresult/:gameId", protect, getMediumResult);

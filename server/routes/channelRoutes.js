@@ -4,6 +4,7 @@ const {
   protect,
   fetchChannelList,
   createChannel,
+  channelSettings,
   enterToChannel,
   leaveChannel,
   userList,
@@ -14,8 +15,9 @@ const {
 
 router.get("/", protect, fetchChannelList);
 router.post("/createchannel", protect, createChannel);
-router.put("/channelenter", protect, enterToChannel);
-router.put("/leaveChannel", protect, leaveChannel);
+router.post("/channelsettings", protect, channelSettings);
+router.post("/channelenter", protect, enterToChannel);
+router.post("/leaveChannel", protect, leaveChannel);
 router.get("/getblockeduserlist/:channelId", protect, getBlockUserList);
 router.post("/block", protect, block);
 router.post("/cancelblock", protect, cancelBlock);
