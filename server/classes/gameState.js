@@ -18,15 +18,17 @@ class GameState {
     this.attackTarget = new Map();
     this.guardTarget = new Map();
     this.mediumTarget = new Map();
+    // 別クラスに分割
     this.phases = {
       currentDay: 0,
       currentPhase: "pre",
       changedAt: new Date(game.createdAt),
     };
     this.result = "running";
-    this.role();
+    this.role(); // 別クラスに分割
   }
 
+  // 別クラスに分割
   role() {
     const roles = [
       "villager",
@@ -47,6 +49,7 @@ class GameState {
     });
   }
 
+  // 別クラスに分割
   shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -61,6 +64,7 @@ class GameState {
     games[gameId].startTimer();
   }
 
+  // 分割
   startTimer() {
     const currentPhase = this.phases.currentPhase;
     let timer;
@@ -78,6 +82,7 @@ class GameState {
     }, timer * 1000);
   }
 
+  // 分割
   switchPhase() {
     const currentDay = this.phases.currentDay;
 
@@ -104,6 +109,7 @@ class GameState {
     }
   }
 
+  // 分割
   nextPhase() {
     const currentDay = this.phases.currentDay;
 
