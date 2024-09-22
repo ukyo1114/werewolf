@@ -13,6 +13,7 @@ class GameState {
         role: "",
       };
     });
+    // 別クラスで管理
     this.votes = new Map();
     this.fortuneTarget = new Map();
     this.attackTarget = new Map();
@@ -148,6 +149,7 @@ class GameState {
     }
   }
 
+  // 分割
   receiveVote(vote) {
     const currentDay = this.phases.currentDay;
 
@@ -165,6 +167,7 @@ class GameState {
     }
   }
 
+  // 分割
   voteCounter() {
     const voteCount = new Map();
     const currentDay = this.phases.currentDay;
