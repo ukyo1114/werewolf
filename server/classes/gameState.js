@@ -150,7 +150,7 @@ class GameState {
   }
 
   // 分割
-  receiveVote(vote) {
+/*   receiveVote(vote) {
     const currentDay = this.phases.currentDay;
 
     if (!this.votes.has(currentDay)) {
@@ -165,10 +165,10 @@ class GameState {
     } else {
       throw new Error("投票できなかったようです。");
     }
-  }
+  } */
 
   // 分割
-  voteCounter() {
+/*   voteCounter() {
     const voteCount = new Map();
     const currentDay = this.phases.currentDay;
 
@@ -179,7 +179,7 @@ class GameState {
       voteCount.set(votee, voteCount.get(votee) + 1);
     });
     return voteCount;
-  }
+  } */
 
   execution() {
     const voteCount = this.voteCounter();
@@ -205,8 +205,8 @@ class GameState {
       this.medium(executionTarget._id);
     }
   }
-
-/*   medium(targetId) {
+/* 
+  medium(targetId) {
     const medium = this.players.find((player) => player.role === "medium");
 
     if (medium.status === "alive") {
@@ -409,7 +409,7 @@ class GameState {
     }
     return userState;
   }
-
+/* 
   getVoteHistory(userId) {
     const currentPhase = this.phases.currentPhase;
     const player = this.players.find((pl) => pl._id === userId);
@@ -432,7 +432,7 @@ class GameState {
     } else {
       throw new Error("投票履歴の取得に失敗したようです。");
     }
-  }
+  } */
 
   getFortuneResult(userId) {
     const currentPhase = this.phases.currentPhase;
