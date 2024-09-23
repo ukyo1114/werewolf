@@ -29,6 +29,7 @@ class MediumManager {
         mediumResult[day] = value;
       }
     });
+    
     return mediumResult;
   }
 }

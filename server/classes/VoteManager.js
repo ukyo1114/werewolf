@@ -1,6 +1,6 @@
 class VoteManager {
   constructor() {
-    this.votes = new Map();
+    this.voteHistory = new Map();
   }
 
   receiveVote(vote, players, phase) {
@@ -10,14 +10,16 @@ class VoteManager {
 
     if (player?.status !== "alive" || currentPhase !== "day") return;
 
-    if (!this.votes.has(currentDay)) this.votes.set(currentDay, new Map());
-    this.votes.get(currentDay).set(voter, votee);
+    if (!this.voteHistory.has(currentDay)) {
+      this.voteHistory.set(currentDay, new Map());
+    }
+    this.voteHistory.get(currentDay).set(voter, votee);
   }
 
   voteCounter(phase) {
     const { currentDay } = phase;
     
-    const votesForDay = this.votes.get(currentDay);
+    const votesForDay = this.voteHistory.get(currentDay);
     if (!votesForDay) return null;
 
     const voteCount = new Map();
@@ -36,7 +38,7 @@ class VoteManager {
 
     const voteHistory = {};
 
-    this.votes.forEach((value, day) => {
+    this.voteHistory.forEach((value, day) => {
       if (day === currentDay && currentPhase === "day") return;
       if (!voteHistory[day]) voteHistory[day] = {};
 

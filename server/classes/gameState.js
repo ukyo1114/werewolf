@@ -14,11 +14,11 @@ class GameState {
       };
     });
     // 別クラスで管理
-    this.votes = new Map();            // 分割
-    this.fortuneTarget = new Map();
+    this.votes = new Map();         // 分割
+    this.fortuneTarget = new Map(); // 分割
     this.attackTarget = new Map();
-    this.guardTarget = new Map();
-    this.mediumTarget = new Map(); // 分割
+    this.guardTarget = new Map();   // 分割
+    this.mediumTarget = new Map();  // 分割
     // 別クラスに分割
     this.phases = {
       currentDay: 0,
@@ -219,7 +219,7 @@ class GameState {
       });
     }
   } */
-
+/* 
   receiveFortuneTarget(userId, targetId) {
     const player = this.players.find((pl) => pl._id === userId);
 
@@ -243,8 +243,8 @@ class GameState {
     } else {
       throw new Error("占い先の受信に失敗したようです。");
     }
-  }
-
+  } */
+/* 
   fortune(currentDay) {
     const seer = this.players.find((player) => player.role === "seer");
 
@@ -258,8 +258,8 @@ class GameState {
       fortuneTarget.team =
         targetPl.role !== "werewolf" ? "villagers" : "werewolves";
     }
-  }
-
+  } */
+/* 
   randomFortuneTarget(currentDay) {
     const randomFortuneTargets = this.players.filter(
       (player) => player.status === "alive" && player.role !== "seer",
@@ -275,7 +275,7 @@ class GameState {
     } else {
       console.log("占う対象がいないようです。");
     }
-  }
+  } */
 
   receiveGuardTarget(userId, targetId) {
     const player = this.players.find((pl) => pl._id === userId);
@@ -433,7 +433,7 @@ class GameState {
       throw new Error("投票履歴の取得に失敗したようです。");
     }
   } */
-
+/* 
   getFortuneResult(userId) {
     const currentPhase = this.phases.currentPhase;
     const player = this.players.find((pl) => pl._id === userId);
@@ -455,9 +455,9 @@ class GameState {
     } else {
       throw new Error("占い結果の取得に失敗したようです。");
     }
-  }
-
-/*   getMediumResult(userId) {
+  } */
+/* 
+  getMediumResult(userId) {
     const currentPhase = this.phases.currentPhase;
     const player = this.players.find((pl) => pl._id === userId);
 
