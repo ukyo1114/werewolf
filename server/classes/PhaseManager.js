@@ -1,7 +1,3 @@
-const ERROR_MESSAGES = {
-  UNKNOWN_PHASE: "不明なフェーズです",
-};
-
 class PhaseManager {
   phaseDurations = {
     pre: 30,
@@ -19,7 +15,6 @@ class PhaseManager {
 
   startTimer() {
     const timer = this.phaseDurations[this.currentPhase];
-    if (!timer) return console.error(ERROR_MESSAGES.UNKNOWN_PHASE);
 
     setTimeout(() => {
       this.switchPhase();
