@@ -206,7 +206,7 @@ class GameState {
     }
   }
 
-  medium(targetId) {
+/*   medium(targetId) {
     const medium = this.players.find((player) => player.role === "medium");
 
     if (medium.status === "alive") {
@@ -218,7 +218,7 @@ class GameState {
         team: mediumTarget?.role !== "werewolf" ? "villagers" : "werewolves",
       });
     }
-  }
+  } */
 
   receiveFortuneTarget(userId, targetId) {
     const player = this.players.find((pl) => pl._id === userId);
@@ -457,7 +457,7 @@ class GameState {
     }
   }
 
-  getMediumResult(userId) {
+/*   getMediumResult(userId) {
     const currentPhase = this.phases.currentPhase;
     const player = this.players.find((pl) => pl._id === userId);
 
@@ -478,7 +478,7 @@ class GameState {
     } else {
       throw new Error("霊能結果の取得に失敗したようです。");
     }
-  }
+  } */
 
   getGuardHistory(userId) {
     const currentPhase = this.phases.currentPhase;
