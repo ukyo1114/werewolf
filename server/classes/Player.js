@@ -8,6 +8,10 @@ class Player {
   assignRole(role) {
     this.role = role;
   }
+
+  kill() {
+    this.status = "dead";
+  }
 }
 
 module.exports = Player;
