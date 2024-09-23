@@ -3,23 +3,51 @@ class VoteManager {
     this.votes = new Map();
   }
 
-  receiveVote(vote, currentDay) {
+  receiveVote(vote, players, phase) {
     const { voter, votee } = vote;
+    const { currentDay, currentPhase } = phase;
+
+    if (
+      players.find((pl) => pl._id === voter)?.status !== "alive" ||
+      currentPhase !== "day"
+    ) return;
 
     if (!this.votes.has(currentDay)) this.votes.set(currentDay, new Map());
     this.votes.get(currentDay).set(voter, votee);
   }
 
-  voteCounter(currentDay) {
-    if (!this.votes.get(currentDay)) return null;
+  voteCounter(phase) {
+    const { currentDay } = phase;
+    
+    const votesForDay = this.votes.get(currentDay);
+    if (!votesForDay) return null;
+
     const voteCount = new Map();
 
-    this.votes.get(currentDay).forEach((votee) => {
-      if (!voteCount.has(votee)) voteCount.set(votee, 0);
-      voteCount.set(votee, voteCount.get(votee) + 1);
+    votesForDay.forEach((votee) => {
+      voteCount.set(votee, (voteCount.get(votee) || 0) + 1);
     });
 
     return voteCount;
+  }
+
+  getVoteHistory(phase) {
+    const { currentDay, currentPhase } = phase;
+
+    if (currentPhase === "pre") return null;
+
+    const voteHistory = {};
+
+    this.votes.forEach((value, day) => {
+      if (day === currentDay && currentPhase === "day") return;
+      if (!voteHistory[day]) voteHistory[day] = {};
+
+      value.forEach((votee, voter) => {
+        if (!voteHistory[day][votee]) voteHistory[day][votee] = [];
+        voteHistory[day][votee].push(voter);
+      });
+    });
+    return voteHistory;
   }
 }
 
