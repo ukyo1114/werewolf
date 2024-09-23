@@ -14,11 +14,11 @@ class GameState {
       };
     });
     // 別クラスで管理
-    this.votes = new Map();
+    this.votes = new Map();            // 分割
     this.fortuneTarget = new Map();
     this.attackTarget = new Map();
     this.guardTarget = new Map();
-    this.mediumTarget = new Map();
+    this.mediumTarget = new Map(); // 分割
     // 別クラスに分割
     this.phases = {
       currentDay: 0,

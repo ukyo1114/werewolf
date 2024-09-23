@@ -6,11 +6,9 @@ class VoteManager {
   receiveVote(vote, players, phase) {
     const { voter, votee } = vote;
     const { currentDay, currentPhase } = phase;
+    const player = players.find((pl) => pl._id === voter);
 
-    if (
-      players.find((pl) => pl._id === voter)?.status !== "alive" ||
-      currentPhase !== "day"
-    ) return;
+    if (player?.status !== "alive" || currentPhase !== "day") return;
 
     if (!this.votes.has(currentDay)) this.votes.set(currentDay, new Map());
     this.votes.get(currentDay).set(voter, votee);

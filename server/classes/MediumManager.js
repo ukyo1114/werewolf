@@ -8,7 +8,7 @@ class MediumManager {
     const medium = players.find((pl) => pl.role === "medium");
     const target = players.find((pl) => pl._id === targetId);
 
-    if(medium.status === "dead") return;
+    if(medium?.status !== "alive") return;
 
     this.mediumResult.set(currentDay, {
       playerId: targetId,
@@ -18,13 +18,14 @@ class MediumManager {
 
   getMediumResult(userId, players, phase) {
     const { currentDay, currentPhase } = phase;
-    const player = players.find((pl) => pl._id === userId);
+    const medium = players.find((pl) => pl._id === userId);
 
-    if (player.role !== "medium" || currentPhase === "pre") return null;
+    if (medium?.role !== "medium" || currentPhase === "pre") return null;
     
     const mediumResult = {};
+
     this.mediumResult.forEach((value, day) => {
-      if (day !== currentDay) {
+      if (day !== currentDay || currentPhase === "finished") {
         mediumResult[day] = value;
       }
     });
