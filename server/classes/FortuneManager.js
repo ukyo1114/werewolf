@@ -64,6 +64,7 @@ class FortuneManager {
         fortuneResult[day] = value;
       }
     });
+    
     return fortuneResult;
   }
 }
