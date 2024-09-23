@@ -23,27 +23,24 @@ class GuardManager {
   guard(attackTargetId, players, phase) {
     const { currentDay } = phase;
     const hunter = players.find((pl) => pl.role === "hunter");
-    const guardHistory = this.guardHistory.get(currentDay);
+    const guardHistory = this.guardHistory.get(currentDay) ||
+      this.getRandomGuardTarget(players, currentDay);
 
     if (hunter?.status !== "alive") return;
-    if (!guardHistory) {
-      return this.randomGuard(attackTargetId, players, currentDay);
-    }
 
     return attackTargetId === guardHistory.playerId;
   }
 
-  randomGuard(attackTargetId, players, currentDay) {
+  getRandomGuardTarget (players, currentDay) {
     const randomGuardTargets = players.filter(
       (pl) => pl.status === "alive" && pl.role !== "hunter"
     );
-
     const index = Math.floor(Math.random() * randomGuardTargets.length);
-    const randomGuardTargetId = randomGuardTargets[index]._id;
+    const randomGuardTarget = randomGuardTargets[index];
 
-    this.guardHistory.set(currentDay, { playerId: randomGuardTargetId });
+    this.guardHistory.set(currentDay, { playerId: randomGuardTarget._id });
 
-    return attackTargetId === randomGuardTargetId;
+    return { playerId: randomGuardTarget._id };
   }
 
   getGuardHistory(userId, players, phase) {

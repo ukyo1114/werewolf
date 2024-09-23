@@ -24,10 +24,10 @@ class FortuneManager {
   fortune(players, phase) {
     const { currentDay } = phase;
     const seer = players.find((pl) => pl.role === "seer");
-    const fortuneResult = this.fortuneResult.get(currentDay);
+    const fortuneResult = this.fortuneResult.get(currentDay) ||
+      this.getRandomFortuneTarget(players, currentDay);
 
     if (seer?.status !== "alive") return;
-    if (!fortuneResult) return this.randomFortune(players, currentDay);
 
     const target = players.find((pl) => pl._id === fortuneResult.playerId);
 
@@ -35,20 +35,22 @@ class FortuneManager {
       target.role !== "werewolf" ? "villagers" : "werewolves";
   }
 
-  randomFortune(players, currentDay) {
+  getRandomFortuneTarget (players, currentDay) {
     const randomFortuneTargets = players.filter(
       (pl) => pl.status === "alive" && pl.role !== "seer"
     );
-
     const index = Math.floor(Math.random() * randomFortuneTargets.length);
     const randomFortuneTarget = randomFortuneTargets[index];
 
     this.fortuneResult.set(currentDay, {
       playerId: randomFortuneTarget._id,
-      team: randomFortuneTarget.role !== "werewolf"
-        ? "villagers"
-        : "werewolves",
+      team: "unknown",
     });
+
+    return {
+      playerId: randomFortuneTarget._id,
+      team: "unknown",
+    };
   }
 
   getFortuneResult(userId, players, phase) {

@@ -22,34 +22,24 @@ class AttackManager {
 
   attack(players, phase, guardManager) {
     const { currentDay } = phase;
-    const attackHistory = this.attackHistory.get(currentDay);
-
-    if (!attackHistory) return this.randomAttack(players, phase, guardManager);
-
+    const attackHistory = this.attackHistory.get(currentDay) ||
+      this.getRandomAttackTarget(players, currentDay);
     const target = players.find((pl) => pl._id === attackHistory.playerId);
     const result = guardManager.guard(target._id, players, phase);
 
-    if (!result) target.kill();
+    if (!result) target.status = "dead";
   }
 
-  randomAttack(players, phase, guardManager) {
-    const { currentDay } = phase;
-    const randomAttackTarget = getRandomAttackTarget(players);
-    const result = guardManager.guard(randomAttackTarget._id, players, phase);
-
-    this.attackHistory.set(currentDay, {
-      playerId: randomAttackTarget._id,
-    });
-
-    if (!result) randomAttackTarget.kill();
-  }
-
-  getRandomAttackTarget (players) {
+  getRandomAttackTarget (players, currentDay) {
     const randomAttackTargets = players.filter(
       (pl) => pl.status === "alive" && pl.role !== "werewolf"
     );
     const index = Math.floor(Math.random() * randomAttackTargets.length);
-    return randomAttackTargets[index];
+    const randomAttackTarget = randomAttackTargets[index];
+
+    this.attackHistory.set(currentDay, { playerId: randomAttackTarget._id });
+
+    return { playerId: randomAttackTarget._id };
   }
 
   getAttackhistory(userId, players, phase) {
