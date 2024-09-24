@@ -20,17 +20,17 @@ class AttackManager {
     });
   }
 
-  attack(players, phase, guardManager) {
+  attack(players, phase, guard) {
     const { currentDay } = phase;
     const attackHistory = this.attackHistory.get(currentDay) ||
       this.getRandomAttackTarget(players, currentDay);
     const target = players.find((pl) => pl._id === attackHistory.playerId);
-    const result = guardManager.guard(target._id, players, phase);
+    const result = guard.guard(target._id, players, phase);
 
     if (!result) target.status = "dead";
   }
 
-  getRandomAttackTarget (players, currentDay) {
+  getRandomAttackTarget(players, currentDay) {
     const randomAttackTargets = players.filter(
       (pl) => pl.status === "alive" && pl.role !== "werewolf"
     );

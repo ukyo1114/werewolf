@@ -11,36 +11,37 @@ class PhaseManager {
     this.currentPhase = "pre";
     this.changedAt    = new Date();
     this.eventEmitter = eventEmitter;
+    this.registerListeners();
     this.startTimer();
+  }
+
+  registerListeners() {
+    this.eventEmitter.on("processCompleted", (result) => {
+      this.nextPhase(result);
+      this.eventEmitter.emit("phaseSwitched");
+      this.startTimer();
+    });
   }
 
   startTimer() {
     const timer = this.phaseDurations[this.currentPhase];
 
     setTimeout(() => {
-      this.switchPhase();
+      this.timerEnd();
     }, timer * 1000);
   }
 
-  switchPhase() {
-    this.eventEmitter.emit(
-      this.currentPhase,
-      { currentDay: this.currentDay },
-      (result) => {
-        this.nextPhase(result);
-        // this.updateGameState();
-        this.startTimer();
-      }
-    );
+  timerEnd() {
+    const currentPhase = this.currentPhase;
+
+    this.eventEmitter.emit("timerEnd", currentPhase);
   }
 
   nextPhase(result) {
     this.changedAt = new Date();
 
-    if (result !== "running") {
-      this.currentPhase = "finished";
-      return;
-    }
+    if (result !== "running") return this.currentPhase = "finished";
+
     if (this.currentPhase === "day") {
       this.currentPhase = "night";
     } else {
