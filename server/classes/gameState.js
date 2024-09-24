@@ -1,3 +1,9 @@
+const PlayerManager = require("./PlayerManager");
+const VoteManager = require("./VoteManager");
+const FortuneManager = require("./FortuneManager");
+const AttackManager = require("./AttackManager");
+const GuardManager = require("./GuardManager");
+const MediumManager = require("./MediumManager");
 const EventEmitter = require("events");
 const gameEvents = new EventEmitter();
 const games = {};
@@ -6,20 +12,12 @@ class GameState {
   constructor(game) {
     this.channelId = game.channel.toString();
     this.gameId = game._id.toString();
-    this.players = game.users.map((player) => {
-      return {
-        _id: player._id.toString(),
-        status: "alive",
-        role: "",
-      };
-    });
-    // 別クラスで管理
-    this.votes = new Map();         // 分割
-    this.fortuneTarget = new Map(); // 分割
-    this.attackTarget = new Map();
-    this.guardTarget = new Map();   // 分割
-    this.mediumTarget = new Map();  // 分割
-    // 別クラスに分割
+    this.players = game.users.map((user) => new PlayerManager(user._id));
+    this.voteManager = new VoteManager();
+    this.fortuneManager = new FortuneManager();
+    this.attackManager = new AttackManager();
+    this.guardManager = new GuardManager();
+    this.mediumManager = new MediumManager();
     this.phases = {
       currentDay: 0,
       currentPhase: "pre",
@@ -28,8 +26,7 @@ class GameState {
     this.result = "running";
     this.role(); // 別クラスに分割
   }
-
-  // 別クラスに分割
+/* 
   role() {
     const roles = [
       "villager",
@@ -48,24 +45,22 @@ class GameState {
     this.players.forEach((player, index) => {
       player.role = shuffledRoles[index];
     });
-  }
-
-  // 別クラスに分割
+  } */
+/* 
   shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [array[i], array[j]] = [array[j], array[i]];
     }
     return array;
-  }
+  } */
 
   static createGame(game) {
     const gameId = game._id;
     games[gameId] = new GameState(game);
     games[gameId].startTimer();
   }
-
-  // 分割
+/* 
   startTimer() {
     const currentPhase = this.phases.currentPhase;
     let timer;
@@ -81,9 +76,8 @@ class GameState {
     setTimeout(() => {
       this.switchPhase();
     }, timer * 1000);
-  }
-
-  // 分割
+  } */
+/* 
   switchPhase() {
     const currentDay = this.phases.currentDay;
 
@@ -108,9 +102,8 @@ class GameState {
     } else {
       // 通知の処理を追加
     }
-  }
-
-  // 分割
+  } */
+/* 
   nextPhase() {
     const currentDay = this.phases.currentDay;
 
@@ -130,7 +123,7 @@ class GameState {
         changedAt: new Date(),
       };
     }
-  }
+  } */
 
   judgement() {
     let village = 0;
@@ -149,8 +142,8 @@ class GameState {
     }
   }
 
-  // 分割
-/*   receiveVote(vote) {
+/* 
+  receiveVote(vote) {
     const currentDay = this.phases.currentDay;
 
     if (!this.votes.has(currentDay)) {
@@ -166,9 +159,8 @@ class GameState {
       throw new Error("投票できなかったようです。");
     }
   } */
-
-  // 分割
-/*   voteCounter() {
+/* 
+  voteCounter() {
     const voteCount = new Map();
     const currentDay = this.phases.currentDay;
 
@@ -276,7 +268,7 @@ class GameState {
       console.log("占う対象がいないようです。");
     }
   } */
-
+/* 
   receiveGuardTarget(userId, targetId) {
     const player = this.players.find((pl) => pl._id === userId);
 
@@ -298,8 +290,8 @@ class GameState {
     } else {
       throw new Error("護衛先の受信に失敗したようです。");
     }
-  }
-
+  } */
+/* 
   guard(currentDay) {
     const hunter = this.players.find((player) => player.role === "hunter");
 
@@ -309,8 +301,8 @@ class GameState {
       const guardTargetId = this.guardTarget.get(currentDay).playerId;
       return attackTargetId === guardTargetId;
     }
-  }
-
+  } */
+/* 
   randomGuardTarget(currentDay) {
     const randomGuardTargets = this.players.filter(
       (player) => player.status === "alive" && player.role !== "hunter",
@@ -325,8 +317,8 @@ class GameState {
     } else {
       console.log("護衛対象がいないようです。");
     }
-  }
-
+  } */
+/* 
   receiveAttackTarget(userId, targetId) {
     const player = this.players.find((pl) => pl._id === userId);
 
@@ -351,8 +343,8 @@ class GameState {
     } else {
       throw new Error("襲撃先の受信に失敗したようです。");
     }
-  }
-
+  } */
+/* 
   randomAttackTarget(currentDay) {
     const randomAttackTargets = this.players.filter(
       (player) => player.status === "alive" && player.role !== "werewolf",
@@ -367,8 +359,8 @@ class GameState {
     } else {
       console.error("襲撃対象がいないようです。"); // 変更
     }
-  }
-
+  } */
+/* 
   attack(currentDay) {
     if (!this.attackTarget.get(currentDay)) this.randomAttackTarget(currentDay);
     const result = this.guard(currentDay);
@@ -382,7 +374,7 @@ class GameState {
       );
       attackTarget.status = "dead";
     }
-  }
+  } */
 
   updateGameState() {
     const gameState = this.getGameState();
@@ -479,7 +471,7 @@ class GameState {
       throw new Error("霊能結果の取得に失敗したようです。");
     }
   } */
-
+/* 
   getGuardHistory(userId) {
     const currentPhase = this.phases.currentPhase;
     const player = this.players.find((pl) => pl._id === userId);
@@ -500,8 +492,8 @@ class GameState {
     } else {
       throw new Error("護衛履歴の取得に失敗したようです。");
     }
-  }
-
+  } */
+/* 
   getAttackHistory(userId) {
     const currentPhase = this.phases.currentPhase;
     const player = this.players.find((pl) => pl._id === userId);
@@ -521,7 +513,7 @@ class GameState {
     } else {
       throw new Error("襲撃履歴の取得に失敗したようです。");
     }
-  }
+  } */
 
   static isUserInGame(userId) {
     const game = Object.values(games).find((game) => 

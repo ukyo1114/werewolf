@@ -1,16 +1,17 @@
 class PhaseManager {
   phaseDurations = {
-    pre: 30,
-    day: 10 * 60,
-    night: 3 * 60,
+    pre     : 30,
+    day     : 10 * 60,
+    night   : 3 * 60,
     finished: 10 * 60,
   };
 
   constructor(eventEmitter) {
-    this.currentDay = 0;
+    this.currentDay   = 0;
     this.currentPhase = "pre";
-    this.changedAt = new Date();
+    this.changedAt    = new Date();
     this.eventEmitter = eventEmitter;
+    this.startTimer();
   }
 
   startTimer() {
