@@ -3,15 +3,14 @@ class MediumManager {
     this.mediumResult = new Map();
   }
 
-  medium(targetId, players, phase) {
+  medium(target, players, phase) {
     const { currentDay } = phase;
     const medium = players.find((pl) => pl.role === "medium");
-    const target = players.find((pl) => pl._id === targetId);
 
     if(medium?.status !== "alive") return;
 
     this.mediumResult.set(currentDay, {
-      playerId: targetId,
+      playerId: target._id,
       team: target.role !== "werewolf" ? "villagers" : "werewolves",
     });
   }
