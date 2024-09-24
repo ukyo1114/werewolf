@@ -43,6 +43,21 @@ class PlayerManager {
     const player = this.players.find((pl) => pl._id === playerId);
     if (player) player.status = "dead";
   }
+
+  getPlayerState(playerId) {
+    const player = this.players.find((pl) => pl._id === playerId);
+
+    if (!player) return null;
+    if (player.role !== "werewolf") return player;
+
+    const partner = this.players.find((pl) =>
+      pl._id !== playerId && pl.role === "werewolf"
+    );
+    
+    player.partnerId = partner._id;
+    
+    return player;
+  }
 }
 
 module.exports = PlayerManager;

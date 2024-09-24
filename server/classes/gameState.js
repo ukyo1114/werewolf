@@ -1,10 +1,11 @@
-const PlayerManager = require("./PlayerManager");
-const VoteManager = require("./VoteManager");
+const PlayerManager  = require("./PlayerManager");
+const VoteManager    = require("./VoteManager");
 const FortuneManager = require("./FortuneManager");
-const AttackManager = require("./AttackManager");
-const GuardManager = require("./GuardManager");
-const MediumManager = require("./MediumManager");
-const EventEmitter = require("events");
+const AttackManager  = require("./AttackManager");
+const GuardManager   = require("./GuardManager");
+const MediumManager  = require("./MediumManager");
+const EventEmitter   = require("events");
+
 const gameEvents = new EventEmitter();
 const games = {};
 
@@ -12,7 +13,7 @@ class GameState {
   constructor(game) {
     this.channelId = game.channel.toString();
     this.gameId = game._id.toString();
-    this.players = game.users.map((user) => new PlayerManager(user._id));
+    this.playerManager = new PlayerManager(game.users);
     this.voteManager = new VoteManager();
     this.fortuneManager = new FortuneManager();
     this.attackManager = new AttackManager();
@@ -24,41 +25,11 @@ class GameState {
       changedAt: new Date(game.createdAt),
     };
     this.result = "running";
-    this.role(); // 別クラスに分割
   }
-/* 
-  role() {
-    const roles = [
-      "villager",
-      "villager",
-      "villager",
-      "villager",
-      "seer",
-      "medium",
-      "hunter",
-      "werewolf",
-      "werewolf",
-      "madman",
-    ];
-    const shuffledRoles = this.shuffle(roles);
-
-    this.players.forEach((player, index) => {
-      player.role = shuffledRoles[index];
-    });
-  } */
-/* 
-  shuffle(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-  } */
 
   static createGame(game) {
     const gameId = game._id;
     games[gameId] = new GameState(game);
-    games[gameId].startTimer();
   }
 /* 
   startTimer() {
@@ -389,7 +360,7 @@ class GameState {
       phases: this.phases,
     };
   }
-
+/* 
   getUserState(userId) {
     const userState = this.players.find((player) => player._id === userId);
 
@@ -400,7 +371,7 @@ class GameState {
       userState.partnerId = partner._id;
     }
     return userState;
-  }
+  } */
 /* 
   getVoteHistory(userId) {
     const currentPhase = this.phases.currentPhase;
