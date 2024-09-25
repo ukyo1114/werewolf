@@ -20,6 +20,7 @@ const errors = {
 
   INVALID_GUARD: "護衛先が無効です",
   INVALID_ATTACK: "襲撃先が無効です",
+  VOTE_HISTORY_NOT_FOUND: "投票履歴が取得できません",
 };
 
 module.exports = { messages, errors };

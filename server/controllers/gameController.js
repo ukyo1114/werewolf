@@ -37,8 +37,9 @@ const getPlayerState = (req, res) => {
 
   const playerState = game.players.getPlayerState(playerId);
 
-  if (!playerState) return res.status(404).json({ error: errors.PLAYER_NOT_FOUND })
-  res.json(playerState);
+  if (!playerState) return res.status(404).json({ error: errors.PLAYER_NOT_FOUND });
+
+  res.status(200).json(playerState);
 };
 
 const receiveVote = (req, res) => {
@@ -134,23 +135,23 @@ const receiveAttackTarget = (req, res) => {
 };
 
 const getVoteHistory = (req, res) => {
-  try {
-    const gameId = req.params.gameId;
-    if (!gameId) {
-      return res.status(400).json({ error: "必要なデータが無いようです。" });
-    }
-    const userId = req.user._id.toString();
-    const game = games[gameId];
+  const gameId = req.params.gameId;
 
-    if (!game) {
-      return res.status(404).json({ error: "ゲームが見つかりません。" });
-    }
-    const votes = game.getVoteHistory(userId);
-    res.json(votes);
-  } catch (error) {
-    res.status(500).json({ error: "サーバーエラーが発生したようです。" });
-    console.error("エラー:", error.message);
+  if (!gameId) {
+    return res.status(400).json({ error: errors.MISSING_DATA }); 
   }
+
+  const game = games[gameId];
+
+  if (!game) return res.status(404).json({ error: errors.GAME_NOT_FOUND });
+
+  const voteHistory = game.votes.getVoteHistory(game.phase);
+
+  if (voteHistory === null) {
+    return res.status(403).json({ error: errors.VOTE_HISTORY_NOT_FOUND });
+  }
+
+  res.status(200).json(voteHistory);
 };
 
 const getFortuneResult = (req, res) => {
