@@ -15,9 +15,9 @@ class MediumManager {
     });
   }
 
-  getMediumResult(userId, players, phase) {
+  getMediumResult(playerId, players, phase) {
     const { currentDay, currentPhase } = phase;
-    const medium = players.find((pl) => pl._id === userId);
+    const medium = players.find((pl) => pl._id === playerId);
 
     if (medium?.role !== "medium" || currentPhase === "pre") return null;
     

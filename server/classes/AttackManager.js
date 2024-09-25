@@ -3,9 +3,9 @@ class AttackManager {
     this.attackHistory = new Map();
   }
 
-  receiveAttackTarget(userId, targetId, players, phase) {
+  receiveAttackTarget(playerId, targetId, players, phase) {
     const { currentDay, currentPhase } = phase;
-    const werewolf = players.find((pl) => pl._id === userId);
+    const werewolf = players.find((pl) => pl._id === playerId);
     const target = players.find((pl) => pl._id === targetId);
 
     if (
@@ -44,9 +44,9 @@ class AttackManager {
     return { playerId: randomAttackTarget._id };
   }
 
-  getAttackhistory(userId, players, phase) {
+  getAttackhistory(playerId, players, phase) {
     const { currentDay, currentPhase } = phase;
-    const werewolf = players.find((pl) => pl._id === userId);
+    const werewolf = players.find((pl) => pl._id === playerId);
 
     if (werewolf?.role !== "werewolf" || currentPhase === "pre") return null;
 

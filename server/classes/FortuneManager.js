@@ -3,9 +3,9 @@ class FortuneManager {
     this.fortuneResult = new Map();
   }
 
-  receiveFortuneTarget(userId, targetId, players, phase) {
+  receiveFortuneTarget(playerId, targetId, players, phase) {
     const { currentDay, currentPhase } = phase;
-    const seer = players.find((pl) => pl._id === userId);
+    const seer = players.find((pl) => pl._id === playerId);
     const target = players.find((pl) => pl._id === targetId);
 
     if (
@@ -55,9 +55,9 @@ class FortuneManager {
     };
   }
 
-  getFortuneResult(userId, players, phase) {
+  getFortuneResult(playerId, players, phase) {
     const { currentDay, currentPhase } = phase;
-    const seer = players.find((pl) => pl._id === userId);
+    const seer = players.find((pl) => pl._id === playerId);
 
     if (seer?.role !== "seer" || currentPhase === "pre") return null;
 
