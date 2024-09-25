@@ -2,6 +2,7 @@ const messages = {
   VOTE_COMPLETED: "投票が完了しました",
   FORTUNE_COMPLETED: "占い先の指定が完了しました",
   GUARD_COMPLETED: "護衛先の指定が完了しました",
+  ATTACK_COMPLETED: "襲撃先の指定が完了しました",
 }
 
 const errors = {
@@ -16,7 +17,9 @@ const errors = {
   MISSING_DATA: "必要なデータが提供されていません",
   INVALID_VOTE: "投票が無効です",
   INVALID_FORTUNE: "占い先が無効です",
+
   INVALID_GUARD: "護衛先が無効です",
+  INVALID_ATTACK: "襲撃先が無効です",
 };
 
 module.exports = { messages, errors };

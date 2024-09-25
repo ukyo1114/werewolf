@@ -111,22 +111,25 @@ const receiveGuardTarget = (req, res) => {
 };
 
 const receiveAttackTarget = (req, res) => {
-  try {
-    const userId = req.user._id.toString();
-    const { gameId, selectedUser } = req.body;
-    if (!gameId || !selectedUser) {
-      return res.status(400).json({ error: "必要なデータが無いようです。" });
-    }
-    const game = games[gameId];
+  const userId = req.user._id.toString();
+  const { gameId, selectedUser } = req.body;
 
-    if (!game) {
-      return res.status(404).json({ error: "ゲームが見つかりません。" });
-    }
-    game.receiveAttackTarget(userId, selectedUser);
-    res.status(200).json({ message: "襲撃先の指定が完了したようです。" });
+  if (!gameId || !selectedUser) {
+    return res.status(400).json({ error: errors.MISSING_DATA });
+  }
+
+  const game = games[gameId];
+
+  if (!game) return res.status(404).json({ error: errors.GAME_NOT_FOUND });
+  
+  const players = game.players;
+  const phase = game.phase;
+
+  try {
+    game.attack.receiveAttackTarget(userId, selectedUser, players, phase);
+    res.status(200).json({ message: messages.ATTACK_COMPLETED });
   } catch (error) {
-    res.status(500).json({ error: "サーバーエラーが発生したようです。" });
-    console.error("エラー:", error.message);
+    res.status(400).json({ error: error.message });
   }
 };
 
