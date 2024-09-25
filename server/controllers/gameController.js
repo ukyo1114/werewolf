@@ -60,14 +60,7 @@ const receiveVote = (req, res) => {
     game.votes.receiveVote(vote, game.players, game.phase);
     res.status(200).json({ message: messages.VOTE_COMPLETED });
   } catch (error) {
-    const message = error.message;
-
-    if (message === errors.INVALID_VOTE) {
-      return res.status(400).json({ error: message });
-    }
-
-    res.status(500).json({ error: message });
-    console.error("error:", message);
+    res.status(400).json({ error: error.message });
   }
 };
 
