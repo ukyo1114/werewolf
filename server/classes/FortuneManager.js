@@ -11,9 +11,11 @@ class FortuneManager {
     if (
       currentPhase !== "night" ||
       seer?.status !== "alive" || seer.role !== "seer"
-    ) return;
+    ) throw new Error(errors.INVALID_FORTUNE);
 
-    if (target?.status !== "alive" || target.role === "seer") return;
+    if (target?.status !== "alive" || target.role === "seer") {
+      throw new Error(errors.INVALID_FORTUNE);
+    };
 
     this.fortuneResult.set(currentDay, {
       playerId: targetId,
