@@ -201,23 +201,26 @@ const getMediumResult = (req, res) => {
 };
 
 const getGuardHistory = (req, res) => {
-  try {
-    const gameId = req.params.gameId;
-    if (!gameId) {
-      return res.status(400).json({ error: "必要なデータが無いようです。" });
-    }
-    const userId = req.user._id.toString();
-    const game = games[gameId];
+  const gameId = req.params.gameId;
 
-    if (!game) {
-      return res.status(404).json({ error: "ゲームが見つかりません。" });
-    }
-    const guardHistory = game.getGuardHistory(userId);
-    res.json(guardHistory);
-  } catch (error) {
-    res.status(500).json({ error: "サーバーエラーが発生したようです。" });
-    console.error("エラー:", error.message);
+  if (!gameId) {
+    return res.status(400).json({ error: errors.MISSING_DATA }); 
   }
+
+  const userId = req.user._id.toString();
+  const game = games[gameId];
+
+  if (!game) return res.status(404).json({ error: errors.GAME_NOT_FOUND });
+
+  const players = game.players;
+  const phase = game.phase;
+  const guardHistory = game.guard.getGuardHistory(userId, players, phase);
+
+  if (guardHistory === null) {
+    return res.status(403).json({ error: errors.GUARD_HISTORY_NOT_FOUND });
+  }
+
+  res.status(200).json(guardHistory);
 };
 
 const getAttackHistory = (req, res) => {

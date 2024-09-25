@@ -23,6 +23,8 @@ const errors = {
   VOTE_HISTORY_NOT_FOUND: "投票履歴が取得できません",
   FORTUNE_RESULT_NOT_FOUND: "占い結果が取得できません",
   MEDIUM_RESULT_NOT_FOUND: "霊能結果が取得できません",
+
+  GUARD_HISTORY_NOT_FOUND: "護衛履歴が取得できません",
 };
 
 module.exports = { messages, errors };

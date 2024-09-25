@@ -1,5 +1,5 @@
-// tests/getMediumResult.test.js
-const { getMediumResult } = require('./gameController');
+// tests/getGuardHistory.test.js
+const { getGuardHistory } = require('./gameController');
 const { games } = require('../classes/GameState');
 const { errors, messages } = require('../messages');
 
@@ -7,11 +7,11 @@ const { errors, messages } = require('../messages');
 jest.mock('../classes/GameState', () => ({
   games: {
     'game123': {
-      medium: {
-        getMediumResult: jest.fn(),
+      guard: {
+        getGuardHistory: jest.fn(),
       },
       players: [
-        { _id: 'player1', status: 'alive', role: 'seer' },
+        { _id: 'player1', status: 'alive', role: 'hunter' },
         { _id: 'player2', status: 'alive', role: 'villager' },
       ],
       phase: { currentDay: 1, currentPhase: 'day' },
@@ -19,7 +19,7 @@ jest.mock('../classes/GameState', () => ({
   },
 }));
 
-describe('getMediumResult', () => {
+describe('getGuardHistory', () => {
   let req, res;
 
   beforeEach(() => {
@@ -41,45 +41,45 @@ describe('getMediumResult', () => {
 
   test('ゲームIDが提供されていない場合、400エラーを返す', () => {
     req.params.gameId = undefined;
-    getMediumResult(req, res);
+    getGuardHistory(req, res);
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({ error: errors.MISSING_DATA });
   });
 
   test('ゲームが見つからない場合、404エラーを返す', () => {
     req.params.gameId = 'invalidGameId';
-    getMediumResult(req, res);
+    getGuardHistory(req, res);
     expect(res.status).toHaveBeenCalledWith(404);
     expect(res.json).toHaveBeenCalledWith({ error: errors.GAME_NOT_FOUND });
   });
 
-  test('占い結果が取得できない場合、403エラーを返す', () => {
-    games['game123'].medium.getMediumResult.mockReturnValue(null);
-    getMediumResult(req, res);
-    expect(games['game123'].medium.getMediumResult).toHaveBeenCalledWith('player1', games['game123'].players, games['game123'].phase);
+  test('護衛履歴が取得できない場合、403エラーを返す', () => {
+    games['game123'].guard.getGuardHistory.mockReturnValue(null);
+    getGuardHistory(req, res);
+    expect(games['game123'].guard.getGuardHistory).toHaveBeenCalledWith('player1', games['game123'].players, games['game123'].phase);
     expect(res.status).toHaveBeenCalledWith(403);
-    expect(res.json).toHaveBeenCalledWith({ error: errors.MEDIUM_RESULT_NOT_FOUND });
+    expect(res.json).toHaveBeenCalledWith({ error: errors.GUARD_HISTORY_NOT_FOUND });
   });
 
-  test('正常に占い結果が取得された場合、200ステータスと占い結果を返す', () => {
-    const mockMediumResult = {
+  test('正常に護衛履歴が取得された場合、200ステータスと護衛履歴を返す', () => {
+    const mockGuardHistory = {
       1: {
-        'player2': 'unknown',
+        'player2': ['player1'],
       },
     };
-    games['game123'].medium.getMediumResult.mockReturnValue(mockMediumResult);
-    getMediumResult(req, res);
-    expect(games['game123'].medium.getMediumResult).toHaveBeenCalledWith('player1', games['game123'].players, games['game123'].phase);
+    games['game123'].guard.getGuardHistory.mockReturnValue(mockGuardHistory);
+    getGuardHistory(req, res);
+    expect(games['game123'].guard.getGuardHistory).toHaveBeenCalledWith('player1', games['game123'].players, games['game123'].phase);
     expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith(mockMediumResult);
+    expect(res.json).toHaveBeenCalledWith(mockGuardHistory);
   });
 
   test('予期せぬエラーが発生した場合、500エラーを返す', () => {
-    games['game123'].medium.getMediumResult.mockImplementation(() => {
+    games['game123'].guard.getGuardHistory.mockImplementation(() => {
       throw new Error('予期せぬエラー');
     });
-    getMediumResult(req, res);
-    expect(games['game123'].medium.getMediumResult).toHaveBeenCalledWith('player1', games['game123'].players, games['game123'].phase);
+    getGuardHistory(req, res);
+    expect(games['game123'].guard.getGuardHistory).toHaveBeenCalledWith('player1', games['game123'].players, games['game123'].phase);
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({ error: errors.SERVER_ERROR });
   });
