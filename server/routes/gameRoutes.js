@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const {
   protect,
+  getGame,
   getPlayerState,
   receiveVote,
   receiveFortuneTarget,
@@ -19,10 +20,10 @@ router.post("/vote", protect, receiveVote);
 router.post("/fortune", protect, receiveFortuneTarget);
 router.post("/guard", protect, receiveGuardTarget);
 router.post("/attack", protect, receiveAttackTarget);
-router.get("/getvotehistory/:gameId", protect, getVoteHistory);
-router.get("/getfortuneresult/:gameId", protect, getFortuneResult);
-router.get("/getmediumresult/:gameId", protect, getMediumResult);
-router.get("/getguardhistory/:gameId", protect, getGuardHistory);
-router.get("/getattackhistory/:gameId", protect, getAttackHistory);
+router.get("/getvotehistory/:gameId", protect, getGame, getVoteHistory);
+router.get("/getfortuneresult/:gameId", protect, getGame, getFortuneResult);
+router.get("/getmediumresult/:gameId", protect, getGame, getMediumResult);
+router.get("/getguardhistory/:gameId", protect, getGame, getGuardHistory);
+router.get("/getattackhistory/:gameId", protect, getGame, getAttackHistory);
 
 module.exports = router;
