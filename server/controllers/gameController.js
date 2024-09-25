@@ -25,6 +25,21 @@ const protect = async (req, res, next) => {
   }
 };
 
+const getGame = (req, res, next) => {
+  const gameId = req.params.gameId;
+
+  if (!gameId) {
+    return res.status(400).json({ error: errors.GAME_ID_MISSING });
+  }
+
+  const game = games[gameId];
+
+  if (!game) return res.status(404).json({ error: errors.GAME_NOT_FOUND });
+
+  req.game = game;
+  next();
+};
+
 const getPlayerState = (req, res) => {
   const playerId = req.user._id.toString();
   const gameId = req.params.gameId;
@@ -37,7 +52,9 @@ const getPlayerState = (req, res) => {
 
   const playerState = game.players.getPlayerState(playerId);
 
-  if (!playerState) return res.status(404).json({ error: errors.PLAYER_NOT_FOUND });
+  if (!playerState) {
+    return res.status(404).json({ error: errors.PLAYER_NOT_FOUND });
+  }
 
   res.status(200).json(playerState);
 };
@@ -155,15 +172,8 @@ const receiveAttackTarget = (req, res) => {
 };
 
 const getVoteHistory = (req, res) => {
-  const gameId = req.params.gameId;
+  const game = req.game;
 
-  if (!gameId) {
-    return res.status(400).json({ error: errors.MISSING_DATA }); 
-  }
-
-  const game = games[gameId];
-
-  if (!game) return res.status(404).json({ error: errors.GAME_NOT_FOUND });
   try {
     const voteHistory = game.votes.getVoteHistory(game.phase);
 
@@ -180,21 +190,16 @@ const getVoteHistory = (req, res) => {
 
 const getFortuneResult = (req, res) => {
   const playerId = req.user._id.toString();
-  const gameId = req.params.gameId;
-
-  if (!gameId) {
-    return res.status(400).json({ error: errors.MISSING_DATA }); 
-  }
-
-  const game = games[gameId];
-
-  if (!game) return res.status(404).json({ error: errors.GAME_NOT_FOUND });
-
+  const game = req.game;
   const players = game.players;
   const phase = game.phase;
 
   try{  
-    const fortuneResult = game.fortune.getFortuneResult(playerId, players, phase);
+    const fortuneResult = game.fortune.getFortuneResult(
+      playerId,
+      players,
+      phase,
+    );
 
     if (fortuneResult === null) {
       return res.status(403).json({ error: errors.FORTUNE_RESULT_NOT_FOUND });
@@ -209,16 +214,7 @@ const getFortuneResult = (req, res) => {
 
 const getMediumResult = (req, res) => {
   const playerId = req.user._id.toString();
-  const gameId = req.params.gameId;
-
-  if (!gameId) {
-    return res.status(400).json({ error: errors.MISSING_DATA }); 
-  }
-
-  const game = games[gameId];
-
-  if (!game) return res.status(404).json({ error: errors.GAME_NOT_FOUND });
-
+  const game = req.game;
   const players = game.players;
   const phase = game.phase;
 
@@ -238,16 +234,7 @@ const getMediumResult = (req, res) => {
 
 const getGuardHistory = (req, res) => {
   const playerId = req.user._id.toString();
-  const gameId = req.params.gameId;
-
-  if (!gameId) {
-    return res.status(400).json({ error: errors.MISSING_DATA }); 
-  }
-
-  const game = games[gameId];
-
-  if (!game) return res.status(404).json({ error: errors.GAME_NOT_FOUND });
-
+  const game = req.game;
   const players = game.players;
   const phase = game.phase;
 
@@ -267,21 +254,16 @@ const getGuardHistory = (req, res) => {
 
 const getAttackHistory = (req, res) => {
   const playerId = req.user._id.toString();
-  const gameId = req.params.gameId;
-
-  if (!gameId) {
-    return res.status(400).json({ error: errors.MISSING_DATA });
-  }
-
-  const game = games[gameId];
-
-  if (!game) return res.status(404).json({ error: errors.GAME_NOT_FOUND });
-
+  const game = req.game;
   const players = game.players;
   const phase = game.phase;
 
   try {
-    const attackHistory = game.attack.getAttackHistory(playerId, players, phase);
+    const attackHistory = game.attack.getAttackHistory(
+      playerId,
+      players,
+      phase,
+    );
 
     if (attackHistory === null) {
       return res.status(403).json({ error: errors.ATTACK_HISTORY_NOT_FOUND });
@@ -296,6 +278,7 @@ const getAttackHistory = (req, res) => {
 
 module.exports = {
   protect,
+  getGame,
   getPlayerState,
   receiveVote,
   receiveFortuneTarget,
