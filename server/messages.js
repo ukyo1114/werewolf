@@ -25,6 +25,7 @@ const errors = {
   MEDIUM_RESULT_NOT_FOUND: "霊能結果が取得できません",
 
   GUARD_HISTORY_NOT_FOUND: "護衛履歴が取得できません",
+  ATTACK_HISTORY_NOT_FOUND: "襲撃履歴が取得できません",
 };
 
 module.exports = { messages, errors };
