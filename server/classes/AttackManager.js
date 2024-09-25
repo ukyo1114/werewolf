@@ -11,9 +11,11 @@ class AttackManager {
     if (
       currentPhase !== "night" ||
       werewolf?.status !== "alive" || werewolf.role !== "werewolf"
-    ) return;
+    ) throw new Error(errors.INVALID_ATTACK);
 
-    if (target?.status !== "alive" || target.role === "werewolf") return;
+    if (target?.status !== "alive" || target.role === "werewolf") {
+      throw new Error(errors.INVALID_ATTACK);
+    };
 
     this.attackHistory.set(currentDay, {
       playerId: targetId,
