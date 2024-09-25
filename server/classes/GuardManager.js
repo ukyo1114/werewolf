@@ -3,9 +3,9 @@ class GuardManager {
     this.guardHistory = new Map();
   }
 
-  receiveGuardTarget(userId, targetId, players, phase) {
+  receiveGuardTarget(playerId, targetId, players, phase) {
     const { currentDay, currentPhase } = phase;
-    const hunter = players.find((pl) => pl._id === userId);
+    const hunter = players.find((pl) => pl._id === playerId);
     const target = players.find((pl) => pl._id === targetId);
 
     if (
@@ -45,9 +45,9 @@ class GuardManager {
     return { playerId: randomGuardTarget._id };
   }
 
-  getGuardHistory(userId, players, phase) {
+  getGuardHistory(playerId, players, phase) {
     const { currentDay, currentPhase } = phase;
-    const hunter = players.find((pl) => pl._id === userId);
+    const hunter = players.find((pl) => pl._id === playerId);
 
     if (hunter?.role !== "hunter" || currentPhase === "pre") return null;
 

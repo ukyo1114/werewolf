@@ -61,12 +61,17 @@ const receiveVote = (req, res) => {
     game.votes.receiveVote(vote, game.players, game.phase);
     res.status(200).json({ message: messages.VOTE_COMPLETED });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    if (error.message = errors.INVALID_VOTE) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    res.status(500).json({ error: errors.SERVER_ERROR });
+    console.error("error:", error.message);
   }
 };
 
 const receiveFortuneTarget = (req, res) => {
-  const userId = req.user._id.toString();
+  const playerId = req.user._id.toString();
   const { gameId, selectedUser } = req.body;
 
   if (!gameId || !selectedUser) {
@@ -81,15 +86,20 @@ const receiveFortuneTarget = (req, res) => {
   const phase = game.phase;
 
   try {
-    game.fortune.receiveFortuneTarget(userId, selectedUser, players, phase);
+    game.fortune.receiveFortuneTarget(playerId, selectedUser, players, phase);
     res.status(200).json({ message: messages.FORTUNE_COMPLETED });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    if (error.message === errors.INVALID_FORTUNE) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    res.status(500).json({ error: errors.SERVER_ERROR });
+    console.error("error:", error.message);
   }
 };
 
 const receiveGuardTarget = (req, res) => {
-  const userId = req.user._id.toString();
+  const playerId = req.user._id.toString();
   const { gameId, selectedUser } = req.body;
 
   if (!gameId || !selectedUser) {
@@ -104,15 +114,20 @@ const receiveGuardTarget = (req, res) => {
   const phase = game.phase;
 
   try {
-    game.guard.receiveGuardTarget(userId, selectedUser, players, phase);
+    game.guard.receiveGuardTarget(playerId, selectedUser, players, phase);
     res.status(200).json({ message: messages.GUARD_COMPLETED });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    if (error.message === errors.INVALID_GUARD) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    res.status(500).json({ error: errors.SERVER_ERROR });
+    console.error("error:", error.message);
   }
 };
 
 const receiveAttackTarget = (req, res) => {
-  const userId = req.user._id.toString();
+  const playerId = req.user._id.toString();
   const { gameId, selectedUser } = req.body;
 
   if (!gameId || !selectedUser) {
@@ -127,10 +142,15 @@ const receiveAttackTarget = (req, res) => {
   const phase = game.phase;
 
   try {
-    game.attack.receiveAttackTarget(userId, selectedUser, players, phase);
+    game.attack.receiveAttackTarget(playerId, selectedUser, players, phase);
     res.status(200).json({ message: messages.ATTACK_COMPLETED });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    if (error.message === errors.INVALID_ATTACK) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    res.status(500).json({ error: errors.SERVER_ERROR });
+    console.error("error:", error.message);
   }
 };
 
@@ -144,106 +164,134 @@ const getVoteHistory = (req, res) => {
   const game = games[gameId];
 
   if (!game) return res.status(404).json({ error: errors.GAME_NOT_FOUND });
+  try {
+    const voteHistory = game.votes.getVoteHistory(game.phase);
 
-  const voteHistory = game.votes.getVoteHistory(game.phase);
+    if (voteHistory === null) {
+      return res.status(403).json({ error: errors.VOTE_HISTORY_NOT_FOUND });
+    }
 
-  if (voteHistory === null) {
-    return res.status(403).json({ error: errors.VOTE_HISTORY_NOT_FOUND });
+    res.status(200).json(voteHistory);
+  } catch (error) {
+    res.status(500).json({ error: errors.SERVER_ERROR });
+    console.error("error:", error.message);
   }
-
-  res.status(200).json(voteHistory);
 };
 
 const getFortuneResult = (req, res) => {
+  const playerId = req.user._id.toString();
   const gameId = req.params.gameId;
 
   if (!gameId) {
     return res.status(400).json({ error: errors.MISSING_DATA }); 
   }
 
-  const userId = req.user._id.toString();
   const game = games[gameId];
 
   if (!game) return res.status(404).json({ error: errors.GAME_NOT_FOUND });
 
   const players = game.players;
   const phase = game.phase;
-  const fortuneResult = game.fortune.getFortuneResult(userId, players, phase);
 
-  if (fortuneResult === null) {
-    return res.status(403).json({ error: errors.FORTUNE_RESULT_NOT_FOUND });
+  try{  
+    const fortuneResult = game.fortune.getFortuneResult(playerId, players, phase);
+
+    if (fortuneResult === null) {
+      return res.status(403).json({ error: errors.FORTUNE_RESULT_NOT_FOUND });
+    }
+
+    res.status(200).json(fortuneResult);
+  } catch (error) {
+    res.status(500).json({ error: errors.SERVER_ERROR });
+    console.error("error:", error.message);
   }
-
-  res.status(200).json(fortuneResult);
 };
 
 const getMediumResult = (req, res) => {
-    const gameId = req.params.gameId;
+  const playerId = req.user._id.toString();
+  const gameId = req.params.gameId;
 
-    if (!gameId) {
-      return res.status(400).json({ error: errors.MISSING_DATA }); 
-    }
+  if (!gameId) {
+    return res.status(400).json({ error: errors.MISSING_DATA }); 
+  }
 
-    const userId = req.user._id.toString();
-    const game = games[gameId];
+  const game = games[gameId];
 
-    if (!game) return res.status(404).json({ error: errors.GAME_NOT_FOUND });
+  if (!game) return res.status(404).json({ error: errors.GAME_NOT_FOUND });
 
-    const players = game.players;
-    const phase = game.phase;
-    const mediumResult = game.medium.getMediumResult(userId, players, phase);
+  const players = game.players;
+  const phase = game.phase;
+
+  try {
+    const mediumResult = game.medium.getMediumResult(playerId, players, phase);
 
     if (mediumResult === null) {
       return res.status(403).json({ error: errors.MEDIUM_RESULT_NOT_FOUND });
     }
 
     res.status(200).json(mediumResult);
+  } catch (error) {
+    res.status(500).json({ error: errors.SERVER_ERROR });
+    console.error("error:", error.message);
+  }
 };
 
 const getGuardHistory = (req, res) => {
+  const playerId = req.user._id.toString();
   const gameId = req.params.gameId;
 
   if (!gameId) {
     return res.status(400).json({ error: errors.MISSING_DATA }); 
   }
 
-  const userId = req.user._id.toString();
   const game = games[gameId];
 
   if (!game) return res.status(404).json({ error: errors.GAME_NOT_FOUND });
 
   const players = game.players;
   const phase = game.phase;
-  const guardHistory = game.guard.getGuardHistory(userId, players, phase);
 
-  if (guardHistory === null) {
-    return res.status(403).json({ error: errors.GUARD_HISTORY_NOT_FOUND });
+  try {
+    const guardHistory = game.guard.getGuardHistory(playerId, players, phase);
+
+    if (guardHistory === null) {
+      return res.status(403).json({ error: errors.GUARD_HISTORY_NOT_FOUND });
+    }
+
+    res.status(200).json(guardHistory);
+  } catch (error) {
+    res.status(500).json({ error: errors.SERVER_ERROR });
+    console.error("error:", error.message);
   }
-
-  res.status(200).json(guardHistory);
 };
 
 const getAttackHistory = (req, res) => {
+  const playerId = req.user._id.toString();
   const gameId = req.params.gameId;
 
   if (!gameId) {
-    return res.status(400).json({ error: errors.MISSING_DATA }); 
+    return res.status(400).json({ error: errors.MISSING_DATA });
   }
 
-  const userId = req.user._id.toString();
   const game = games[gameId];
 
   if (!game) return res.status(404).json({ error: errors.GAME_NOT_FOUND });
 
   const players = game.players;
   const phase = game.phase;
-  const attackHistory = game.attack.getAttackHistory(userId, players, phase);
 
-  if (attackHistory === null) {
-    return res.status(403).json({ error: errors.ATTACK_HISTORY_NOT_FOUND });
+  try {
+    const attackHistory = game.attack.getAttackHistory(playerId, players, phase);
+
+    if (attackHistory === null) {
+      return res.status(403).json({ error: errors.ATTACK_HISTORY_NOT_FOUND });
+    }
+
+    res.status(200).json(attackHistory);
+  } catch (error) {
+    res.status(500).json({ error: errors.SERVER_ERROR });
+    console.error("error:", error.message);
   }
-
-  res.status(200).json(attackHistory);
 };
 
 module.exports = {
