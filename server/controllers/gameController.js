@@ -168,7 +168,7 @@ const getFortuneResult = (req, res) => {
 
   const players = game.players;
   const phase = game.phase;
-  const fortuneResult = game.getFortuneResult(userId, players, phase);
+  const fortuneResult = game.fortune.getFortuneResult(userId, players, phase);
 
   if (fortuneResult === null) {
     return res.status(403).json({ error: errors.FORTUNE_RESULT_NOT_FOUND });
@@ -178,23 +178,26 @@ const getFortuneResult = (req, res) => {
 };
 
 const getMediumResult = (req, res) => {
-  try {
     const gameId = req.params.gameId;
+
     if (!gameId) {
-      return res.status(400).json({ error: "必要なデータが無いようです。" });
+      return res.status(400).json({ error: errors.MISSING_DATA }); 
     }
+
     const userId = req.user._id.toString();
     const game = games[gameId];
 
-    if (!game) {
-      return res.status(404).json({ error: "ゲームが見つかりません。" });
+    if (!game) return res.status(404).json({ error: errors.GAME_NOT_FOUND });
+
+    const players = game.players;
+    const phase = game.phase;
+    const mediumResult = game.medium.getMediumResult(userId, players, phase);
+
+    if (mediumResult === null) {
+      return res.status(403).json({ error: errors.MEDIUM_RESULT_NOT_FOUND });
     }
-    const mediumResult = game.getMediumResult(userId);
-    res.json(mediumResult);
-  } catch (error) {
-    res.status(500).json({ error: "サーバーエラーが発生したようです。" });
-    console.error("エラー:", error.message);
-  }
+
+    res.status(200).json(mediumResult);
 };
 
 const getGuardHistory = (req, res) => {

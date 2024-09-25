@@ -7,7 +7,7 @@ class MediumManager {
     const { currentDay } = phase;
     const medium = players.find((pl) => pl.role === "medium");
 
-    if(medium?.status !== "alive") return;
+    if (medium?.status !== "alive") return;
 
     this.mediumResult.set(currentDay, {
       playerId: target._id,
