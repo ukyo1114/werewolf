@@ -1,3 +1,5 @@
+const { errors } = require("../messages");
+
 class VoteManager {
   constructor() {
     this.voteHistory = new Map();
@@ -8,11 +10,14 @@ class VoteManager {
     const { currentDay, currentPhase } = phase;
     const player = players.find((pl) => pl._id === voter);
 
-    if (player?.status !== "alive" || currentPhase !== "day") return;
+    if (player?.status !== "alive" || currentPhase !== "day") {
+      throw new Error(errors.INVALID_VOTE);
+    };
 
     if (!this.voteHistory.has(currentDay)) {
       this.voteHistory.set(currentDay, new Map());
     }
+
     this.voteHistory.get(currentDay).set(voter, votee);
   }
 

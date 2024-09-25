@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 
-const { Entry, entryUsers, entryEvents } = require("../classes/entry");
+const { Entry, entryUsers, entryEvents } = require("../classes/Entry");
 
 function entryNameSpaseHandler(io) {
   const entryNameSpace = io.of("/entry");
