@@ -23,6 +23,7 @@ class GameState {
     this.medium = new MediumManager();
     this.phase = new PhaseManager(this.eventEmitter);
     this.result = "running";
+    this.isProcessing = false;
   }
 
   static createGame(game) {
@@ -32,6 +33,8 @@ class GameState {
 
   registerListeners() {
     this.eventEmitter.on("timerEnd", (currentPhase) => {
+      this.isProcessing = true;
+
       if (currentPhase === "day")  this.handleDayPhaseEnd();
       if (currentPhase === "night")  this.handleNightPhaseEnd();
       if (currentPhase === "finished") return; // ゲーム削除の処理
@@ -41,7 +44,8 @@ class GameState {
 
     this.eventEmitter.on("phaseSwiched", () => {
       this.updateGameState();
-    })
+      this.isProcessing = false;
+    });
   }
 
   handleDayPhaseEnd() {

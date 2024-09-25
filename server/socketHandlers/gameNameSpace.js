@@ -1,4 +1,4 @@
-const { games, gameEvents } = require("../classes/gameState");
+const { games, gameEvents } = require("../classes/GameState");
 
 function gameNameSpaceHandler(io) {
   const gameNameSpace = io.of("/game");

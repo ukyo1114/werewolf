@@ -1,5 +1,5 @@
 const Game = require("../models/gameModel");
-const { GameState } = require("./gameState");
+const { GameState } = require("./GameState");
 const EventEmitter = require("events");
 const entryEvents = new EventEmitter();
 
