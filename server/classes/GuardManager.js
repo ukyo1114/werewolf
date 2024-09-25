@@ -11,9 +11,11 @@ class GuardManager {
     if (
       currentPhase !== "night" ||
       hunter?.status !== "alive" || hunter.role !== "hunter"
-    ) return;
+    ) throw new Error(errors.INVALID_GUARD);
 
-    if (target?.status !== "alive" || target.role === "hunter") return;
+    if (target?.status !== "alive" || target.role === "hunter") {
+      throw new Error(errors.INVALID_GUARD);
+    }
 
     this.guardHistory.set(currentDay, {
       playerId: targetId,
