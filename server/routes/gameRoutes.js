@@ -15,15 +15,18 @@ const {
   getAttackHistory,
 } = require("../controllers/gameController");
 
-router.get("/getUserState/:gameId", protect, getPlayerState);
-router.post("/vote", protect, receiveVote);
-router.post("/fortune", protect, receiveFortuneTarget);
-router.post("/guard", protect, receiveGuardTarget);
-router.post("/attack", protect, receiveAttackTarget);
-router.get("/getvotehistory/:gameId", protect, getGame, getVoteHistory);
-router.get("/getfortuneresult/:gameId", protect, getGame, getFortuneResult);
-router.get("/getmediumresult/:gameId", protect, getGame, getMediumResult);
-router.get("/getguardhistory/:gameId", protect, getGame, getGuardHistory);
-router.get("/getattackhistory/:gameId", protect, getGame, getAttackHistory);
+router.use(protect);
+
+router.get("/player-state/:gameId", getPlayerState);
+router.post("/vote", receiveVote);
+router.post("/fortune", receiveFortuneTarget);
+router.post("/guard", receiveGuardTarget);
+router.post("/attack", receiveAttackTarget);
+
+router.get("/vote-history/:gameId", getGame, getVoteHistory);
+router.get("/fortune-result/:gameId", getGame, getFortuneResult);
+router.get("/medium-result/:gameId", getGame, getMediumResult);
+router.get("/guard-history/:gameId", getGame, getGuardHistory);
+router.get("/attack-history/:gameId", getGame, getAttackHistory);
 
 module.exports = router;
