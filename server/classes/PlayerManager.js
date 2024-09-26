@@ -2,7 +2,7 @@ class PlayerManager {
   constructor(users) {
     this.players = users.map((user) => {
       return {
-        _id: user._id,
+        _id: user._id.toString(),
         status: "alive",
         role: null,
       };

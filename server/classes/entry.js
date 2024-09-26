@@ -2,10 +2,13 @@ const Game = require("../models/gameModel");
 const { GameState } = require("./GameState");
 const EventEmitter = require("events");
 const entryEvents = new EventEmitter();
+const { errors } = require("../messages");
 
 const entryUsers = {};
 
 class Entry {
+  static MAX_USERS = 10
+
   constructor(channelId) {
     this.channelId = channelId;
     this.users = [];
@@ -14,20 +17,20 @@ class Entry {
 
   async register(socketId, userId) {
     if (this.isGameStarting) return;
-    this.users.push({
-      socketId: socketId,
-      userId: userId,
-    });
-    if (this.users.length === 10) {
-      // Magic Number
+
+    this.users.push({ socketId: socketId, userId: userId });
+
+    if (this.users.length === Entry.MAX_USERS) {
       this.isGameStarting = true;
       await this.startGame();
     }
+
     this.entryUpdate();
   }
 
   cancel(socketId) {
     if (this.isGameStarting) return;
+
     this.users = this.users.filter((user) => user.socketId !== socketId);
     this.entryUpdate();
   }
@@ -37,7 +40,7 @@ class Entry {
   }
 
   entryUpdate() {
-    entryEvents.emit("entry update", {
+    entryEvents.emit("entryUpdate", {
       channelId: this.channelId,
       userList: this.userList(),
     });
@@ -50,26 +53,28 @@ class Entry {
         channel: this.channelId,
         result: "running",
       });
+
       const fullGame = await Game.findOne({ _id: game._id }).populate(
         "users",
         "_id name pic",
       );
+
       GameState.createGame(fullGame);
 
-      entryEvents.emit("game start", {
+      entryEvents.emit("gameStart", {
         socketIds: this.users.map((user) => user.socketId),
         fullGame: fullGame,
       });
     } catch (error) {
-      console.error("ゲームの作成に失敗したようです。", error.message);
-      entryEvents.emit("game error", {
-        channelId: this.channelId,
-        message: "ゲームの作成に失敗したようです。",
-        error: error.message,
-      });
+      this.gameCreationFailed(error);
     } finally {
       this.reset();
     }
+  }
+
+  gameCreationFailed(error) {
+    console.error("error:", error.message);
+    entryEvents.emit("gameCreationFailed", { channelId: this.channelId });
   }
 
   reset() {
