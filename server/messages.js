@@ -26,6 +26,7 @@ const errors = {
 
   GUARD_HISTORY_NOT_FOUND: "護衛履歴が取得できません",
   ATTACK_HISTORY_NOT_FOUND: "襲撃履歴が取得できません",
+  GAME_IS_PROCESSING: "集計中のため受付できません"
 };
 
 module.exports = { messages, errors };

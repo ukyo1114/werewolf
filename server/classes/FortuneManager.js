@@ -1,3 +1,5 @@
+const { errors } = require("../messages");
+
 class FortuneManager {
   constructor() {
     this.fortuneResult = new Map();
