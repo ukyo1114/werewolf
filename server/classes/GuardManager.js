@@ -1,3 +1,5 @@
+const { errors } = require("../messages");
+
 class GuardManager {
   constructor() {
     this.guardHistory = new Map();

@@ -1,3 +1,5 @@
+const { errors } = require("../messages");
+
 class AttackManager {
   constructor() {
     this.attackHistory = new Map();

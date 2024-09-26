@@ -4,31 +4,19 @@ function gameNameSpaceHandler(io) {
   const gameNameSpace = io.of("/game");
 
   gameNameSpace.on("connection", (socket) => {
-    socket.on("join game", (gameId, callback) => {
-      if (games[gameId]) {
-        socket.join(gameId);
-        if (!games[gameId].gameNameSpace) {
-          games[gameId].gameNameSpace = gameNameSpace;
-        }
-        const gameState = games[gameId].getGameState();
-        callback({
-          gameState: gameState,
-        });
-      } else {
-        callback({
-          gameState: null,
-        });
-      }
+    socket.on("joinGame", (gameId, callback) => {
+      if (!games[gameId]) return callback({ gameState : null });
+
+      socket.join(gameId);
+      const gameState = games[gameId].getGameState();
+
+      callback({ gameState: gameState });
     });
   });
 
-  gameEvents.on("update game state", (gameState) => {
+  gameEvents.on("updateGameState", (gameState) => {
     const { gameId } = gameState;
-    try {
-      gameNameSpace.to(gameId).emit("update game state", gameState);
-    } catch (error) {
-      console.error("gameStateの通知に失敗したようです。", error.message);
-    }
+    gameNameSpace.to(gameId).emit("updateGameState", gameState);
   });
 }
 

@@ -90,7 +90,7 @@ class GameState {
 
   updateGameState() {
     const gameState = this.getGameState();
-    gameEvents.emit("update game state", gameState);
+    gameEvents.emit("updateGameState", gameState);
   }
 
   getGameState() {

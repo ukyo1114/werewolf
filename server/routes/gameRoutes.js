@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const {
   protect,
+  checkGame,
   getGame,
   getPlayerState,
   receiveVote,
@@ -17,11 +18,11 @@ const {
 
 router.use(protect);
 
-router.get("/player-state/:gameId", getPlayerState);
-router.post("/vote", receiveVote);
-router.post("/fortune", receiveFortuneTarget);
-router.post("/guard", receiveGuardTarget);
-router.post("/attack", receiveAttackTarget);
+router.get("/player-state/:gameId", getGame, getPlayerState);
+router.post("/vote", checkGame, receiveVote);
+router.post("/fortune", checkGame, receiveFortuneTarget);
+router.post("/guard", checkGame, receiveGuardTarget);
+router.post("/attack", checkGame, receiveAttackTarget);
 
 router.get("/vote-history/:gameId", getGame, getVoteHistory);
 router.get("/fortune-result/:gameId", getGame, getFortuneResult);
