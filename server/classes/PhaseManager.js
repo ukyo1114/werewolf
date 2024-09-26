@@ -1,5 +1,5 @@
 class PhaseManager {
-  phaseDurations = {
+  static phaseDurations = {
     pre     : 30,
     day     : 10 * 60,
     night   : 3 * 60,
@@ -24,7 +24,7 @@ class PhaseManager {
   }
 
   startTimer() {
-    const timer = this.phaseDurations[this.currentPhase];
+    const timer = PhaseManager.phaseDurations[this.currentPhase];
 
     setTimeout(() => {
       this.timerEnd();
