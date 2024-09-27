@@ -3,6 +3,7 @@ const messages = {
   FORTUNE_COMPLETED: "占い先の指定が完了しました",
   GUARD_COMPLETED: "護衛先の指定が完了しました",
   ATTACK_COMPLETED: "襲撃先の指定が完了しました",
+  LEFT_CHANNEL: "チャンネルから退出しました",
 }
 
 const errors = {
@@ -26,7 +27,25 @@ const errors = {
 
   GUARD_HISTORY_NOT_FOUND: "護衛履歴が取得できません",
   ATTACK_HISTORY_NOT_FOUND: "襲撃履歴が取得できません",
-  GAME_IS_PROCESSING: "集計中のため受付できません"
+  GAME_IS_PROCESSING: "集計中のため受付できません",
+  GAME_CREATION_FAILED: "ゲームの開始中にエラーが発生しました",
+  EMAIL_ALREADY_REGISTERED: "メールアドレスが既に登録されています",
+
+  USER_CREATION_FAILED: "ユーザーの作成中にエラーが発生しました",
+  INVALID_EMAIL_OR_PASSWORD: "メールアドレスもしくはパスワードが間違っています",
+  INVALID_PASSWORD: "パスワードが間違っています",
+  PROFILE_UPDATE_NOT_ALLOWED_DURING_GAME: "ゲーム中のためプロフィールの更新ができません",
+  PASSWORD_MISSING: "現在のパスワードが入力されていません",
+
+  INVALID_EMAIL: "メールアドレスが無効です",
+  CHANNEL_NOT_FOUND: "チャンネルが見つかりません",
+  PERMISSION_DENIED: "権限がありません",
+  USER_BLOCKED: "チャンネルへのアクセスがブロックされています",
+  CHANNEL_ID_MISSING: "チャンネルIDが提供されていません",
+
+  SELF_BLOCK: "自分をブロックすることはできません",
+  USER_ALREADY_BLOCKED: "選択されたユーザーは既にブロックされています",
+  USER_NOT_BLOCKED: "選択されたユーザーはブロックされていません",
 };
 
 module.exports = { messages, errors };

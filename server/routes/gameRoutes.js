@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const {
-  protect,
   checkGame,
   getGame,
   getPlayerState,
@@ -15,6 +14,7 @@ const {
   getGuardHistory,
   getAttackHistory,
 } = require("../controllers/gameController");
+const { protect } = require("../middleware/authMiddleware");
 
 router.use(protect);
 

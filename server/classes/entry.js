@@ -2,7 +2,6 @@ const Game = require("../models/gameModel");
 const { GameState } = require("./GameState");
 const EventEmitter = require("events");
 const entryEvents = new EventEmitter();
-const { errors } = require("../messages");
 
 const entryUsers = {};
 

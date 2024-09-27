@@ -3,24 +3,6 @@ const Message = require("../models/messageModel");
 const User = require("../models/userModel");
 const { games } = require("../classes/GameState");
 
-const protect = async (req, res, next) => {
-  let token;
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer")
-  ) {
-    try {
-      token = req.headers.authorization.split(" ")[1];
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      req.user = await User.findById(decoded.id).select("_id");
-      return next();
-    } catch (error) {
-      return res.status(401);
-    }
-  }
-  if (!token) return res.status(401);
-};
-
 const sendMessage = async (req, res) => {
   const { content, channelId } = req.body;
   if (!content || !channelId) {
@@ -151,7 +133,6 @@ const connect = async (req, res) => {
 };
 
 module.exports = {
-  protect,
   checkGameState,
   sendMessage,
   getMessages,

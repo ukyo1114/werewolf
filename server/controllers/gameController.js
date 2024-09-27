@@ -3,28 +3,6 @@ const User = require("../models/userModel");
 const { games } = require("../classes/GameState");
 const { messages, errors } = require("../messages");
 
-const protect = async (req, res, next) => {
-  const header = req.headers.authorization;
-
-  if (!header || header.startsWith("Bearer")) {
-    return res.status(401).json({ error: errors.TOKEN_MISSING });
-  }
-
-  const token = header.split(" ")[1];
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.id).select("_id");
-
-    if (!user) return res.status(401).json({ error: errors.USER_NOT_FOUND});
-
-    req.user = user;
-    return next();
-  } catch (error) {
-    return res.status(401).json({ error: errors.INVALID_TOKEN});
-  }
-};
-
 const checkGame = (req, res, next) => {
   const playerId = req.user._id.toString();
   const { gameId } = req.body;
@@ -264,7 +242,6 @@ const getAttackHistory = (req, res) => {
 };
 
 module.exports = {
-  protect,
   checkGame,
   getGame,
   getPlayerState,
