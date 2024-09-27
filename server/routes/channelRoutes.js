@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const {
-  protect,
   fetchChannelList,
   createChannel,
   channelSettings,
@@ -12,15 +11,18 @@ const {
   block,
   cancelBlock,
 } = require("../controllers/channelController");
+const { protect } = require("../middleware/authMiddleware");
 
-router.get("/", protect, fetchChannelList);
-router.post("/createchannel", protect, createChannel);
-router.post("/channelsettings", protect, channelSettings);
-router.post("/channelenter", protect, enterToChannel);
-router.post("/leaveChannel", protect, leaveChannel);
-router.get("/getblockeduserlist/:channelId", protect, getBlockUserList);
-router.post("/block", protect, block);
-router.post("/cancelblock", protect, cancelBlock);
-router.get("/:channelId", protect, userList);
+router.use(protect);
+
+router.get("/", fetchChannelList);
+router.post("/createchannel", createChannel);
+router.post("/channelsettings", channelSettings);
+router.post("/channelenter", enterToChannel);
+router.post("/leaveChannel", leaveChannel);
+router.get("/getblockeduserlist/:channelId", getBlockUserList);
+router.post("/block", block);
+router.post("/cancelblock", cancelBlock);
+router.get("/:channelId", userList);
 
 module.exports = router;

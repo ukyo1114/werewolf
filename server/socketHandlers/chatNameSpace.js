@@ -3,6 +3,7 @@ const User = require("../models/userModel");
 const { errors } = require("../messages");
 const Channel = require("../models/channelModel");
 const { channelEvents } = require("../controllers/channelController");
+const { userEvents } = require("../controllers/userController");
 
 function chatNameSpaseHandler(io) {
   const chatNameSpace = io.of("/chat");
@@ -69,6 +70,10 @@ function chatNameSpaseHandler(io) {
     const { channelId, blockUser } = data;
     chatNameSpace.to(channelId).emit("cancel blockUser", blockUser);
   })
+
+  userEvents.on("profileUpdated", (user) => {
+    // チャンネルをカプセル化したあとでいじる～
+  });
 }
 
 module.exports = chatNameSpaseHandler;

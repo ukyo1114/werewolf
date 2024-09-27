@@ -8,6 +8,8 @@ const channelRoutes = require("./routes/channelRoutes");
 const messageRoutes = require("./routes/messageRoutes");
 const gameRoutes = require("./routes/gameRoutes");
 const socketHandler = require("./socketHandlers/socketHandler");
+const errorHandler = require("./middleware/errorHandler");
+const { errors } = require("./messages");
 
 const app = express();
 
@@ -40,13 +42,7 @@ app.use((req, res, next) => {
 });
 
 // グローバルエラーハンドリングミドルウェア
-app.use((err, req, res, next) => {
-  res.status(err.status || 500);
-  res.json({
-    message: err.message,
-    stack: process.env.NODE_ENV === "production" ? null : err.stack,
-  });
-});
+app.use(errorHandler);
 
 // サーバーの起動
 const port = process.env.PORT || 5000;
