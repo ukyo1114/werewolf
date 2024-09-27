@@ -46,6 +46,7 @@ const errors = {
   SELF_BLOCK: "自分をブロックすることはできません",
   USER_ALREADY_BLOCKED: "選択されたユーザーは既にブロックされています",
   USER_NOT_BLOCKED: "選択されたユーザーはブロックされていません",
+  MESSAGE_NOT_FOUND: "メッセージが見つかりません",
 };
 
 module.exports = { messages, errors };
