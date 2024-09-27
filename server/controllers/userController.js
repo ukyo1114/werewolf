@@ -66,7 +66,6 @@ const updateProfile = asyncHandler(async (req, res) => {
 
   const user = await User.findById(userId).select("_id name pic");
 
-  if (!user) throw new CustomError(401, errors.USER_NOT_FOUND);
   if (userName) user.name = userName;
   if (picture) user.pic = picture;
 
@@ -89,9 +88,6 @@ const updateUserSettings = asyncHandler(async (req, res) => {
   if (!currentPassword) throw new CustomError(400, errors.PASSWORD_MISSING);
 
   const user = await User.findById(userId);
-
-  if (!user) throw new CustomError(401, errors.USER_NOT_FOUND);
-
   const isMatch = await user.matchPassword(currentPassword);
 
   if (!isMatch) throw new CustomError(401, errors.INVALID_PASSWORD);
