@@ -1,7 +1,7 @@
 const asyncHandler = require('express-async-handler');
 const Message = require("../models/messageModel");
 const { games } = require("../classes/GameState");
-const { messages, errors } = require('../messages');
+const { errors } = require('../messages');
 const CustomError = require('../classes/CustomError');
 
 const sendMessage = asyncHandler(async (req, res) => {
@@ -115,7 +115,7 @@ const connect = asyncHandler(async (req, res) => {
   if (message) {
     query.createdAt = { $gt: message.createdAt };
   }
-  
+
   let messages = await Message.find(query).sort({ createdAt: -1 });
   res.json(messages);
 });
