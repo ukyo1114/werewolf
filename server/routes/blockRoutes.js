@@ -9,7 +9,7 @@ const { protect } = require("../middleware/authMiddleware");
 
 router.use(protect);
 
-router.get("/userList/:channelId", getBlockUsers);
+router.get("/user-list/:channelId", getBlockUsers);
 router.put("/register", registerBlock);
 router.put("/cancel", cancelBlock);
 
