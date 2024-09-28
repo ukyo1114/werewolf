@@ -1,5 +1,5 @@
 const socketIo = require("socket.io");
-const chatNameSpaseHandler = require("./chatNameSpace");
+const { chatNameSpaseHandler } = require("./chatNameSpace");
 const entryNameSpaseHandler = require("./entryNameSpace");
 const gameNameSpaseHandler = require("./gameNameSpace");
 
