@@ -66,7 +66,7 @@ const cancelBlock = asyncHandler(async (req, res) => {
 
   await channel.save();
 
-  channelEvents.emit("cancel blockUser", {
+  channelEvents.emit("cancelBlockUser", {
     channelId: channelId,
     blockUser: selectedBlockUser,
   });
