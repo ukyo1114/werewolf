@@ -2,7 +2,8 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 const { errors } = require("../messages");
 const Channel = require("../models/channelModel");
-const { channelEvents } = require("../controllers/channelController");
+const EventEmitter = require('events');
+const channelEvents = new EventEmitter();
 const { userEvents } = require("../controllers/userController");
 
 function chatNameSpaseHandler(io) {
@@ -61,14 +62,14 @@ function chatNameSpaseHandler(io) {
     chatNameSpace.to(channelId).emit("user left", userId);
   });
 
-  channelEvents.on("add blockUser", (data) => {
+  channelEvents.on("registerBlockUser", (data) => {
     const { channelId, blockUser } = data;
-    chatNameSpace.to(channelId).emit("add blockUser", blockUser);
+    chatNameSpace.to(channelId).emit("registerBlockUser", blockUser);
   });
 
-  channelEvents.on("cancel blockUser", (data) => {
+  channelEvents.on("cancelBlockUser", (data) => {
     const { channelId, blockUser } = data;
-    chatNameSpace.to(channelId).emit("cancel blockUser", blockUser);
+    chatNameSpace.to(channelId).emit("cancelBlockUser", blockUser);
   })
 
   userEvents.on("profileUpdated", (user) => {
@@ -76,4 +77,4 @@ function chatNameSpaseHandler(io) {
   });
 }
 
-module.exports = chatNameSpaseHandler;
+module.exports = { chatNameSpaseHandler, channelEvents };
