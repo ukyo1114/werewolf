@@ -6,11 +6,11 @@ const connectDB = require("./config/db");
 const userRoutes = require("./routes/userRoutes");
 const channelRoutes = require("./routes/channelRoutes");
 const messageRoutes = require("./routes/messageRoutes");
+const spectateRoutes = require("./routes/spectateRoutes");
 const blockRoutes = require("./routes/blockRoutes");
 const gameRoutes = require("./routes/gameRoutes");
 const socketHandler = require("./socketHandlers/socketHandler");
 const errorHandler = require("./middleware/errorHandler");
-const { errors } = require("./messages");
 
 const app = express();
 
@@ -29,6 +29,7 @@ app.get("/", (req, res) => {
 app.use("/api/user", userRoutes);
 app.use("/api/channel", channelRoutes);
 app.use("/api/message", messageRoutes);
+app.use("/api/spectate", spectateRoutes);
 app.use("/api/block", blockRoutes);
 app.use("/api/game", gameRoutes);
 
