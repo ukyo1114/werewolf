@@ -210,9 +210,7 @@ const getAttackHistory = (req, res) => {
 
   try {
     const attackHistory = game.attack.getAttackHistory(
-      playerId,
-      players,
-      phase,
+      playerId, players, phase
     );
 
     if (attackHistory === null) {
