@@ -51,6 +51,8 @@ const checkGameState = (req, res, next) => {
 };
 
 const getMessages = asyncHandler(async (req, res) => {
+  console.log("get messages");
+  
   const { messageId } = req.query;
   const channelId = req.params.channelId;
   let message;
