@@ -11,7 +11,7 @@ const { protect } = require("../middleware/authMiddleware");
 router.use(protect);
 
 router.post("/", checkGameState, sendMessage);
-router.get("/getmessages/:channelId", getMessages);
 router.get("/connect/:channelId", connect);
+router.get("/:channelId", getMessages);
 
 module.exports = router;

@@ -53,10 +53,9 @@ class Entry {
         result: "running",
       });
 
-      const fullGame = await Game.findOne({ _id: game._id }).populate(
-        "users",
-        "_id name pic",
-      );
+      const fullGame = await Game.findOne({ _id: game._id })
+        .select("_id users channel")
+        .populate("users", "_id name pic",);
 
       GameState.createGame(fullGame);
 
