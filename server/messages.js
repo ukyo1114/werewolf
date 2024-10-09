@@ -47,6 +47,7 @@ const errors = {
   USER_ALREADY_BLOCKED: "選択されたユーザーは既にブロックされています",
   USER_NOT_BLOCKED: "選択されたユーザーはブロックされていません",
   MESSAGE_NOT_FOUND: "メッセージが見つかりません",
+  MESSAGE_ID_MISSING: "メッセージIDが提供されていません",
 };
 
 module.exports = { messages, errors };

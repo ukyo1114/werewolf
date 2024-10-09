@@ -3,8 +3,18 @@ const bcrypt = require("bcryptjs");
 
 const channelModel = mongoose.Schema(
   {
-    channelName: { type: String, trim: true },
-    description: { type: String, trim: true },
+    channelName: {
+      type: String,
+      trim: true,
+      minlength: 2,
+      maxlength: 20,
+    },
+    description: {
+      type: String,
+      trim: true,
+      minlength: 2,
+      maxlength: 2000,
+    },
     users: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -15,7 +25,11 @@ const channelModel = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-    password: { type: String },
+    password: {
+      type: String,
+      minlength: 8,
+      maxlength: 20,
+    },
     blockUsers: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -34,14 +48,19 @@ channelModel.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
+channelModel.pre("validate", function (next) {
+  if (this.password === "") {
+    this.password = null;
+  }
+  next();
+});
+
 channelModel.pre("save", async function (next) {
   if (!this.isModified("password")) {
     return next();
   }
-  if (this.password === "") {
-    this.password = null;
-    return next();
-  }
+  if (this.password === null) return next();
+
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
   next();

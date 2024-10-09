@@ -28,10 +28,6 @@ const createChannel = asyncHandler(async (req, res) => {
   const userId = req.user._id.toString();
   const { channelName, description, password } = req.body;
 
-  if (!channelName || !description) {
-    throw new CustomError(400, errors.MISSING_DATA);
-  }
-
   const channel = await Channel.create({
     channelName: channelName,
     description: description,
@@ -71,10 +67,6 @@ const enterToChannel = asyncHandler(async (req, res) => {
   const { channelId, password } = req.body;
   const userId = req.user._id.toString();
 
-  if (!channelId) {
-    return res.status(400).json({ error: errors.CHANNEL_ID_MISSING });
-  }
-
   const channel = await getChannelById(channelId);
   isUserBlocked(channel, userId);
   const isUserInChannel = channel.users.some((u) => u.toString() === userId);
@@ -104,10 +96,6 @@ const leaveChannel = asyncHandler(async (req, res) => {
   const userId = req.user._id.toString();
   const { channelId } = req.body;
 
-  if (!channelId) {
-    return res.status(400).json({ error: errors.CHANNEL_ID_MISSING });
-  }
-
   const channel = await getChannelById(channelId);
 
   if (channel.channelAdmin.toString() === userId) {
@@ -128,15 +116,6 @@ const leaveChannel = asyncHandler(async (req, res) => {
   res.status(200).json({ message: messages.LEFT_CHANNEL });
 });
 
-const userList = asyncHandler(async (req, res) => {
-    const channel = await Channel.findById(req.params.channelId)
-      .populate("users", "_id name pic");
-
-    if (!channel) throw new CustomError(404, errors.CHANNEL_NOT_FOUND);
-
-    res.status(200).json(channel.users);
-});
-
 module.exports = {
   channelEvents,
   fetchChannelList,
@@ -144,5 +123,4 @@ module.exports = {
   channelSettings,
   enterToChannel,
   leaveChannel,
-  userList,
 };
