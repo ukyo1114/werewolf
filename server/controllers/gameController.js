@@ -47,7 +47,7 @@ const getPlayerState = (req, res) => {
 };
 
 const receiveVote = (req, res) => {
-  const { playerId, game, players, phase } = req;
+  const { playerId, game } = req;
   const { selectedUser } = req.body;
   const vote = {
     voter: playerId,
@@ -55,7 +55,7 @@ const receiveVote = (req, res) => {
   };
 
   try {
-    game.votes.receiveVote(vote, players, phase);
+    game.votes.receiveVote(vote);
     res.status(200).json({ message: messages.VOTE_COMPLETED });
   } catch (error) {
     checkErrorMessage(error, errors.INVALID_VOTE);
@@ -103,10 +103,10 @@ const receiveAttackTarget = (req, res) => {
 };
 
 const getVoteHistory = (req, res) => {
-  const { game, phase } = req;
+  const { game } = req;
 
   try {
-    const voteHistory = game.votes.getVoteHistory(phase);
+    const voteHistory = game.votes.getVoteHistory();
 
     if (voteHistory === null) {
       throw new CustomError(403, errors.VOTE_HISTORY_NOT_FOUND);
@@ -135,10 +135,10 @@ const getFortuneResult = (req, res) => {
 };
 
 const getMediumResult = (req, res) => {
-  const { playerId, game, players, phase } = req;
+  const { playerId, game } = req;
 
   try {
-    const mediumResult = game.medium.getMediumResult(playerId, players, phase);
+    const mediumResult = game.medium.getMediumResult(playerId);
 
     if (mediumResult === null) {
       throw new CustomError(403, errors.MEDIUM_RESULT_NOT_FOUND);
@@ -167,7 +167,7 @@ const getGuardHistory = (req, res) => {
 };
 
 const getAttackHistory = (req, res) => {
-  const { playerId, game, players, phase } = req;
+  const { playerId, game } = req;
 
   try {
     const attackHistory = game.attack.getAttackHistory(playerId);

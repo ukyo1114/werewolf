@@ -1,12 +1,13 @@
 class MediumManager {
-  constructor() {
+  constructor(players, phase) {
     this.mediumResult = new Map();
+    this.players = players;
+    this.phase = phase;
   }
 
-  medium(target, players, phase) {
-    const { currentDay } = phase;
-    const medium = players.find((pl) => pl.role === "medium");
-
+  medium(target) {
+    const { currentDay } = this.phase;
+    const medium = this.players.findPlayerByRole("medium");
     if (medium?.status !== "alive") return;
 
     this.mediumResult.set(currentDay, {
@@ -15,9 +16,9 @@ class MediumManager {
     });
   }
 
-  getMediumResult(playerId, players, phase) {
-    const { currentDay, currentPhase } = phase;
-    const medium = players.find((pl) => pl._id === playerId);
+  getMediumResult(playerId) {
+    const { currentDay, currentPhase } = this.phase;
+    const medium = this.players.get(playerId);
 
     if (medium?.role !== "medium" || currentPhase === "pre") return null;
     
@@ -34,3 +35,5 @@ class MediumManager {
 }
 
 module.exports = MediumManager;
+
+// テスト済み

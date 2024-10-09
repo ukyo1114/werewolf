@@ -16,10 +16,10 @@ class GameState {
     this.channelId = game.channel.toString();
     this.gameId = game._id.toString();
     this.players = new PlayerManager(game.users);
-    this.votes = new VoteManager();
-    this.medium = new MediumManager();
     this.phase = new PhaseManager(this.eventEmitter);
+    this.votes = new VoteManager();
     this.fortune = new FortuneManager(this.players, this.phase);
+    this.medium = new MediumManager(this.players, this.phase);
     this.guard = new GuardManager(this.players, this.phase);    
     this.attack = new AttackManager(this.players, this.phase, this.guard);
     this.result = "running";
@@ -55,9 +55,6 @@ class GameState {
   }
 
   handleNightPhaseEnd() {
-    const players = this.players;
-    const phase = this.phase;
-
     this.fortune.fortune();
     this.attack.attack();
     this.judgement();
@@ -77,14 +74,13 @@ class GameState {
   }
 
   execution() {
-    const players = this.players;
-    const phase = this.phase;
-    const executionTarget = votes.getExecutionTarget(players, phase);
+    const executionTargetId = votes.getExecutionTarget();
+    const executionTarget = this.players.get(executionTargetId);
 
     if (!executionTarget) return this.result = "villageAbandoned";
 
     executionTarget.status = "dead";
-    this.medium.medium(executionTarget, players, phase);
+    this.medium.medium(executionTarget);
   }
 
   updateGameState() {

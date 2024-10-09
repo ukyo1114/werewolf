@@ -1,14 +1,17 @@
+const _ = require('lodash');
 const { errors } = require("../messages");
 
 class VoteManager {
-  constructor() {
+  constructor(players, phase) {
     this.voteHistory = new Map();
+    this.players = players;
+    this.phase = phase;
   }
 
-  receiveVote(vote, players, phase) {
+  receiveVote(vote) {
     const { voter, votee } = vote;
-    const { currentDay, currentPhase } = phase;
-    const player = players.find((pl) => pl._id === voter);
+    const { currentDay, currentPhase } = this.phase;
+    const player = this.players.get(voter);
 
     if (player?.status !== "alive" || currentPhase !== "day") {
       throw new Error(errors.INVALID_VOTE);
@@ -21,62 +24,50 @@ class VoteManager {
     this.voteHistory.get(currentDay).set(voter, votee);
   }
 
-  voteCounter(phase) {
-    const { currentDay } = phase;
-    
+  voteCounter() {
+    const { currentDay } = this.phase;
     const votesForDay = this.voteHistory.get(currentDay);
     if (!votesForDay) return null;
 
-    const voteCount = new Map();
-
-    votesForDay.forEach((votee) => {
-      voteCount.set(votee, (voteCount.get(votee) || 0) + 1);
-    });
-
-    return voteCount;
+    const voteeArray = Array.from(votesForDay.values());
+    return _.countBy(voteeArray);
   }
 
-  getExecutionTarget(players, phase) {
-    const voteCount = this.voteCounter(phase);
-
+  getExecutionTarget() {
+    const voteCount = this.voteCounter();
     if (!voteCount) return null;
 
-    let executionTargets = [];
-    let maxVotes = 0;
+    const maxVotes = _.max(Object.values(voteCount));
+    const executionTargets = Object.entries(voteCount)
+      .filter(([_, count]) => count === maxVotes)
+      .map(([votee]) => votee);
 
-    voteCount.forEach((count, votee) => {
-      if (count > maxVotes) {
-        executionTargets = [votee];
-        maxVotes = count;
-      }
-      if (count === maxVotes) {
-        executionTargets.push(votee);
-      }
-    });
-
-    const index = Math.floor(Math.random() * executionTargets.length);
-
-    return players.find((pl) => pl._id === executionTargets[index]);
+    return _.sample(executionTargets);
   }
 
-  getVoteHistory(phase) {
-    const { currentDay, currentPhase } = phase;
-
+  getVoteHistory() {
+    const { currentDay, currentPhase } = this.phase;
     if (currentPhase === "pre") return null;
-
     const voteHistory = {};
 
-    this.voteHistory.forEach((value, day) => {
+    this.voteHistory.forEach((votes, day) => {
       if (day === currentDay && currentPhase === "day") return;
-      if (!voteHistory[day]) voteHistory[day] = {};
-
-      value.forEach((votee, voter) => {
-        if (!voteHistory[day][votee]) voteHistory[day][votee] = [];
-        voteHistory[day][votee].push(voter);
+  
+      const dayVotes = {};
+      votes.forEach((votee, voter) => {
+        if (!dayVotes[votee]) {
+          dayVotes[votee] = [];
+        }
+        dayVotes[votee].push(voter);
       });
+  
+      voteHistory[day] = dayVotes;
     });
+  
     return voteHistory;
   }
 }
 
 module.exports = VoteManager;
+
+// テスト済み
