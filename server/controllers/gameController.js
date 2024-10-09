@@ -1,6 +1,10 @@
 const { games } = require("../classes/GameState");
 const { messages, errors } = require("../messages");
-const CustomError = require('../classes/CustomError');
+const CustomError = require("../classes/CustomError");
+const {
+  handleServerError,
+  checkErrorMessage,
+} = require("../utils/handleError");
 
 const checkGame = (req, res, next) => {
   const playerId = req.user._id.toString();
@@ -41,8 +45,7 @@ const getPlayerState = (req, res) => {
   
     res.status(200).json(playerState);
   } catch (error) {
-    console.error("error:", error.message);
-    throw new CustomError(500, errors.SERVER_ERROR);
+    handleServerError(error);
   }
 };
 
@@ -58,12 +61,8 @@ const receiveVote = (req, res) => {
     game.votes.receiveVote(vote, players, phase);
     res.status(200).json({ message: messages.VOTE_COMPLETED });
   } catch (error) {
-    if (error.message === errors.INVALID_VOTE) {
-      throw new CustomError(400, error.message);
-    }
-
-    console.error("error:", error.message);
-    throw new CustomError(500, errors.SERVER_ERROR);
+    checkErrorMessage(error, errors.INVALID_VOTE);
+    handleServerError(error);
   }
 };
 
@@ -75,12 +74,8 @@ const receiveFortuneTarget = (req, res) => {
     game.fortune.receiveFortuneTarget(playerId, selectedUser, players, phase);
     res.status(200).json({ message: messages.FORTUNE_COMPLETED });
   } catch (error) {
-    if (error.message === errors.INVALID_FORTUNE) {
-      throw new CustomError(400, error.message);
-    }
-
-    console.error("error:", error.message);
-    throw new CustomError(500, errors.SERVER_ERROR);
+    checkErrorMessage(error, errors.INVALID_FORTUNE);
+    handleServerError(error);
   }
 };
 
@@ -92,12 +87,8 @@ const receiveGuardTarget = (req, res) => {
     game.guard.receiveGuardTarget(playerId, selectedUser, players, phase);
     res.status(200).json({ message: messages.GUARD_COMPLETED });
   } catch (error) {
-    if (error.message === errors.INVALID_GUARD) {
-      throw new CustomError(400, error.message);
-    }
-
-    console.error("error:", error.message);
-    throw new CustomError(500, errors.SERVER_ERROR);
+    checkErrorMessage(error, errors.INVALID_GUARD);
+    handleServerError(error);
   }
 };
 
@@ -109,12 +100,8 @@ const receiveAttackTarget = (req, res) => {
     game.attack.receiveAttackTarget(playerId, selectedUser, players, phase);
     res.status(200).json({ message: messages.ATTACK_COMPLETED });
   } catch (error) {
-    if (error.message === errors.INVALID_ATTACK) {
-      throw new CustomError(400, error.message);
-    }
-
-    console.error("error:", error.message);
-    throw new CustomError(500, errors.SERVER_ERROR);
+    checkErrorMessage(error, errors.INVALID_ATTACK);
+    handleServerError(error);
   }
 };
 
@@ -130,8 +117,7 @@ const getVoteHistory = (req, res) => {
 
     res.status(200).json(voteHistory);
   } catch (error) {
-    console.error("error:", error.message);
-    throw new CustomError(500, errors.SERVER_ERROR);
+    handleServerError(error);
   }
 };
 
@@ -151,8 +137,7 @@ const getFortuneResult = (req, res) => {
 
     res.status(200).json(fortuneResult);
   } catch (error) {
-    console.error("error:", error.message);
-    throw new CustomError(500, errors.SERVER_ERROR);
+    handleServerError(error);
   }
 };
 
@@ -168,8 +153,7 @@ const getMediumResult = (req, res) => {
 
     res.status(200).json(mediumResult);
   } catch (error) {
-    console.error("error:", error.message);
-    throw new CustomError(500, errors.SERVER_ERROR);
+    handleServerError(error);
   }
 };
 
@@ -185,8 +169,7 @@ const getGuardHistory = (req, res) => {
 
     res.status(200).json(guardHistory);
   } catch (error) {
-    console.error("error:", error.message);
-    throw new CustomError(500, errors.SERVER_ERROR);
+    handleServerError(error);
   }
 };
 
@@ -204,8 +187,7 @@ const getAttackHistory = (req, res) => {
 
     res.status(200).json(attackHistory);
   } catch (error) {
-    console.error("error:", error.message);
-    throw new CustomError(500, errors.SERVER_ERROR);
+    handleServerError(error);
   }
 };
 
