@@ -8,6 +8,7 @@ const messageModel = mongoose.Schema(
     content: {
       type: String,
       trim: true,
+      maxlength: 300,
     },
     channel: {
       type: mongoose.Schema.Types.ObjectId,

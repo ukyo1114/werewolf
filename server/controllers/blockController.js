@@ -25,8 +25,6 @@ const getBlockUsers = asyncHandler(async (req, res) => {
 const registerBlock = asyncHandler(async (req, res) => {
   const { channelId, selectedUser } = req.body;
   const userId = req.user._id.toString();
-
-  if (!channelId) throw new CustomError(400, errors.CHANNEL_ID_MISSING);
   if (selectedUser === userId) throw new CustomError(403, errors.SELF_BLOCK);
 
   const channel = await getChannelById(channelId);

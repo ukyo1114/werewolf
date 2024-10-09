@@ -5,9 +5,6 @@ const CustomError = require('../classes/CustomError');
 const checkGame = (req, res, next) => {
   const playerId = req.user._id.toString();
   const { gameId } = req.body;
-
-  if (!gameId) throw new CustomError(400, errors.MISSING_DATA);
-
   const game = games[gameId];
 
   if (!game) throw new CustomError(404, errors.GAME_NOT_FOUND);
@@ -23,9 +20,6 @@ const checkGame = (req, res, next) => {
 const getGame = (req, res, next) => {
   const playerId = req.user._id.toString();
   const gameId = req.params.gameId;
-
-  if (!gameId) throw new CustomError(400, errors.GAME_ID_MISSING);
-
   const game = games[gameId];
 
   if (!game) throw new CustomError(404, errors.GAME_NOT_FOUND);
@@ -55,9 +49,6 @@ const getPlayerState = (req, res) => {
 const receiveVote = (req, res) => {
   const { playerId, game, players, phase } = req;
   const { selectedUser } = req.body;
-
-  if (!selectedUser) throw new CustomError(400, errors.MISSING_DATA);
-
   const vote = {
     voter: playerId,
     votee: selectedUser,
@@ -80,8 +71,6 @@ const receiveFortuneTarget = (req, res) => {
   const { playerId, game, players, phase } = req;
   const { selectedUser } = req.body;
 
-  if (!selectedUser) throw new CustomError(400, errors.MISSING_DATA);
-
   try {
     game.fortune.receiveFortuneTarget(playerId, selectedUser, players, phase);
     res.status(200).json({ message: messages.FORTUNE_COMPLETED });
@@ -99,8 +88,6 @@ const receiveGuardTarget = (req, res) => {
   const { playerId, game, players, phase } = req;
   const { selectedUser } = req.body;
 
-  if (!selectedUser) throw new CustomError(400, errors.MISSING_DATA);
-
   try {
     game.guard.receiveGuardTarget(playerId, selectedUser, players, phase);
     res.status(200).json({ message: messages.GUARD_COMPLETED });
@@ -117,8 +104,6 @@ const receiveGuardTarget = (req, res) => {
 const receiveAttackTarget = (req, res) => {
   const { playerId, game, players, phase } = req;
   const { selectedUser } = req.body;
-
-  if (!selectedUser) throw new CustomError(400, errors.MISSING_DATA);
 
   try {
     game.attack.receiveAttackTarget(playerId, selectedUser, players, phase);

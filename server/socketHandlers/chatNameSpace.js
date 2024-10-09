@@ -38,18 +38,14 @@ function chatNameSpaseHandler(io) {
       socket.channelId = channelId;
     });
 
-    socket.on("new message", (newMessageReceived) => {
-      let channelId = newMessageReceived.channel;
-      if (!channelId) return console.error("channelId not found !!");
-      if (!newMessageReceived || !newMessageReceived.content) {
-        return console.error("Invalid message format.");
-      }
-      chatNameSpace.to(channelId).emit("message received", newMessageReceived);
-    });
-
     socket.on("disconnect", async () => {
       console.log("USER DISCONNECTED !");
     });
+  });
+
+  channelEvents.on("newMessage", (message) => {
+    const channelId = message.channel.toString();
+    chatNameSpace.to(channelId).emit("messageReceived", message);
   });
 
   channelEvents.on("user added", (data) => {

@@ -4,7 +4,6 @@ const { games } = require("../classes/GameState");
 
 const getGameList = (req, res) => {
   const channelId = req.params.channelId;
-  if (!channelId) throw new CustomError(400, errors.CHANNEL_ID_MISSING);
 
   try {
     const gameList = getGamesByChannelId(channelId);
@@ -22,15 +21,13 @@ function getGamesByChannelId(channelId) {
     game.channelId === channelId
   );
 
-  const gameList = filteredGames.map((game) => {
-    return {
-      gameId: game.gameId,
-      players: game.players.map((pl) => pl._id),
-      currentDay: game.phase.currentDay,
-      currentPhase: game.phase.currentPhase,
-      result: game.result,
-    };
-  });
+  const gameList = filteredGames.map((game) => ({
+    gameId: game.gameId,
+    players: game.players.map((pl) => pl._id),
+    currentDay: game.phase.currentDay,
+    currentPhase: game.phase.currentPhase,
+    result: game.result,
+  }));
 
   return gameList;
 };
