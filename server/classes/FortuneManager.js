@@ -1,23 +1,23 @@
+const _ = require('lodash');
 const { errors } = require("../messages");
 
 class FortuneManager {
-  constructor() {
+  constructor(players, phase) {
     this.fortuneResult = new Map();
+    this.players = players;
+    this.phase = phase;
   }
 
-  receiveFortuneTarget(playerId, targetId, players, phase) {
-    const { currentDay, currentPhase } = phase;
-    const seer = players.find((pl) => pl._id === playerId);
-    const target = players.find((pl) => pl._id === targetId);
+  receiveFortuneTarget(playerId, targetId) {
+    const { currentDay, currentPhase } = this.phase;
+    const seer = this.players.get(playerId);;
+    const target = this.players.get(targetId);
 
     if (
       currentPhase !== "night" ||
-      seer?.status !== "alive" || seer.role !== "seer"
+      seer?.status !== "alive" || seer.role !== "seer" ||
+      target?.status !== "alive" || target.role === "seer"
     ) throw new Error(errors.INVALID_FORTUNE);
-
-    if (target?.status !== "alive" || target.role === "seer") {
-      throw new Error(errors.INVALID_FORTUNE);
-    };
 
     this.fortuneResult.set(currentDay, {
       playerId: targetId,
@@ -25,42 +25,37 @@ class FortuneManager {
     });
   }
 
-  fortune(players, phase) {
-    const { currentDay } = phase;
-    const seer = players.find((pl) => pl.role === "seer");
-    const fortuneResult = this.fortuneResult.get(currentDay) ||
-      this.getRandomFortuneTarget(players, currentDay);
-
+  fortune() {
+    const { currentDay } = this.phase;
+    const seer = this.players.findPlayerByRole("seer");
     if (seer?.status !== "alive") return;
+    const fortuneResult = this.fortuneResult.get(currentDay) ||
+      this.getRandomFortuneTarget();
 
-    const target = players.find((pl) => pl._id === fortuneResult.playerId);
+    const target = this.players.get(fortuneResult.playerId);
 
     fortuneResult.team =
       target.role !== "werewolf" ? "villagers" : "werewolves";
   }
 
-  getRandomFortuneTarget (players, currentDay) {
-    const randomFortuneTargets = players.filter(
-      (pl) => pl.status === "alive" && pl.role !== "seer"
+  getRandomFortuneTarget () {
+    const { currentDay } = this.phase;
+    const fortuneTargets = this.players.getFilteredPlayers((pl) =>
+      pl.status === "alive" && pl.role !== "seer"
     );
-    const index = Math.floor(Math.random() * randomFortuneTargets.length);
-    const randomFortuneTarget = randomFortuneTargets[index];
-
-    this.fortuneResult.set(currentDay, {
+    const randomFortuneTarget = _.sample(fortuneTargets);
+    const fortuneResult = {
       playerId: randomFortuneTarget._id,
       team: "unknown",
-    });
+    }
 
-    return {
-      playerId: randomFortuneTarget._id,
-      team: "unknown",
-    };
+    this.fortuneResult.set(currentDay, fortuneResult);
+    return this.fortuneResult.get(currentDay);
   }
 
-  getFortuneResult(playerId, players, phase) {
-    const { currentDay, currentPhase } = phase;
-    const seer = players.find((pl) => pl._id === playerId);
-
+  getFortuneResult(playerId) {
+    const { currentDay, currentPhase } = this.phase;
+    const seer = this.players.get(playerId);
     if (seer?.role !== "seer" || currentPhase === "pre") return null;
 
     const fortuneResult = {};
@@ -76,3 +71,5 @@ class FortuneManager {
 }
 
 module.exports = FortuneManager;
+
+// テスト済み

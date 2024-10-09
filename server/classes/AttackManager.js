@@ -1,55 +1,51 @@
+const _ = require('lodash');
 const { errors } = require("../messages");
 
 class AttackManager {
-  constructor() {
+  constructor(players, phase, guard) {
     this.attackHistory = new Map();
+    this.players = players;
+    this.phase = phase;
+    this.guard = guard;
   }
 
-  receiveAttackTarget(playerId, targetId, players, phase) {
-    const { currentDay, currentPhase } = phase;
-    const werewolf = players.find((pl) => pl._id === playerId);
-    const target = players.find((pl) => pl._id === targetId);
+  receiveAttackTarget(playerId, targetId) {
+    const { currentDay, currentPhase } = this.phase;
+    const werewolf = this.players.get(playerId);
+    const target = this.players.get(targetId);
 
     if (
       currentPhase !== "night" ||
-      werewolf?.status !== "alive" || werewolf.role !== "werewolf"
+      werewolf?.status !== "alive" || werewolf.role !== "werewolf" ||
+      target?.status !== "alive" || target.role === "werewolf"
     ) throw new Error(errors.INVALID_ATTACK);
 
-    if (target?.status !== "alive" || target.role === "werewolf") {
-      throw new Error(errors.INVALID_ATTACK);
-    };
-
-    this.attackHistory.set(currentDay, {
-      playerId: targetId,
-    });
+    this.attackHistory.set(currentDay, { playerId: targetId });
   }
 
-  attack(players, phase, guard) {
-    const { currentDay } = phase;
-    const attackHistory = this.attackHistory.get(currentDay) ||
-      this.getRandomAttackTarget(players, currentDay);
-    const target = players.find((pl) => pl._id === attackHistory.playerId);
-    const result = guard.guard(target._id, players, phase);
+  attack() {
+    const { currentDay } = this.phase;
+    const attackTarget = this.attackHistory.get(currentDay)?.playerId ||
+      this.getRandomAttackTarget();
+    const result = this.guard.guard(attackTarget);
 
-    if (!result) target.status = "dead";
+    if (!result) this.players.kill(attackTarget);
   }
 
-  getRandomAttackTarget(players, currentDay) {
-    const randomAttackTargets = players.filter(
-      (pl) => pl.status === "alive" && pl.role !== "werewolf"
+  getRandomAttackTarget() {
+    const { currentDay } = this.phase;
+    const attackTargets = this.players.getFilteredPlayers((pl) => 
+      pl.status === "alive" && pl.role !== "werewolf"
     );
-    const index = Math.floor(Math.random() * randomAttackTargets.length);
-    const randomAttackTarget = randomAttackTargets[index];
-
+    const randomAttackTarget = _.sample(attackTargets);
     this.attackHistory.set(currentDay, { playerId: randomAttackTarget._id });
 
-    return { playerId: randomAttackTarget._id };
+    return randomAttackTarget._id;
   }
 
-  getAttackhistory(playerId, players, phase) {
-    const { currentDay, currentPhase } = phase;
-    const werewolf = players.find((pl) => pl._id === playerId);
-
+  getAttackHistory(playerId) {
+    const { currentDay, currentPhase } = this.phase;
+    const werewolf = this.players.get(playerId);
     if (werewolf?.role !== "werewolf" || currentPhase === "pre") return null;
 
     const attackHistory = {};
@@ -65,3 +61,5 @@ class AttackManager {
 }
 
 module.exports = AttackManager;
+
+// テスト済み

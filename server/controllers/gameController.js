@@ -37,12 +37,9 @@ const getGame = (req, res, next) => {
 
 const getPlayerState = (req, res) => {
   const { playerId, players } = req;
-
   try {
     const playerState = players.getPlayerState(playerId);
-
     if (!playerState) throw new CustomError(404, errors.PLAYER_NOT_FOUND);
-  
     res.status(200).json(playerState);
   } catch (error) {
     handleServerError(error);
@@ -71,7 +68,7 @@ const receiveFortuneTarget = (req, res) => {
   const { selectedUser } = req.body;
 
   try {
-    game.fortune.receiveFortuneTarget(playerId, selectedUser, players, phase);
+    game.fortune.receiveFortuneTarget(playerId, selectedUser);
     res.status(200).json({ message: messages.FORTUNE_COMPLETED });
   } catch (error) {
     checkErrorMessage(error, errors.INVALID_FORTUNE);
@@ -80,11 +77,11 @@ const receiveFortuneTarget = (req, res) => {
 };
 
 const receiveGuardTarget = (req, res) => {
-  const { playerId, game, players, phase } = req;
+  const { playerId, game } = req;
   const { selectedUser } = req.body;
 
   try {
-    game.guard.receiveGuardTarget(playerId, selectedUser, players, phase);
+    game.guard.receiveGuardTarget(playerId, selectedUser);
     res.status(200).json({ message: messages.GUARD_COMPLETED });
   } catch (error) {
     checkErrorMessage(error, errors.INVALID_GUARD);
@@ -93,11 +90,11 @@ const receiveGuardTarget = (req, res) => {
 };
 
 const receiveAttackTarget = (req, res) => {
-  const { playerId, game, players, phase } = req;
+  const { playerId, game } = req;
   const { selectedUser } = req.body;
 
   try {
-    game.attack.receiveAttackTarget(playerId, selectedUser, players, phase);
+    game.attack.receiveAttackTarget(playerId, selectedUser);
     res.status(200).json({ message: messages.ATTACK_COMPLETED });
   } catch (error) {
     checkErrorMessage(error, errors.INVALID_ATTACK);
@@ -125,11 +122,7 @@ const getFortuneResult = (req, res) => {
   const { playerId, game, players, phase } = req;
 
   try{  
-    const fortuneResult = game.fortune.getFortuneResult(
-      playerId,
-      players,
-      phase,
-    );
+    const fortuneResult = game.fortune.getFortuneResult(playerId);
 
     if (fortuneResult === null) {
       throw new CustomError(403, errors.FORTUNE_RESULT_NOT_FOUND);
@@ -158,10 +151,10 @@ const getMediumResult = (req, res) => {
 };
 
 const getGuardHistory = (req, res) => {
-  const { playerId, game, players, phase } = req;
+  const { playerId, game } = req;
 
   try {
-    const guardHistory = game.guard.getGuardHistory(playerId, players, phase);
+    const guardHistory = game.guard.getGuardHistory(playerId);
 
     if (guardHistory === null) {
       throw new CustomError(403, errors.GUARD_HISTORY_NOT_FOUND);
@@ -177,9 +170,7 @@ const getAttackHistory = (req, res) => {
   const { playerId, game, players, phase } = req;
 
   try {
-    const attackHistory = game.attack.getAttackHistory(
-      playerId, players, phase
-    );
+    const attackHistory = game.attack.getAttackHistory(playerId);
 
     if (attackHistory === null) {
       throw new CustomError(403, errors.ATTACK_HISTORY_NOT_FOUND);
