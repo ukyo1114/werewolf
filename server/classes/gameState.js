@@ -17,11 +17,11 @@ class GameState {
     this.gameId = game._id.toString();
     this.players = new PlayerManager(game.users);
     this.votes = new VoteManager();
-    this.fortune = new FortuneManager();
-    this.attack = new AttackManager();
-    this.guard = new GuardManager();
     this.medium = new MediumManager();
     this.phase = new PhaseManager(this.eventEmitter);
+    this.fortune = new FortuneManager(this.players, this.phase);
+    this.guard = new GuardManager(this.players, this.phase);    
+    this.attack = new AttackManager(this.players, this.phase, this.guard);
     this.result = "running";
     this.isProcessing = false;
   }
@@ -57,10 +57,9 @@ class GameState {
   handleNightPhaseEnd() {
     const players = this.players;
     const phase = this.phase;
-    const guard = this.guard;
 
-    this.fortune.fortune(players, phase);
-    this.attack.attack(players, phase, guard);
+    this.fortune.fortune();
+    this.attack.attack();
     this.judgement();
   }
 

@@ -1,63 +1,75 @@
+const _ = require("lodash");
+
 class PlayerManager {
+  static roles = [
+    "villager",
+    "villager",
+    "villager",
+    "villager",
+    "seer",
+    "medium",
+    "hunter",
+    "werewolf",
+    "werewolf",
+    "madman",
+  ];
+
   constructor(users) {
-    this.players = users.map((user) => {
-      return {
+    this.players = new Map();
+    this.setPlayers(users);
+    this.assignRoles(PlayerManager.roles);
+  }
+
+  setPlayers(users) {
+    users.forEach((user) => {
+      this.players.set(user._id.toString(), {
         _id: user._id.toString(),
         status: "alive",
         role: null,
-      };
-    });
-    this.assignRoles();
-  }
-
-  assignRoles() {
-    const roles = [
-      "villager",
-      "villager",
-      "villager",
-      "villager",
-      "seer",
-      "medium",
-      "hunter",
-      "werewolf",
-      "werewolf",
-      "madman",
-    ];
-    const shuffledRoles = this.shuffleRoles(roles);
-
-    this.players.forEach((player, index) => {
-      player.role = shuffledRoles[index];
+      });
     });
   }
 
-  shuffleRoles(roles) {
-    for (let i = roles.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [roles[i], roles[j]] = [roles[j], roles[i]];
-    }
-    
-    return roles;
+  assignRoles(roles) {
+    const shuffledRoles = _.shuffle(roles);
+
+    this.players.forEach((pl) => {
+      const role = shuffledRoles.shift();
+      if (role) pl.role = role;
+    });
   }
 
   kill(playerId) {
-    const player = this.players.find((pl) => pl._id === playerId);
+    const player = this.players.get(playerId);
     if (player) player.status = "dead";
   }
 
   getPlayerState(playerId) {
-    const player = this.players.find((pl) => pl._id === playerId);
-
+    const player = this.players.get(playerId);
     if (!player) return null;
     if (player.role !== "werewolf") return player;
-
-    const partner = this.players.find((pl) =>
-      pl._id !== playerId && pl.role === "werewolf"
-    );
     
-    player.partnerId = partner._id;
-    
+    player.partnerId = this.getWerewolfPartner(playerId);
     return player;
+  }
+
+  getWerewolfPartner(playerId) {
+    for (let pl of this.players.values()) {
+      if (pl.role === "werewolf" && pl._id !== playerId) {
+        return pl._id;
+      }
+    }
+  }
+
+  getFilteredPlayers(predicate) {
+    return Array.from(this.players.values()).filter(predicate);
+  }
+
+  findPlayerByRole(role) {
+    return Array.from(this.players.values()).find(pl => pl.role === role);
   }
 }
 
 module.exports = PlayerManager;
+
+// テスト済み
