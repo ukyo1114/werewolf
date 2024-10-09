@@ -1,0 +1,105 @@
+import { useState, useCallback } from "react";
+import axios from "axios";
+import { useUserState } from "../context/userProvider";
+import useNotification from "./notification";
+
+const useChatMessages = ({
+  messages,
+  setMessages,
+  messagesCompletedRef,
+}) => {
+  const [loading, setLoading] = useState(false);
+  const { user, currentChannel, gameState } = useUserState();
+  const showToast = useNotification();
+
+  const fetchMessages = useCallback(async () => {
+    try {
+      const config = {
+        headers: { Authorization: `Bearer ${user.token}` },
+        params: { messageId: messages.length > 0 ? 
+          messages[messages.length - 1]._id : null
+        },
+      };
+
+      setLoading(true);
+
+      const { data } = await axios.get(
+        `/api/message/${currentChannel._id}`,
+        config,
+      );
+
+      if (data.length < 50) messagesCompletedRef.current = true;
+
+      const uniqueMessages = data.filter(
+        (newMsg) => !messages.some((msg) => msg._id === newMsg._id),
+      );
+
+      if (uniqueMessages.length > 0) {
+        const allMessages = [...messages, ...uniqueMessages].sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+        );
+        setMessages(allMessages);
+      }
+
+      setLoading(false);
+    } catch (error) {
+      showToast(
+        error?.response?.data?.error || "メッセージの読み込みに失敗しました", "error"
+      );
+    }
+  }, [
+    currentChannel._id,
+    user.token,
+    messagesCompletedRef,
+    messages,
+    setMessages,
+    showToast,
+  ]);
+
+  const canSendMessage = useCallback(() => {
+    if (
+      user.status === "alive" && // ステータスはgameStateに移行
+      user.role && // 役職はgameStateに移行
+      user.role !== "werewolf" &&
+      gameState?.phase?.currentPhase === "night"
+    ) {
+      showToast("発言が禁止されています", "error");
+      return false;
+    }
+    return true;
+  }, [user, gameState, showToast]);
+
+  const sendMessage = useCallback(async (newMessage) => {
+    if (!canSendMessage()) return;
+
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      await axios.post(
+        "/api/message",
+        {
+          content: newMessage,
+          channelId: currentChannel._id,
+        },
+        config,
+      );
+    } catch (error) {
+      showToast(
+        error?.response?.data?.error || "メッセージの送信に失敗しました", "error"
+      );
+    }
+  }, [
+    canSendMessage,
+    user.token,
+    currentChannel._id,
+    showToast
+  ]);
+
+  return { loading, fetchMessages, sendMessage };
+};
+
+export default useChatMessages;
