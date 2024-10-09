@@ -10,7 +10,7 @@ class FortuneManager {
 
   receiveFortuneTarget(playerId, targetId) {
     const { currentDay, currentPhase } = this.phase;
-    const seer = this.players.get(playerId);;
+    const seer = this.players.get(playerId);
     const target = this.players.get(targetId);
 
     if (
