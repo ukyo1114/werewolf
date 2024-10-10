@@ -27,16 +27,10 @@ class PhaseManager {
     const timer = PhaseManager.phaseDurations[this.currentPhase];
 
     setTimeout(() => {
-      this.timerEnd();
+      this.eventEmitter.emit("timerEnd");
     }, timer * 1000);
   }
-
-  timerEnd() {
-    const currentPhase = this.currentPhase;
-
-    this.eventEmitter.emit("timerEnd", currentPhase);
-  }
-
+  
   nextPhase(result) {
     this.changedAt = new Date();
 
@@ -52,3 +46,5 @@ class PhaseManager {
 }
 
 module.exports = PhaseManager;
+
+// テスト済み

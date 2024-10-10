@@ -17,7 +17,7 @@ class GameState {
     this.gameId = game._id.toString();
     this.players = new PlayerManager(game.users);
     this.phase = new PhaseManager(this.eventEmitter);
-    this.votes = new VoteManager();
+    this.votes = new VoteManager(this.players, this.phase);
     this.fortune = new FortuneManager(this.players, this.phase);
     this.medium = new MediumManager(this.players, this.phase);
     this.guard = new GuardManager(this.players, this.phase);    
@@ -32,7 +32,8 @@ class GameState {
   }
 
   registerListeners() {
-    this.eventEmitter.on("timerEnd", (currentPhase) => {
+    this.eventEmitter.on("timerEnd", () => {
+      const { currentPhase } = this.phase;
       this.isProcessing = true;
 
       if (currentPhase === "day")  this.handleDayPhaseEnd();
@@ -75,9 +76,8 @@ class GameState {
 
   execution() {
     const executionTargetId = votes.getExecutionTarget();
+    if (!executionTargetId) return this.result = "villageAbandoned";
     const executionTarget = this.players.get(executionTargetId);
-
-    if (!executionTarget) return this.result = "villageAbandoned";
 
     executionTarget.status = "dead";
     this.medium.medium(executionTarget);

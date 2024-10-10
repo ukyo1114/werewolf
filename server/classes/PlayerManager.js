@@ -66,7 +66,13 @@ class PlayerManager {
   }
 
   findPlayerByRole(role) {
-    return Array.from(this.players.values()).find(pl => pl.role === role);
+    return Array.from(this.players.values()).find((pl) => pl.role === role);
+  }
+
+  getLivingPlayers() {
+    return Array.from(this.players.values()).filter((pl) => 
+      pl.status === "alive"
+    );
   }
 }
 
