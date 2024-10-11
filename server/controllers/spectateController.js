@@ -1,6 +1,5 @@
-const { errors } = require('../messages');
-const CustomError = require('../classes/CustomError');
 const { games } = require("../classes/GameState");
+const { handleServerError } = require("../utils/handleError");
 
 const getGameList = (req, res) => {
   const channelId = req.params.channelId;
@@ -9,7 +8,7 @@ const getGameList = (req, res) => {
     const gameList = getGamesByChannelId(channelId);
     res.status(200).json(gameList);
   } catch (error) {
-    throw new CustomError(500, errors.SERVER_ERROR);
+    handleServerError(error);
   }
 };
 
@@ -20,16 +19,20 @@ function getGamesByChannelId(channelId) {
   const filteredGames = allGames.filter((game) =>
     game.channelId === channelId
   );
+  
+  return createGameList(filteredGames);
+};
 
-  const gameList = filteredGames.map((game) => ({
+function createGameList(games) {
+  return games.map((game) => ({
     gameId: game.gameId,
-    players: game.players.map((pl) => pl._id),
+    players: Array.from(game.players.keys()),
     currentDay: game.phase.currentDay,
     currentPhase: game.phase.currentPhase,
     result: game.result,
   }));
-
-  return gameList;
-};
+}
 
 module.exports = getGameList;
+
+// テスト済み

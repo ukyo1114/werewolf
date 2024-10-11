@@ -1,10 +1,11 @@
-const asyncHandler = require("express-async-handler");
-const Message = require("../models/messageModel")
+const Message = require("../models/messageModel");
+const Channel = require("../models/channelModel");
+const Game = require("../models/gameModel");
 const CustomError = require("../classes/CustomError");
 const { errors } = require("../messages");
 const { games } = require("../classes/GameState");
 
-const buildMessageQuery = asyncHandler(async (channelId, messageId) => {
+const buildMessageQuery = async (channelId, messageId, userId) => {
   const query = { channel: channelId };
   if (messageId) {
     const message = await Message.findById(messageId);
@@ -12,52 +13,65 @@ const buildMessageQuery = asyncHandler(async (channelId, messageId) => {
     query.createdAt = { $lte: message.createdAt };
   }
 
+  const messageType = await getReceiveMessageType(channelId, userId);
+  if (messageType) query.messageType = messageType;
+
   return query;
-});
+};
 
-const getMessageTypes = (channelId, userId) => {
+async function getReceiveMessageType(channelId, userId) {
   const game = games[channelId];
-  if (!game) return { $in: ["normal", "werewolf", "spectator"] };
-
-  try {
-    const player = game.players.find((pl) => pl._id === userId);
-    if (!player || player.status === "dead") {
-      return { $in: ["normal", "werewolf", "spectator"] };
-    }
-
-    if (player.role === "werewolf") {
-      return { $in: ["normal", "werewolf"] };
-    } else {
-      return { $in: ["normal"] };
-    }
-  } catch (error) {
-    console.error("error:", error.message);
-    throw new CustomError(500, errors.SERVER_ERROR);
-  }
+  if (!game) return null;
+  const player = game.players.get(userId);
+  return receiveMessageTypeForPl(player);
 }
 
-const getSendMessageType = (channelId, userId) => {
+function receiveMessageTypeForPl(player) {
+  if (!player || player.status !== "alive") return null;
+  if (player.role === "werewolf") return { $in: ["normal", "werewolf"] };
+  return { $in: ["normal"] };
+}
+
+const getSendMessageType = async (channelId, userId) => {
+  if (await Channel.exists({ _id: channelId})) return "normal"
+
   const game = games[channelId];
-  if (!game) return "normal";
+  if (!game)  throw new CustomError(403, errors.CHANNEL_ACCESS_FORBIDDEN);
 
-  try {
-    const player = game.players.find((pl) => pl._id === userId);
-    if (!player || player.status !== "alive") return "spectator";
+  const player = game.players.get(userId);
+  const currentPhase = game.phase.currentPhase;
+  
+  return sendMessageTypeForPl(player, currentPhase);
+};
 
-    const currentPhase = game.phase.currentPhase;
-    if (currentPhase !== "night") {
-      return "normal";
-    } else {
-      return player.role !== "werewolf" ? "forbidden" : "werewolf";
-    }
-  } catch (error) {
-    console.error("error:", error.message);
-    throw new CustomError(500, errors.SERVER_ERROR);
-  }
+function sendMessageTypeForPl(player, currentPhase) {
+  if (!player || player.status !== "alive") return "spectator";
+  if (currentPhase !== "night") return "normal";
+  if (player.role === "werewolf") return "werewolf";
+
+  throw new CustomError(403, errors.MESSAGE_SENDING_FORBIDDEN);
+}
+
+const canUserAccessChannel = async (channelId, userId) => {
+  const game = await Game.findById(channelId).select("channel");
+  const targetChannelId = game ? game.channel.toString() : channelId;
+  
+  await isUserInChannel(targetChannelId, userId);
+}
+
+async function isUserInChannel(channelId, userId) {
+  const exists = await Channel.exists({
+    _id: channelId,
+    users: userId,
+  });
+
+  if (!exists) throw new CustomError(403, errors.CHANNEL_ACCESS_FORBIDDEN);
 };
 
 module.exports = {
   buildMessageQuery,
-  getMessageTypes,
   getSendMessageType,
+  canUserAccessChannel,
 };
+
+// テスト済み

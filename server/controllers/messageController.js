@@ -1,18 +1,17 @@
 const asyncHandler = require("express-async-handler");
 const Message = require("../models/messageModel");
-const { errors } = require("../messages");
-const CustomError = require("../classes/CustomError");
 const {
   buildMessageQuery,
-  getMessageTypes,
   getSendMessageType,
+  canUserAccessChannel,
 } = require("../utils/messageUtils");
 const { channelEvents } = require("../socketHandlers/chatNameSpace");
 
 const sendMessage = asyncHandler(async (req, res) => {
   const { content, channelId } = req.body;
   const userId = req.user._id.toString();
-  const messageType = getSendMessageType(channelId, userId);
+  await canUserAccessChannel(channelId, userId);
+  const messageType = await getSendMessageType(channelId, userId);
 
   const newMessage = {
     sender: req.user._id,
@@ -31,9 +30,8 @@ const getMessages = asyncHandler(async (req, res) => {
   const channelId = req.params.channelId;
   const { messageId } = req.query;
   const userId = req.user._id.toString();
-  const query = await buildMessageQuery(channelId, messageId);
-
-  query.messageType = getMessageTypes(channelId, userId);
+  await canUserAccessChannel(channelId, userId);
+  const query = await buildMessageQuery(channelId, messageId, userId);
 
   let messages = await Message.find(query).sort({ createdAt: -1 }).limit(50);
   
@@ -48,3 +46,5 @@ module.exports = {
   sendMessage,
   getMessages,
 };
+
+// テスト済み

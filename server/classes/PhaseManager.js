@@ -6,18 +6,19 @@ class PhaseManager {
     finished: 10 * 60,
   };
 
-  constructor(eventEmitter) {
+  constructor(eventEmitter, result) {
     this.currentDay   = 0;
     this.currentPhase = "pre";
     this.changedAt    = new Date();
     this.eventEmitter = eventEmitter;
+    this.result = result;
     this.registerListeners();
     this.startTimer();
   }
 
   registerListeners() {
-    this.eventEmitter.on("processCompleted", (result) => {
-      this.nextPhase(result);
+    this.eventEmitter.on("processCompleted", () => {
+      this.nextPhase();
       this.eventEmitter.emit("phaseSwitched");
       this.startTimer();
     });
@@ -25,16 +26,12 @@ class PhaseManager {
 
   startTimer() {
     const timer = PhaseManager.phaseDurations[this.currentPhase];
-
-    setTimeout(() => {
-      this.eventEmitter.emit("timerEnd");
-    }, timer * 1000);
+    setTimeout(() => this.eventEmitter.emit("timerEnd"), timer * 1000);
   }
   
-  nextPhase(result) {
+  nextPhase() {
     this.changedAt = new Date();
-
-    if (result !== "running") return this.currentPhase = "finished";
+    if (this.result !== "running") return this.currentPhase = "finished";
 
     if (this.currentPhase === "day") {
       this.currentPhase = "night";

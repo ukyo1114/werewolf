@@ -1,3 +1,4 @@
+const Game = require("../models/gameModel");
 const PlayerManager  = require("./PlayerManager");
 const VoteManager    = require("./VoteManager");
 const FortuneManager = require("./FortuneManager");
@@ -15,14 +16,14 @@ class GameState {
     this.eventEmitter = new EventEmitter();
     this.channelId = game.channel.toString();
     this.gameId = game._id.toString();
+    this.result = "running";
     this.players = new PlayerManager(game.users);
-    this.phase = new PhaseManager(this.eventEmitter);
+    this.phase = new PhaseManager(this.eventEmitter, this.result);
     this.votes = new VoteManager(this.players, this.phase);
     this.fortune = new FortuneManager(this.players, this.phase);
     this.medium = new MediumManager(this.players, this.phase);
     this.guard = new GuardManager(this.players, this.phase);    
     this.attack = new AttackManager(this.players, this.phase, this.guard);
-    this.result = "running";
     this.isProcessing = false;
   }
 
@@ -32,21 +33,24 @@ class GameState {
   }
 
   registerListeners() {
-    this.eventEmitter.on("timerEnd", () => {
-      const { currentPhase } = this.phase;
-      this.isProcessing = true;
+    this.eventEmitter.on("timerEnd", this.handleTimerEnd);
+    this.eventEmitter.on("phaseSwitched", this.handlePhaseSwitched);
+  }
 
-      if (currentPhase === "day")  this.handleDayPhaseEnd();
-      if (currentPhase === "night")  this.handleNightPhaseEnd();
-      if (currentPhase === "finished") return; // ゲーム削除の処理
+  handleTimerEnd() {
+    const { currentPhase } = this.phase;
+    this.isProcessing = true;
 
-      this.eventEmitter.emit("processCompleted", this.result);
-    });
+    if (currentPhase === "day")  this.handleDayPhaseEnd();
+    if (currentPhase === "night")  this.handleNightPhaseEnd();
+    if (currentPhase === "finished") return this.handleGameEnd();
 
-    this.eventEmitter.on("phaseSwiched", () => {
-      this.updateGameState();
-      this.isProcessing = false;
-    });
+    this.eventEmitter.emit("processCompleted");
+  }
+
+  handlePhaseSwitched() {
+    this.updateGameState();
+    this.isProcessing = false;
   }
 
   handleDayPhaseEnd() {
@@ -61,8 +65,19 @@ class GameState {
     this.judgement();
   }
 
+  async handleGameEnd() {
+    try {
+      await Game.findByIdAndUpdate(this.gameId, { result: this.result });
+      this.eventEmitter.removeListener("timerEnd", this.handleTimerEnd);
+      this.eventEmitter.removeListener("phaseSwitched", this.handlePhaseSwitched);
+      delete games[this.gameId];
+    } catch (error) {
+      console.error(`Failed to end game ${this.gameId}:`, error.message);
+    }
+  }
+
   judgement() {
-    const livingPlayers = this.players.filter((pl) => pl.status === "alive");
+    const livingPlayers = this.players.getLivingPlayers();
     let villagers = 0;
     let werewolves = 0;
 
@@ -70,17 +85,16 @@ class GameState {
       pl.role !== "werewolf" ? villagers++ : werewolves++;
     });
 
-    if (!werewolves) this.result = "villagersWin";
+    if (werewolves === 0) this.result = "villagersWin";
     if (werewolves >= villagers) this.result = "werewolvesWin";
   }
 
   execution() {
-    const executionTargetId = votes.getExecutionTarget();
+    const executionTargetId = this.votes.getExecutionTarget();
     if (!executionTargetId) return this.result = "villageAbandoned";
-    const executionTarget = this.players.get(executionTargetId);
 
-    executionTarget.status = "dead";
-    this.medium.medium(executionTarget);
+    this.players.kill(executionTargetId);
+    this.medium.medium(executionTargetId);
   }
 
   updateGameState() {
@@ -89,7 +103,7 @@ class GameState {
   }
 
   getGameState() {
-    const users = this.players.players.map(({ role, ...rest }) => rest);
+    const users = this.players.getPlayersWithoutRole();
     const phase = {
       currentDay: this.phase.currentDay,
       currentPhase: this.phase.currentPhase,
@@ -104,14 +118,11 @@ class GameState {
   }
 
   static isUserInGame(userId) {
-    const game = Object.values(games).find((game) => 
-      game.players.some((player) => player._id === userId)
-    );
-    if (game && game.result === "running") {
-      return true;
-    }
-    return false;
+    const game = Object.values(games).find((game) => game.players.has(userId));
+    return !!game && game.result === "running";
   }
 }
 
 module.exports = { games, GameState, gameEvents };
+
+// テスト済み
