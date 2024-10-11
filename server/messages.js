@@ -48,6 +48,10 @@ const errors = {
   USER_NOT_BLOCKED: "選択されたユーザーはブロックされていません",
   MESSAGE_NOT_FOUND: "メッセージが見つかりません",
   MESSAGE_ID_MISSING: "メッセージIDが提供されていません",
+
+  MESSAGE_SENDING_FORBIDDEN: "メッセージの送信が禁止されています",
+  CHANNEL_ACCESS_FORBIDDEN: "チャンネルを利用できません",
+
 };
 
 module.exports = { messages, errors };

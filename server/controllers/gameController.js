@@ -16,8 +16,6 @@ const checkGame = (req, res, next) => {
 
   req.playerId = playerId;
   req.game = game;
-  req.players = game.players;
-  req.phase = game.phase;
   next();
 };
 
@@ -30,15 +28,13 @@ const getGame = (req, res, next) => {
 
   req.playerId = playerId;
   req.game = game;
-  req.players = game.players;
-  req.phase = game.phase;
   next();
 };
 
 const getPlayerState = (req, res) => {
-  const { playerId, players } = req;
+  const { playerId, game } = req;
   try {
-    const playerState = players.getPlayerState(playerId);
+    const playerState = game.players.getPlayerState(playerId);
     if (!playerState) throw new CustomError(404, errors.PLAYER_NOT_FOUND);
     res.status(200).json(playerState);
   } catch (error) {
@@ -64,7 +60,7 @@ const receiveVote = (req, res) => {
 };
 
 const receiveFortuneTarget = (req, res) => {
-  const { playerId, game, players, phase } = req;
+  const { playerId, game } = req;
   const { selectedUser } = req.body;
 
   try {
@@ -119,7 +115,7 @@ const getVoteHistory = (req, res) => {
 };
 
 const getFortuneResult = (req, res) => {
-  const { playerId, game, players, phase } = req;
+  const { playerId, game } = req;
 
   try{  
     const fortuneResult = game.fortune.getFortuneResult(playerId);

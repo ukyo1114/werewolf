@@ -1,11 +1,8 @@
-require('dotenv').config({ path: '.env.test' });
-
-console.log('JWT_SECRET in jest.setup.js:', process.env.JWT_SECRET); // デバッグログ
-
-const { connect, closeDatabase, clearDatabase } = require('./tests/setup');
+// jest.setup.js
+const { clearDatabase, closeDatabase, openDatabase } = require('./testUtils');
 
 beforeAll(async () => {
-  await connect();
+  await openDatabase(); // 必要に応じて
 });
 
 afterEach(async () => {

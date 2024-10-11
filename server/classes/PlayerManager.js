@@ -74,6 +74,10 @@ class PlayerManager {
       pl.status === "alive"
     );
   }
+
+  getPlayersWithoutRole() {
+    return Array.from(this.players.values()).map(({ role, ...rest }) => rest);
+  }
 }
 
 module.exports = PlayerManager;
