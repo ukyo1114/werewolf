@@ -45,38 +45,6 @@ const ChannelHeader = () => {
         10人で人狼
       </Text>
       {currentChannel && (gameState ? <GameTimer /> : <EntryCounter />)}
-      <Menu>
-        <MenuButton>
-          <Avatar
-            size="sm"
-            cursor="pointer"
-            name={user.name}
-            src={user.pic}
-            borderRadius="md"
-          />
-        </MenuButton>
-        <MenuList>
-            <MenuItem onClick={pModal.onOpen}>プロフィール</MenuItem>
-            <ProfileModal
-              isOpen={pModal.isOpen}
-              onClose={pModal.onClose}
-            />
-          <MenuDivider />
-          <MenuItem onClick={psModal.onOpen}>プロフィール設定</MenuItem>
-          <ProfileSettingsModal
-            isOpen={psModal.isOpen}
-            onClose={psModal.onClose}
-          />
-          <MenuDivider />
-          <MenuItem onClick={usModal.onOpen}>Eメール・パスワード設定</MenuItem>
-          <UserSettingsModal
-            isOpen={usModal.isOpen}
-            onClose={usModal.onClose}
-          />
-          <MenuDivider />
-          <MenuItem onClick={logoutHandler}>ログアウト</MenuItem>
-        </MenuList>
-      </Menu>
     </Box>
   );
 };

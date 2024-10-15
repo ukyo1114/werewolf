@@ -34,15 +34,7 @@ const GameSidebar = () => {
   }, [setVoteHistoryModalMode, user.role]);
 
   return (
-    <Box
-      mr={1}
-      bg="white"
-      p={3}
-      borderRadius="lg"
-      display="flex"
-      flexDirection="column"
-      alignItems="flex-start"
-    >
+    <Box display="flex" flexDirection="column">
       <Tooltip label="ユーザーリスト" hasArrow placement="bottom-end">
         <Button variant="ghost" my={2} onClick={userList.onOpen}>
           <FaUsers size="30px" />
