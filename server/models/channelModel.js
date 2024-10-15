@@ -27,7 +27,6 @@ const channelModel = mongoose.Schema(
     },
     password: {
       type: String,
-      minlength: 8,
       maxlength: 20,
     },
     blockUsers: [

@@ -27,7 +27,7 @@ const registerBlock = asyncHandler(async (req, res) => {
   const userId = req.user._id.toString();
   if (selectedUser === userId) throw new CustomError(403, errors.SELF_BLOCK);
 
-  const channel = await getChannelById(channelId);
+  const channel = await getChannelById(channelId, false);
 
   isChannelAdmin(channel, userId);
 
@@ -37,6 +37,7 @@ const registerBlock = asyncHandler(async (req, res) => {
 
   channel.blockUsers.push(selectedUser);
   channel.users = channel.users.filter((u) => u.toString() !== selectedUser,);
+  
   await channel.save();
 
   channelEvents.emit("registerBlockUser", {
@@ -51,7 +52,7 @@ const cancelBlock = asyncHandler(async (req, res) => {
   const { channelId, selectedBlockUser } = req.body;
   const userId = req.user._id.toString();
 
-  const channel = await getChannelById(channelId);
+  const channel = await getChannelById(channelId, false);
   isChannelAdmin(channel, userId);
 
   if (!channel.blockUsers.some((user) => 

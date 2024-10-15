@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import {
   Box,
+  Divider,
+  Flex,
   Text,
   FormControl,
   Spinner,
@@ -16,6 +18,9 @@ import useChatSocket from "../../hooks/chatSocket";
 import TextareaAutosize from "react-textarea-autosize";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { channelValidationSchema } from "../channel/validationSchema";
+import EntryCounter from "./EntryCounter";
+import GameTimer from "./GameTimer";
+import Sidebar from "./SideBar";
 
 const Channel = () => {
   const [messages, setMessages] = useState([]);
@@ -85,26 +90,32 @@ const Channel = () => {
     }
   }, [messages]);
 
+  useEffect(() => {
+    return () => {
+      setCurrentChannel(null);
+    };
+  }, [setCurrentChannel]);
+
   return (
     <>
-      {gameState ? <GameSidebar /> : <ChannelSidebar/>}
+      <Sidebar Component={gameState ? GameSidebar : ChannelSidebar} />
       <Box
         display="flex"
         alignItems="center"
         flexDir="column"
-        p={3}
-        bg="white"
+        bg="#ffe2f1"
         maxWidth="600px"
         width="100%"
-        borderRadius="lg"
-        borderWidth="1px"
+        borderLeftWidth={1}
+        borderColor="#ff94b1"
       >
+        {gameState ? <GameTimer /> : <EntryCounter/>}
+        <Divider borderWidth={1} />
         <Box
           display="flex"
           flexDir="column"
           justifyContent="flex-end"
-          p={3}
-          bg="#E8E8E8"
+          p={4}
           w="100%"
           h="100%"
           borderRadius="lg"
@@ -129,37 +140,39 @@ const Channel = () => {
                 messages.map((m) => {
                   const chatUser = currentChannel.users.find((u) => u._id === m.sender);
                   if (!chatUser) return null;
+
                   return (
-                    <Box display="flex" key={m._id}>
+                    <Box display="flex" key={m._id} p={2} gap={1}>
                       <Avatar
-                        mt="7px"
-                        mr={1}
                         size="lg"
                         src={chatUser.pic}
                         borderRadius="md"
                       />
-                      <Box
-                        bg={
-                          m.messageType === "werewolf"
-                            ? "#FFCCCB"
-                            : m.messageType === "spectator"
-                              ? "#D3D3D3"
-                              : m.sender._id === user._id
-                                ? "#BEE3F8"
-                                : "#B9F5D0"
-                        }
-                        borderRadius="md"
-                        p="5px 15px"
-                        maxWidth="100%"
-                        mt="7px"
-                        mr={1}
-                      >
-                        <Text fontWeight="bold">{chatUser.name}</Text>
-                        <Text fontWeight="bold">
-                          {new Date(m.createdAt).toLocaleString()}
-                        </Text>
-                        <Text whiteSpace="pre-wrap">{m.content}</Text>
-                      </Box>
+                      <Flex direction="column" width="100%">
+                        <Flex justify="space-between" align="center" width="100%" px={2}>
+                          <Text fontWeight="bold">{chatUser.name}</Text>
+                            <Text fontWeight="bold">
+                              {new Date(m.createdAt).toLocaleString()}
+                          </Text>
+                        </Flex>
+                        <Box
+                          bg={
+                            m.messageType === "werewolf"
+                              ? "#FFCCCB"
+                              : m.messageType === "spectator"
+                                ? "#D3D3D3"
+                                : m.sender._id === user._id
+                                  ? "#BEE3F8"
+                                  : "#B9F5D0"
+                          }
+                          borderRadius="md"
+                          px={4}
+                          py={2}
+                          width="100%"
+                        >
+                          <Text whiteSpace="pre-wrap">{m.content}</Text>
+                        </Box>
+                      </Flex>
                     </Box>
                   );
                 })}

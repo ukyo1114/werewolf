@@ -48,16 +48,7 @@ const ChannelSidebar = () => {
   };
 
   return (
-    <Box
-      mr={1}
-      bg="white"
-      p={3}
-      borderRadius="lg"
-      borderWidth="1px"
-      display="flex"
-      flexDirection="column"
-      alignItems="flex-start"
-    >
+    <Box display="flex" flexDirection="column">
       <Tooltip label="ユーザーリスト" hasArrow placement="bottom-end">
         <Button variant="ghost" my={2} onClick={userListModal.onOpen}>
           <FaUsers size="30px" />

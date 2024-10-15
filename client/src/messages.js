@@ -13,6 +13,7 @@ export const errors = {
 
   USER_BLOCKED: "ブロックされています",
   CHANNEL_ENTER_FAILED: "チャンネルへの入室に失敗しました",
+  FETCH_CHANNEL_LISET: "チャンネルリストの取得に失敗しました",
 };
 
 export const messages = {

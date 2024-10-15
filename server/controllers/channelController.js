@@ -27,7 +27,7 @@ const fetchChannelList = asyncHandler(async (req, res) => {
 const createChannel = asyncHandler(async (req, res) => {
   const userId = req.user._id.toString();
   const { channelName, description, password } = req.body;
-
+  
   const channel = await Channel.create({
     channelName: channelName,
     description: description,
@@ -48,7 +48,7 @@ const channelSettings = asyncHandler(async (req, res) => {
   const { channelId, channelName, description, password } = req.body;
   const userId = req.user._id.toString();
 
-  const channel = await getChannelById(channelId);
+  const channel = await getChannelById(channelId, false);
   isChannelAdmin(channel, userId);
 
   if (channelName) channel.channelName = channelName;

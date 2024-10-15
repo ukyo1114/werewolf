@@ -6,6 +6,7 @@ const { errors } = require("../messages");
 const EventEmitter = require("events");
 const userEvents = new EventEmitter();
 const CustomError = require('../classes/CustomError');
+const { getUserById, matchPassword } = require("../utils/userUtils");
 
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password, pic } = req.body;
@@ -71,11 +72,13 @@ const updateUserSettings = asyncHandler(async (req, res) => {
   const userId = req.user._id.toString();
   const { email, currentPassword, newPassword } = req.body;
 
-  const user = await User.findById(userId);
-  const isMatch = await user.matchPassword(currentPassword);
-  if (!isMatch) throw new CustomError(401, errors.INVALID_PASSWORD);
+  await matchPassword(userId, currentPassword);
 
-  if (email)  user.email = email;
+/*   const isMatch = await user.matchPassword(currentPassword);
+  if (!isMatch) throw new CustomError(401, errors.INVALID_PASSWORD); */
+
+  const user = await getUserById(userId, !!newPassword);
+  if (email) user.email = email;
   if (newPassword) user.password = newPassword;
 
   await user.save();

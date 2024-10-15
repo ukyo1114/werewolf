@@ -2,50 +2,46 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useUserState } from "../../context/userProvider";
 import {
   Box,
+  Divider,
   Flex,
-  Button,
+  Avatar,
   Stack,
   Text,
-  useToast,
-  Checkbox,
   useDisclosure,
 } from "@chakra-ui/react";
-import { AddIcon } from "@chakra-ui/icons";
+import { FaEllipsisH } from "react-icons/fa";
 import axios from "axios";
 import ChatLoading from "../ChatLoading";
-import CreateChannelModal from "./CreateChannelModal";
+import ChannelListHeader from "./ChannelListHeader";
+import Sidebar from "../miscellaneous/SideBar";
+import ChannelListSidebar from "./ChannelListSidebar";
 import ChannelInfo from "./ChannelInfo";
+import useNotification from "../../hooks/notification";
+import { errors } from "../../messages";
+import ModalTemplete from "../miscellaneous/ModalTemplete";
 
 const ChannelList = () => {
   const { user } = useUserState();
   const [selectedChannel, setSelectedChannel] = useState(null);
   const [showJoinedCh, setShowJoinedCh] = useState(null);
   const [channelList, setChannelList] = useState(null);
-  const toast = useToast();
   const channelInfo = useDisclosure();
-  const createChModal = useDisclosure();
+  const showToast = useNotification();
 
   const fetchChannelList = useCallback(async () => {
     try {
       const config = {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
+        headers: { Authorization: `Bearer ${user.token}` } };
+
       const { data } = await axios.get("/api/channel/list", config);
       data.sort((a, b) => b.users.length - a.users.length);
       setChannelList(data);
     } catch (error) {
-      toast({
-        title: "Error Occured !",
-        description: "Failed to Load Chats",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom-left",
-      });
+      showToast(
+        error?.response?.data?.error || errors.FETCH_CHANNEL_LISET, "error"
+      );
     }
-  }, [user.token, toast]);
+  }, [user.token, showToast]);
 
   useEffect(() => {
     fetchChannelList();
@@ -61,81 +57,80 @@ const ChannelList = () => {
   };
 
   return (
-    <Box
-      display="flex"
-      alignItems="center"
-      flexDir="column"
-      p={3}
-      bg="white"
-      maxWidth="600px"
-      width="100%"
-      borderRadius="lg"
-      borderWidth="1px"
-    >
+    <>
+      <Sidebar Component={ChannelListSidebar} />
       <Box
-        pb={3}
-        px={3}
-        fontSize={{ base: "28px", md: "30px" }}
         display="flex"
-        w="100%"
-        justifyContent="space-between"
         alignItems="center"
+        flexDir="column"
+        maxWidth="600px"
+        width="100%"
+        borderRightWidth={4}
+        borderLeftWidth={4}
+        borderColor="#E17875"
       >
-        チャンネルリスト
-        <Button
-          display="flex"
-          fontSize={{ base: "10px", lg: "17px" }}
-          rightIcon={<AddIcon />}
-          onClick={createChModal.onOpen}
-        >
-          作成
-        </Button>        
-        <CreateChannelModal
-          isOpen={createChModal.isOpen}
-          onClose={createChModal.onClose}
+        <ChannelListHeader
+          showJoinedCh={showJoinedCh}
+          setShowJoinedCh={setShowJoinedCh}
         />
+        <Divider borderWidth={2} borderColor="#E17875" opacity={1} />
+        {channelList ? (
+          <Stack overflowY="auto" width="100%" p={3} gap={4}>
+            {filteredChannelList.map((channel) => {
+              if (!channel.channelAdmin) return null;
+
+              return (
+                <Box
+                  onClick={() => handleChannelSelect(channel)}
+                  cursor="pointer"
+                  bg={channel.users.includes(user._id) ? "#E17875" : "#2B2024"}
+                  px={3}
+                  py={2}
+                  width="100%"
+                  borderRadius="lg"
+                  borderWidth={2}
+                  borderColor={channel.users.includes(user._id) ? "white" : "#E17875"}
+                  key={channel._id}
+                  _hover={{
+                    bg: channel.users.includes(user._id) ? "#FF6F61" : "#3B2C2F",
+                  }}
+                >
+                  <Flex justify="space-between" align="center" width="100%" gap={4}>
+                    <Avatar
+                      size="lg"
+                      name={channel.channelAdmin.name}
+                      src={channel.channelAdmin.pic}
+                      borderRadius="md"
+                    />
+                    <Box ml={3} textAlign="left" w="100%">
+                      <Text mb={1}>タイトル: {channel.channelName}</Text>
+                      <Divider
+                        borderWidth={1}
+                        borderColor={channel.users.includes(user._id) ? "white" : "#E17875"}
+                        mb={1}
+                      />
+                      <Text>作成者: {channel.channelAdmin.name}</Text>
+                    </Box>
+                    <FaEllipsisH color={channel.users.includes(user._id) ? "white" : "#E17875"}/>
+                  </Flex>
+                </Box>
+              );
+            })}
+          </Stack>
+        ) : (
+          <ChatLoading />
+        )}
+        {selectedChannel && (
+          <ModalTemplete
+            isOpen={channelInfo.isOpen}
+            onClose={channelInfo.onClose}
+            title={"チャンネル情報"}
+            Contents={ChannelInfo}
+            contentsProps={{ selectedChannel }}
+          />
+        )}
       </Box>
-      <Box pb={3} px={3} mb={4} display="flex" w="100%" alignItems="center">
-        <Checkbox
-          id="isJoined"
-          isChecked={showJoinedCh}
-          onChange={(e) => setShowJoinedCh(e.target.checked)}
-        >
-          参加中のみ
-        </Checkbox>
-      </Box>
-      {channelList ? (
-        <Stack overflowY="scroll" width="100%">
-          {filteredChannelList.map((channel) => (
-            <Box
-              onClick={() => handleChannelSelect(channel)}
-              cursor="pointer"
-              bg={channel.users.includes(user._id) ? "#38B2AC" : "#E8E8E8"}
-              color={channel.users.includes(user._id) ? "white" : "black"}
-              px={3}
-              py={2}
-              width="100%"
-              borderRadius="lg"
-              key={channel._id}
-            >
-              <Flex justify="space-between" align="center" width="100%">
-                <Text>{channel.channelName}</Text>
-                <Text fontSize="sm">作成者: {channel.channelAdmin?.name}</Text>
-              </Flex>
-            </Box>
-          ))}
-        </Stack>
-      ) : (
-        <ChatLoading />
-      )}
-      {selectedChannel && (
-        <ChannelInfo
-          isOpen={channelInfo.isOpen}
-          onClose={channelInfo.onClose}
-          selectedChannel={selectedChannel}
-        />
-      )}
-    </Box>
+    </>
   );
 };
 

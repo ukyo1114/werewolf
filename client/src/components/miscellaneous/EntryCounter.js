@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import {
   useToast,
   Box,
-  HStack,
   Text,
   Button,
   useDisclosure,
@@ -80,8 +79,14 @@ const EntryCounter = () => {
   }, [users, user, setEntryButtonState]);
 
   return (
-    <Box>
-      <HStack spacing={4}>
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      w="100%"
+      p={1}
+      gap={4}
+    >
         <Text
           fontSize="lg"
           fontWeight="bold"
@@ -89,29 +94,26 @@ const EntryCounter = () => {
           cursor="pointer"
           display="flex"
           alignItems="center"
-          bg="gray.100"
-          p={2}
+          px={2}
+          py="5px"
           borderRadius="md"
+          borderWidth={1}
+          borderColor="#ff94b1"
         >
           {users.length}/10人
           <ChevronDownIcon ml={1} />
         </Text>
-        {entryButtonState ? (
-          <Button
-            colorScheme="red"
-            onClick={() => entrySocket.emit("cancelEntry")}
-          >
-            取消
-          </Button>
-        ) : (
-          <Button
-            colorScheme="green"
-            onClick={() => entrySocket.emit("registerEntry", user)}
-          >
-            参加
-          </Button>
-        )}
-      </HStack>
+        <Button
+          colorScheme={entryButtonState ? "pink" : "twitter"}
+          onClick={() =>
+            entryButtonState
+              ? entrySocket.emit("cancelEntry")
+              : entrySocket.emit("registerEntry", user)
+          }
+        >
+          {entryButtonState ? "取消" : "参加"}
+        </Button>
+
       {users && currentChannel?.users && (
         <UserList
           isOpen={isOpen}

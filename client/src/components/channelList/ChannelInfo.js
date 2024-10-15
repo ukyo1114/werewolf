@@ -3,10 +3,7 @@ import axios from "axios";
 import {
   Box,
   Button,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
+  Divider,
   ModalBody,
   ModalFooter,
   FormControl,
@@ -19,7 +16,7 @@ import { useUserState } from "../../context/userProvider";
 import useNotification from "../../hooks/notification";
 import { errors } from "../../messages";
 
-const ChannelInfo = ({ isOpen, onClose, selectedChannel }) => {
+const ChannelInfo = ({ selectedChannel }) => {
   const { user, setCurrentChannel } = useUserState();
   const [password, setPassword] = useState("");
   const showToast = useNotification();
@@ -48,67 +45,66 @@ const ChannelInfo = ({ isOpen, onClose, selectedChannel }) => {
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      scrollBehavior="inside"
-      motionPreset="none"
-    >
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>{selectedChannel.channelName}</ModalHeader>
-        <ModalBody>
-          <Box pb={3} px={3} mb={4} w="100%" bg="gray.100" borderRadius="md">
-            <Text fontWeight="bold" fontSize="lg" mb={2}>
-              説明
+    <>        
+      <ModalBody>
+        <Box
+          p={3}
+          mb={4}
+          w="100%"
+          borderRadius="md"
+          bg="#3B2C2F"
+        >
+          <Text textAlign="center" fontWeight="bold" fontSize="lg" mb={1}>
+            チャンネル名： {selectedChannel.channelName}
+          </Text>
+          <Divider borderWidth={1} borderColor="#E17875" mb={2} />
+          <Box mb={3} maxH="600px" overflowY="auto" className="custom-scrollbar">
+            <Text mb={2} whiteSpace="pre-wrap">
+              {selectedChannel.description}
             </Text>
-            <Box maxH="600px" overflowY="auto" className="custom-scrollbar">
-              <Text mb={2} whiteSpace="pre-wrap">
-                {selectedChannel.description}
-              </Text>
-            </Box>
           </Box>
-          {selectedChannel.hasPassword &&
-            !selectedChannel.users.some((u) => u === user._id) && (
-              <FormControl id="password">
-                <Input
-                  placeholder="パスワード"
-                  mb={3}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </FormControl>
-            )}
+
           <Flex width="100%" justifyContent="space-between">
-            <Text>
-              <strong>人数:</strong> {selectedChannel.users.length}
+            <Text fontSize="sm" color="#ff94b1">
+              <strong>作成者：</strong> {selectedChannel.channelAdmin.name}
             </Text>
-            <Text>
-              <strong>作成者:</strong> {selectedChannel.channelAdmin.name}
+            <Text fontSize="sm" color="#ff94b1">
+              <strong>参加者数：</strong> {selectedChannel.users.length}人
             </Text>
           </Flex>
-          {selectedChannel.blockUsers.some((u) => u === user._id) && (
-            <Text fontWeight="bold" color="red.500">
-              ブロックされています。
-            </Text>
+        </Box>
+        {selectedChannel.hasPassword &&
+          !selectedChannel.users.some((u) => u === user._id) && (
+            <FormControl id="password">
+              <Input
+                placeholder="パスワード"
+                mb={3}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                bg="#3B2C2F"
+                borderColor="#E17875"
+                _placeholder={{ color: "gray.200" }}
+              />
+            </FormControl>
           )}
-        </ModalBody>
-        <ModalFooter>
-          <Flex width="100%" justifyContent="space-evenly">
-            <Button onClick={onClose}>Close</Button>
-            <Button
-              colorScheme="twitter"
-              onClick={handleOnClick}
-              isDisabled={selectedChannel.blockUsers.some(
-                (u) => u === user._id,
-              )}
-            >
-              OK
-            </Button>
-          </Flex>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+      </ModalBody>
+      <ModalFooter justifyContent="center">
+          <Button
+            colorScheme={
+              selectedChannel.blockUsers.some((u) => u === user._id) ? "pink" : "teal"
+            }
+            width="100%"
+            onClick={handleOnClick}
+            isDisabled={selectedChannel.blockUsers.some(
+              (u) => u === user._id,
+            )}
+          >
+            {selectedChannel.blockUsers.some((u) => u === user._id)
+              ? "ブロックされています"
+              : "入室"}
+          </Button>
+      </ModalFooter>
+    </>
   );
 };
 
