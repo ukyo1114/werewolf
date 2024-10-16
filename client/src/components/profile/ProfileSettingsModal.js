@@ -180,6 +180,7 @@ const ProfileSettingsModal = () => {
 
   const handleSubmit = useCallback(async (values, actions) => {
     const { userName, isUserNameChanged } = values;
+    if (!isUserNameChanged && !isPictureChanged) return;
     actions.setSubmitting(true);
     const payload = {};
     if (isUserNameChanged && userName) payload.userName = userName;

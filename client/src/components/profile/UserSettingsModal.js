@@ -199,7 +199,7 @@ const UserSettingsModal = () => {
                 />
               </FormControl>
 
-              <FormControl id="currentPassword">
+              <FormControl id="currentPassword" isRequired>
                 <FormLabel><strong>現在のパスワード：</strong></FormLabel>
                 <InputGroup>
                   <Field name="currentPassword">

@@ -11,49 +11,42 @@ import Login from "./Login";
 import Signup from "./Signup";
 
 const Auth = () => {
-  const boxBg = useColorModeValue("gray.700", "gray.800");
-  const boxBorderColor = useColorModeValue("gray.600", "gray.700");
-  const tabBg = useColorModeValue("gray.600", "gray.700");
-  const tabSelectedBg = useColorModeValue("teal.500", "teal.600");
-  const tabSelectedColor = useColorModeValue("white", "white");
-
   return (
-    <Box
-      bg={boxBg}
-      w="100%"
-      p={6}
-      borderRadius="lg"
-      borderWidth="1px"
-      borderColor={boxBorderColor}
-    >
+    <Box w="100%">
       <Tabs variant="enclosed" colorScheme="teal">
-        <TabList bg={tabBg} borderRadius="md">
+        <TabList bg="#3B2C2F" borderTopRadius="lg">
         <Tab
           w="50%"
-          _selected={{
-            bg: tabSelectedBg,
-            color: tabSelectedColor,
+          _selected={{ bg: "#E17875" }}
+          _hover={{
+            ":not([aria-selected='true'])": { bg: "#907D81" },
           }}
-          _hover={{ bg: "gray.500" }}
         >
           ログイン
         </Tab>
         <Tab
           w="50%"
-          _selected={{
-            bg: tabSelectedBg,
-            color: tabSelectedColor,
+          _selected={{ bg: "#E17875" }}
+          _hover={{
+            ":not([aria-selected='true'])": { bg: "#907D81" },
           }}
-          _hover={{ bg: "gray.500" }}
         >
           ユーザー登録
         </Tab>
         </TabList>
         <TabPanels>
-          <TabPanel>
+          <TabPanel
+            borderBottomRadius="lg"
+            borderWidth={2}
+            borderColor="#E17875"
+          >
             <Login />
           </TabPanel>
-          <TabPanel>
+          <TabPanel
+            borderBottomRadius="lg"
+            borderWidth={2}
+            borderColor="#E17875"
+          >
             <Signup />
           </TabPanel>
         </TabPanels>
