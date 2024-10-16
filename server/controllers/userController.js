@@ -73,10 +73,7 @@ const updateUserSettings = asyncHandler(async (req, res) => {
   const { email, currentPassword, newPassword } = req.body;
 
   await matchPassword(userId, currentPassword);
-
-/*   const isMatch = await user.matchPassword(currentPassword);
-  if (!isMatch) throw new CustomError(401, errors.INVALID_PASSWORD); */
-
+  
   const user = await getUserById(userId, !!newPassword);
   if (email) user.email = email;
   if (newPassword) user.password = newPassword;

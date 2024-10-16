@@ -1,9 +1,5 @@
 import React, { useState, useCallback } from "react";
 import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
   ModalBody,
   Box,
   Slider,
@@ -11,12 +7,11 @@ import {
   SliderFilledTrack,
   SliderThumb,
   ModalFooter,
-  Flex,
   Button,
 } from "@chakra-ui/react";
 import Cropper from "react-easy-crop";
 
-const ImageCropperModal = ({ imgSrc, setPic, isOpen, onClose }) => {
+const ImageCropper = ({ imgSrc, setPic, onClose }) => {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
@@ -37,54 +32,53 @@ const ImageCropperModal = ({ imgSrc, setPic, isOpen, onClose }) => {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} motionPreset="none">
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>画像をトリミング</ModalHeader>
-        <ModalBody>
-          {imgSrc && (
-            <Box position="relative" width="100%" height="400px">
-              <Cropper
-                image={imgSrc}
-                crop={crop}
-                zoom={zoom}
-                maxZoom={5}
-                aspect={1}
-                onCropChange={setCrop}
-                onZoomChange={setZoom}
-                onCropComplete={(_, croppedAreaPixels) =>
-                  setCroppedAreaPixels(croppedAreaPixels)
-                }
-                onMediaLoaded={onMediaLoaded}
-              />
-            </Box>
-          )}
-          <Box mt={4}>
-            <Slider
-              aria-label="zoom-slider"
-              value={zoom}
-              min={1}
-              max={10}
-              step={0.1}
-              onChange={(value) => setZoom(value)}
-            >
-              <SliderTrack>
-                <SliderFilledTrack />
-              </SliderTrack>
-              <SliderThumb />
-            </Slider>
+    <>
+      <ModalBody>
+        {imgSrc && (
+          <Box position="relative" width="100%" height="400px">
+            <Cropper
+              image={imgSrc}
+              crop={crop}
+              zoom={zoom}
+              maxZoom={5}
+              aspect={1}
+              onCropChange={setCrop}
+              onZoomChange={setZoom}
+              onCropComplete={(_, croppedAreaPixels) =>
+                setCroppedAreaPixels(croppedAreaPixels)
+              }
+              onMediaLoaded={onMediaLoaded}
+            />
           </Box>
-        </ModalBody>
-        <ModalFooter>
-          <Flex width="100%" justifyContent="space-evenly">
-            <Button onClick={onClose}>Close</Button>
-            <Button colorScheme="twitter" onClick={cropImage}>
-              OK
-            </Button>
-          </Flex>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+        )}
+        <Box mt={4}>
+          <Slider
+            aria-label="zoom-slider"
+            value={zoom}
+            min={1}
+            max={10}
+            step={0.1}
+            onChange={(value) => setZoom(value)}
+          >
+            <SliderTrack>
+              <SliderFilledTrack />
+            </SliderTrack>
+            <SliderThumb />
+          </Slider>
+        </Box>
+      </ModalBody>
+      
+      <ModalFooter justifyContent="center">
+        <Button
+          colorScheme="teal" 
+          onClick={cropImage}
+          width="100%"
+        >
+          OK
+        </Button>
+      </ModalFooter>
+    </>
+
   );
 };
 
@@ -127,4 +121,4 @@ const getCroppedImg = async (imgSrc, croppedAreaPixels) => {
   }
 };
 
-export default ImageCropperModal;
+export default ImageCropper;

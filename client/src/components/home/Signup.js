@@ -14,11 +14,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import ImageCropperModal from "../miscellaneous/ImageCropperModal";
+import ImageCropper from "../miscellaneous/ImageCropper";
 import useNotification from "../../hooks/notification";
 import { errors, messages } from "../../messages";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { signupValidationSchema, signupInitialValues } from "./validationSchema";
+import ModalTemplete from "../miscellaneous/ModalTemplete";
 
 const Signup = () => {
   const [pshow, setPShow] = useState(false);
@@ -28,7 +29,7 @@ const Signup = () => {
   const showToast = useNotification();
   const inputRef = useRef();
   const navigate = useNavigate();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const imageCropper = useDisclosure();
 
   const handleSignUp = async (values, actions) => {
     if (!pic) {
@@ -50,7 +51,7 @@ const Signup = () => {
       actions.setSubmitting(false);
       navigate("/chats");
     } catch (error) {
-      showToast(error?.response?.data?.error, "error");
+      handleError(error);
       actions.setSubmitting(false);
     }
   };
@@ -70,11 +71,16 @@ const Signup = () => {
 
     reader.onload = (e) => {
       setImgSrc(e.target.result);
-      onOpen();
+      imageCropper.onOpen();
     };
     
     reader.readAsDataURL(pics);
     inputRef.current.value = "";
+  };
+
+  function handleError(error) {
+    const errorMessage = error?.response?.data?.error || errors.SIGNUP_FAILED;
+    showToast(errorMessage, "error");
   };
 
   return (
@@ -85,15 +91,21 @@ const Signup = () => {
     >
       {(formik) => (
         <Form>
-          <VStack spacing={4} align="stretch">
-            <FormControl id="name" isRequired>
-              <FormLabel>ユーザー名</FormLabel>
-              <Field
-                as={Input}
-                name="name"
-                placeholder="ゲーム内で使用されます"
-                autoComplete="off"
-              />
+          <VStack align="stretch">
+            <FormControl id="name" isRequired mb={2}>
+              <FormLabel><strong>ユーザー名：</strong></FormLabel>
+              <Field name="name">
+                {({ field }) => (
+                  <Input
+                    {...field}
+                    placeholder="ユーザー名を入力してください"
+                    autoComplete="off"
+                    bg="#3B2C2F"
+                    borderColor="#E17875"
+                    _placeholder={{ color: "gray.200" }}
+                  />
+                )}
+              </Field>
               <ErrorMessage
                 name="name"
                 component="div"
@@ -101,15 +113,21 @@ const Signup = () => {
               />
             </FormControl>
 
-            <FormControl id="signupEmail" isRequired>
-              <FormLabel>メールアドレス</FormLabel>
-              <Field
-                as={Input}
-                name="email"
-                type="email"
-                placeholder="メールアドレスを入力してください"
-                autoComplete="email"
-              />
+            <FormControl id="signupEmail" isRequired mb={2}>
+            <FormLabel><strong>メールアドレス：</strong></FormLabel>
+              <Field name="email">
+                {({ field }) => (
+                  <Input
+                    {...field}
+                    type="email"
+                    placeholder="メールアドレスを入力してください"
+                    autoComplete="email"
+                    bg="#3B2C2F"
+                    borderColor="#E17875"
+                    _placeholder={{ color: "gray.200" }}
+                  />
+                )}
+              </Field>
               <ErrorMessage
                 name="email"
                 component="div"
@@ -117,15 +135,22 @@ const Signup = () => {
               />
             </FormControl>
 
-            <FormControl id="signupPassword" isRequired>
-              <FormLabel>パスワード</FormLabel>
+            <FormControl id="signupPassword" isRequired mb={2}>
+            <FormLabel><strong>パスワード：</strong></FormLabel>
               <InputGroup>
-                <Field
-                  as={Input}
-                  name="password"
-                  type={pshow ? "text" : "password"}
-                  placeholder="パスワードを入力してください"
-                />
+                <Field name="password">
+                  {({ field }) => (
+                    <Input
+                      {...field}
+                      type={pshow ? "text" : "password"}
+                      placeholder="パスワードを入力してください"
+                      bg="#3B2C2F"
+                      borderColor="#E17875"
+                      _placeholder={{ color: "gray.200" }}
+                    />
+                  )}
+                </Field>
+
                 <InputRightElement width="4.5rem">
                   <Button
                     h="1.75rem"
@@ -134,7 +159,10 @@ const Signup = () => {
                     variant="ghost"
                     aria-label={pshow ? "パスワードを隠す" : "パスワードを表示"}
                   >
-                    <FontAwesomeIcon icon={pshow ? faEyeSlash : faEye} />
+                    <FontAwesomeIcon
+                      icon={pshow ? faEyeSlash : faEye}
+                      style={{ color: "#E17875" }}
+                    />
                   </Button>
                 </InputRightElement>
               </InputGroup>
@@ -145,15 +173,22 @@ const Signup = () => {
               />
             </FormControl>
 
-            <FormControl id="confirmPassword" isRequired>
-              <FormLabel>パスワード確認</FormLabel>
+            <FormControl id="confirmPassword" isRequired mb={2}>
+            <FormLabel><strong>パスワード確認：</strong></FormLabel>
               <InputGroup>
-                <Field
-                  as={Input}
-                  name="confirmPassword"
-                  type={cshow ? "text" : "password"}
-                  placeholder="確認用パスワードを入力してください"
-                />
+                <Field name="confirmPassword">
+                  {({ field }) => (
+                    <Input
+                      {...field}
+                      type={pshow ? "text" : "password"}
+                      placeholder="パスワード確認"
+                      bg="#3B2C2F"
+                      borderColor="#E17875"
+                      _placeholder={{ color: "gray.200" }}
+                    />
+                  )}
+                </Field>
+
                 <InputRightElement width="4.5rem">
                   <Button
                     h="1.75rem"
@@ -162,7 +197,10 @@ const Signup = () => {
                     variant="ghost"
                     aria-label={cshow ? "パスワードを隠す" : "パスワードを表示"}
                   >
-                    <FontAwesomeIcon icon={cshow ? faEyeSlash : faEye} />
+                    <FontAwesomeIcon
+                      icon={cshow ? faEyeSlash : faEye}
+                      style={{ color: "#E17875" }}
+                    />
                   </Button>
                 </InputRightElement>
               </InputGroup>
@@ -173,37 +211,66 @@ const Signup = () => {
               />
             </FormControl>
 
-            <FormControl id="picture">
-              <FormLabel>プロフィール画像</FormLabel>
-              {pic && (
+            <FormControl
+              id="picture"
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              isRequired
+            >
+              <FormLabel alignSelf="flex-start">
+                <strong>プロフィール画像</strong>
+              </FormLabel>
+              {pic ? (
                 <Image
+                mt={4}
                   src={pic}
-                  boxSize="30%"
+                  boxSize="120px"
                   borderRadius="lg"
                   objectFit="cover"
                   alt="プロフィール画像"
+                  cursor="pointer"
+                  onClick={() => inputRef.current.click()}
                 />
+              ) : (
+                <Button
+                  mt={4}
+                  width="120px"
+                  height="120px"
+                  borderRadius="lg"
+                  onClick={() => inputRef.current.click()}
+                  cursor="pointer"
+                  color="white"
+                  bg="#E17875"
+                  _hover={{ bg: "#FF6F61" }}
+                >
+                  ファイルを選択
+                </Button>
               )}
-              <Button as="label" style={{ marginTop: 15 }}>
-                ファイルを選択
-                <Input
-                  hidden
-                  type="file"
-                  accept="image/jpeg, image/png"
-                  onChange={(e) => postDetails(e.target.files[0])}
-                  ref={inputRef}
-                />
-              </Button>
-              <ImageCropperModal
-                imgSrc={imgSrc}
-                setPic={setPic}
-                isOpen={isOpen}
-                onClose={onClose}
+
+              <Input
+                hidden
+                type="file"
+                accept="image/jpeg, image/png"
+                onChange={(e) => postDetails(e.target.files[0])}
+                ref={inputRef}
+              />
+
+              <ModalTemplete
+                isOpen={imageCropper.isOpen}
+                onClose={imageCropper.onClose}
+                title={"トリミング"}
+                Contents={ImageCropper}
+                contentsProps={{
+                  imgSrc: imgSrc,
+                  setPic: setPic,
+                  onClose: imageCropper.onClose,
+                }}
               />
             </FormControl>
 
             <Button
-              colorScheme="twitter"
+              colorScheme="teal"
               width="100%"
               mt={4}
               type="submit"

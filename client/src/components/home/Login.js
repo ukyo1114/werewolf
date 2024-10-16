@@ -40,10 +40,14 @@ const Login = () => {
       actions.setSubmitting(false);
       navigate("/chats");
     } catch (error) {
-      const errorMessage = error?.response?.data?.error || errors.LOGIN_FAILED;
-      showToast(errorMessage, "error");
+      handleError(error);
       actions.setSubmitting(false);
     }
+  };
+
+  function handleError(error) {
+    const errorMessage = error?.response?.data?.error || errors.LOGIN_FAILED;
+    showToast(errorMessage, "error");
   };
 
   return (
@@ -54,16 +58,22 @@ const Login = () => {
     >
       {(formik) => (
         <Form>
-          <VStack spacing={4} align="stretch">
-            <FormControl id="loginEmail" isRequired>
-              <FormLabel>メールアドレス</FormLabel>
-              <Field
-                as={Input}
-                name="email"
-                type="email"
-                placeholder="メールアドレスを入力してください"
-                autoComplete="email"
-              />
+          <VStack align="stretch">
+            <FormControl id="loginEmail" isRequired mb={2}>
+              <FormLabel><strong>メールアドレス：</strong></FormLabel>
+              <Field name="email">
+                {({ field }) => (
+                  <Input
+                    {...field}
+                    type="email"
+                    placeholder="メールアドレスを入力してください"
+                    autoComplete="email"
+                    bg="#3B2C2F"
+                    borderColor="#E17875"
+                    _placeholder={{ color: "gray.200" }}
+                  />
+                )}
+              </Field>
               <ErrorMessage
                 name="email"
                 component="div"
@@ -71,15 +81,21 @@ const Login = () => {
               />
             </FormControl>
 
-            <FormControl id="loginPassword" isRequired>
-              <FormLabel>パスワード</FormLabel>
+            <FormControl id="loginPassword" isRequired mb={2}>
+              <FormLabel><strong>パスワード：</strong></FormLabel>
               <InputGroup>
-                <Field
-                  as={Input}
-                  name="password"
-                  type={pshow ? "text" : "password"}
-                  placeholder="パスワードを入力してください"
-                />
+                <Field name="password">
+                  {({ field }) => (
+                    <Input
+                      {...field}
+                      type={pshow ? "text" : "password"}
+                      placeholder="パスワードを入力してください"
+                      bg="#3B2C2F"
+                      borderColor="#E17875"
+                      _placeholder={{ color: "gray.200" }}
+                    />
+                  )}
+                </Field>
                 <InputRightElement width="4.5rem">
                   <Button
                     h="1.75rem"
@@ -88,7 +104,10 @@ const Login = () => {
                     variant="ghost"
                     aria-label={pshow ? "パスワードを隠す" : "パスワードを表示"}
                   >
-                    <FontAwesomeIcon icon={pshow ? faEyeSlash : faEye} />
+                    <FontAwesomeIcon
+                      icon={pshow ? faEyeSlash : faEye}
+                      style={{ color: "#E17875" }}
+                    />
                   </Button>
                 </InputRightElement>
               </InputGroup>
@@ -98,8 +117,9 @@ const Login = () => {
                 style={{ color: "red", fontSize: "smaller" }}
               />
             </FormControl>
+            
             <Button
-              colorScheme="twitter"
+              colorScheme="teal"
               width="100%"
               mt={4}
               type="submit"
