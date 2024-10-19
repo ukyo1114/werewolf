@@ -40,7 +40,7 @@ const ChannelInfo = ({ selectedChannel }) => {
       );
       setCurrentChannel(data);
     } catch (error) {
-      showToast(error?.response?.data?.message || errors.CHANNEL_ENTER_FAILED, "error");
+      showToast(error?.response?.data?.error || errors.CHANNEL_ENTER_FAILED, "error");
     }
   };
 
@@ -51,7 +51,7 @@ const ChannelInfo = ({ selectedChannel }) => {
           p={3}
           mb={4}
           w="100%"
-          borderRadius="md"
+          borderRadius="lg"
           bg="#3B2C2F"
         >
           <Text textAlign="center" fontWeight="bold" fontSize="lg" mb={1}>
@@ -88,6 +88,7 @@ const ChannelInfo = ({ selectedChannel }) => {
             </FormControl>
           )}
       </ModalBody>
+      
       <ModalFooter justifyContent="center">
           <Button
             colorScheme={

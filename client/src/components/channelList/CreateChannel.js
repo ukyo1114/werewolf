@@ -47,7 +47,7 @@ const CreateChannel = () => {
       setCurrentChannel(data);
     } catch (error) {
       const errorMessage =
-        error?.response?.data?.message || errors.CHANNEL_CREATION_FAILED;
+        error?.response?.data?.error || errors.CHANNEL_CREATION_FAILED;
       showToast(errorMessage, "error");
       actions.setSubmitting(false);
     }
@@ -109,7 +109,7 @@ const CreateChannel = () => {
               />
             </FormControl>
 
-            <FormControl mb={2}>
+            <FormControl id="isPasswordEnabled" mb={2}>
               <Field name="isPasswordEnabled">
                 {({ field }) => (
                   <Checkbox

@@ -11,6 +11,7 @@ import "../styles.css";
 import io from "socket.io-client";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import UserList from "./UserList";
+import ModalTemplete from "./ModalTemplete";
 let entrySocket;
 
 const EntryCounter = () => {
@@ -18,7 +19,7 @@ const EntryCounter = () => {
   const [users, setUsers] = useState([]);
   const [entryButtonState, setEntryButtonState] = useState(false);
   const toast = useToast();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const userList = useDisclosure();
 
   useEffect(() => {
     entrySocket = io("http://localhost:5000/entry", {
@@ -81,30 +82,32 @@ const EntryCounter = () => {
   return (
     <Box
       display="flex"
-      justifyContent="center"
+      justifyContent="space-between"
       alignItems="center"
       w="100%"
-      p={1}
-      gap={4}
+      px={4}
+      py={3}
     >
+      <Text fontSize="lg"><strong>{currentChannel.channelName}</strong></Text>
+      <Box display="flex" alignItems="center">
         <Text
           fontSize="lg"
           fontWeight="bold"
-          onClick={onOpen}
+          onClick={userList.onOpen}
           cursor="pointer"
           display="flex"
           alignItems="center"
           px={2}
+          mr={2}
           py="5px"
           borderRadius="md"
-          borderWidth={1}
-          borderColor="#ff94b1"
+          _hover={{ bg: "#3B2C2F" }}
         >
           {users.length}/10人
           <ChevronDownIcon ml={1} />
         </Text>
         <Button
-          colorScheme={entryButtonState ? "pink" : "twitter"}
+          colorScheme={entryButtonState ? "pink" : "teal"}
           onClick={() =>
             entryButtonState
               ? entrySocket.emit("cancelEntry")
@@ -113,14 +116,19 @@ const EntryCounter = () => {
         >
           {entryButtonState ? "取消" : "参加"}
         </Button>
+      </Box>
 
       {users && currentChannel?.users && (
-        <UserList
-          isOpen={isOpen}
-          onClose={onClose}
-          userList={currentChannel.users.filter((user) =>
-            users.some((u) => u === user._id),
-          )}
+        <ModalTemplete
+          isOpen={userList.isOpen}
+          onClose={userList.onClose}
+          title={"エントリー中のユーザー"}
+          Contents={UserList}
+          contentsProps={{
+            userList: currentChannel.users.filter((user) =>
+              users.some((u) => u === user._id),
+            ) 
+          }}
         />
       )}
     </Box>

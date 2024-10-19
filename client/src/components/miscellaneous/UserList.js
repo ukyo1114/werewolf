@@ -1,58 +1,45 @@
 import React from "react";
-import {
-  Box,
-  Button,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Text,
-  Image,
-} from "@chakra-ui/react";
+import { Box,  ModalBody, Text } from "@chakra-ui/react";
 import "../styles.css";
+import DisplayUser from "./DisplayUser";
 
-const UserList = ({ isOpen, onClose, userList }) => {
+const UserList = ({ userList }) => {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} scrollBehavior="inside">
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>ユーザーリスト</ModalHeader>
-        <ModalBody>
-          <Box
-            display="flex"
-            flexDir="column"
-            p={3}
-            bg="#E8E8E8"
-            w="100%"
-            h="100%"
+    <ModalBody>
+      <Box
+        display="flex"
+        flexDir="column"
+        p={3}
+        w="100%"
+        h="100%"
+        borderRadius="lg"
+        mb={4}
+      >
+        {userList.length > 0 ? (
+          userList.map((user) => (
+            <Box 
+              key={user._id}
+              display="flex"
+              alignItems="center"
+              p={3}
+              mb={3}
+              borderRadius="lg"
+              bg="#3B2C2F"
+            >
+              <DisplayUser user={user} />
+            </Box>
+          ))
+        ) : (
+          <Text
+            fontSize="lg"
+            bg="#3B2C2F"
             borderRadius="lg"
-          >
-            {userList.map((user) => (
-              <Box key={user._id} display="flex" alignItems="center" mb={3}>
-                <Image
-                  src={user.pic}
-                  alt={user.name}
-                  boxSize={16}
-                  borderRadius="md"
-                  mr={5}
-                />
-                <Text fontSize="lg">{user.name}</Text>
-                {user.status && (
-                  <Text fontSize="lg">
-                    {user.status === "alive" ? "生存" : "死亡"}
-                  </Text>
-                )}
-              </Box>
-            ))}
-          </Box>
-        </ModalBody>
-        <ModalFooter>
-          <Button onClick={onClose}>Close</Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+            p={3}
+            textAlign="center" 
+          >ユーザーがいません</Text>
+        )}
+      </Box>
+    </ModalBody>
   );
 };
 

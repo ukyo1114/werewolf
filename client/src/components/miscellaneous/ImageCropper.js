@@ -56,7 +56,7 @@ const ImageCropper = ({ imgSrc, setPic, onClose }) => {
             aria-label="zoom-slider"
             value={zoom}
             min={1}
-            max={10}
+            max={5}
             step={0.1}
             onChange={(value) => setZoom(value)}
           >
@@ -113,7 +113,7 @@ const getCroppedImg = async (imgSrc, croppedAreaPixels) => {
       150,
     );
 
-    const data = canvas.toDataURL("image/png");
+    const data = canvas.toDataURL("image/jpeg");
     return data;
   } catch (error) {
     console.error("Failed to crop the image:", error);

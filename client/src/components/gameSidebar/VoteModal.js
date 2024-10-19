@@ -154,7 +154,7 @@ const VoteButton = ({ selectedUser, handleOnClose }) => {
         );
         showToast("投票しました", "success");
       } catch (error) {
-        showToast(error?.response?.data?.message || "投票に失敗しました", "error");
+        showToast(error?.response?.data?.error || "投票に失敗しました", "error");
       } finally{
         handleOnClose();
       }
@@ -193,7 +193,7 @@ const FortuneButton = ({ selectedUser, handleOnClose }) => {
         );
         showToast("送信しました", "success");
       } catch (error) {
-        showToast(error?.response?.data?.message || "送信に失敗しました", "error");
+        showToast(error?.response?.data?.error || "送信に失敗しました", "error");
       } finally {
         handleOnClose();
       }
@@ -232,7 +232,7 @@ const GuardButton = ({ selectedUser, handleOnClose }) => {
         );
         showToast("送信しました", "success");
       } catch (error) {
-        showToast(error?.response?.data?.message || "送信に失敗しました", "error");
+        showToast(error?.response?.data?.error || "送信に失敗しました", "error");
       } finally {
         handleOnClose();
       }
@@ -271,7 +271,7 @@ const AttackButton = ({ selectedUser, handleOnClose }) => {
         );
         showToast("送信しました", "success");
       } catch (error) {
-        showToast(error?.response?.data?.message || "送信に失敗しました", "error");
+        showToast(error?.response?.data?.error || "送信に失敗しました", "error");
       } finally {
         handleOnClose();
       }

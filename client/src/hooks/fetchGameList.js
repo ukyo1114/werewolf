@@ -13,6 +13,7 @@ const useFetchGameList = (token, channelId) => {
 
     try {
       const config = { headers: { Authorization: `Bearer ${token}` } };
+      
       const { data } = await axios.get(
         `/api/spectate/game-list/${channelId}`,
         config

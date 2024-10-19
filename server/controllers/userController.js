@@ -6,21 +6,34 @@ const { errors } = require("../messages");
 const EventEmitter = require("events");
 const userEvents = new EventEmitter();
 const CustomError = require('../classes/CustomError');
-const { getUserById, matchPassword } = require("../utils/userUtils");
+const {
+  getUserById,
+  matchPassword,
+  uploadPicture,
+} = require("../utils/userUtils");
 
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password, pic } = req.body;
   const userExists = await User.findOne({ email });
   if (userExists) throw new CustomError(400, errors.EMAIL_ALREADY_REGISTERED);
 
-  const user = await User.create({ name, email, password, pic });
+  const user = await User.create({ name, email, password, pic: null });
   if (!user) throw new CustomError(400, errors.USER_CREATION_FAILED);
 
+  const userId = user._id.toString();
+  const filePath = await uploadPicture(userId, pic);
+
+  const userWithoutPass = await getUserById(user._id, false);
+
+  userWithoutPass.pic = filePath;
+
+  await userWithoutPass.save();
+
   res.status(201).json({
-    _id: user._id,
-    name: user.name,
-    email: user.email,
-    pic: user.pic,
+    _id: userId,
+    name,
+    email,
+    pic: filePath,
     token: generateToken(user._id),
   });
 });
@@ -44,28 +57,19 @@ const authUser = asyncHandler(async (req, res) => {
 // プロフィールの変更を通知する処理を追加してね
 const updateProfile = asyncHandler(async (req, res) => {
   const userId = req.user._id.toString();
-  const { userName, picture } = req.body;
-  if (!userName && !picture) throw new CustomError(400, errors.MISSING_DATA);
+  const { userName, pic } = req.body;
+  if (!userName && !pic) throw new CustomError(400, errors.MISSING_DATA);
 
   const isUserInGame = GameState.isUserInGame(userId);
-
   if (isUserInGame) {
     throw new CustomError(403, errors.PROFILE_UPDATE_NOT_ALLOWED_DURING_GAME);
   }
 
-  const user = await User.findById(userId).select("_id name pic");
+  if (pic) await uploadPicture(userId, pic);
+  if (userName) await User.findByIdAndUpdate(userId, { name: userName });
 
-  if (userName) user.name = userName;
-  if (picture) user.pic = picture;
-
-  await user.save();
-
-  res.status(200).json({
-    name: user.name,
-    pic: user.pic,
-  });
-
-  userEvents.emit("profileUpdated", user);
+  res.status(200).send();
+  // userEvents.emit("profileUpdated");
 });
 
 const updateUserSettings = asyncHandler(async (req, res) => {
@@ -81,6 +85,12 @@ const updateUserSettings = asyncHandler(async (req, res) => {
   await user.save();
   res.status(200).json({ email: user.email });
 });
+
+const getSignedUrl = asyncHandler(async (req, res) => {
+  const userId = req.user._id.tostring();
+  const url = await generatePresignedUrl(userId);
+  res.status(200).json({ url });
+});
  
 module.exports = {
   registerUser,
@@ -88,4 +98,5 @@ module.exports = {
   updateProfile,
   updateUserSettings,
   userEvents,
+  getSignedUrl,
 };

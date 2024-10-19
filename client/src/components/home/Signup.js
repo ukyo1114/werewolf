@@ -20,6 +20,7 @@ import { errors, messages } from "../../messages";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { signupValidationSchema, signupInitialValues } from "./validationSchema";
 import ModalTemplete from "../miscellaneous/ModalTemplete";
+import usePostDetails from "../../hooks/postDetails";
 
 const Signup = () => {
   const [pshow, setPShow] = useState(false);
@@ -30,6 +31,12 @@ const Signup = () => {
   const inputRef = useRef();
   const navigate = useNavigate();
   const imageCropper = useDisclosure();
+  
+  const postDetails = usePostDetails({
+    setImgSrc,
+    onOpen: imageCropper.onOpen,
+    inputRef,
+  });
 
   const handleSignUp = async (values, actions) => {
     if (!pic) {
@@ -40,6 +47,7 @@ const Signup = () => {
 
     try {
       const config = { headers: { "Content-Type": "application/json" } };
+
       const { data } = await axios.post(
         "/api/user/signup",
         { ...values, pic },
@@ -54,28 +62,6 @@ const Signup = () => {
       handleError(error);
       actions.setSubmitting(false);
     }
-  };
-
-  const postDetails = (pics) => {
-    if (pics === undefined) {
-      showToast(errors.NO_IMAGE_SELECTED, "warning");
-      return;
-    }
-
-    if (pics.type !== "image/jpeg" && pics.type !== "image/png") {
-      showToast(errors.NO_IMAGE_SELECTED, "warning");
-      return;
-    }
-
-    const reader = new FileReader();
-
-    reader.onload = (e) => {
-      setImgSrc(e.target.result);
-      imageCropper.onOpen();
-    };
-    
-    reader.readAsDataURL(pics);
-    inputRef.current.value = "";
   };
 
   function handleError(error) {
@@ -216,14 +202,13 @@ const Signup = () => {
               display="flex"
               flexDirection="column"
               alignItems="center"
-              isRequired
             >
               <FormLabel alignSelf="flex-start">
                 <strong>プロフィール画像</strong>
               </FormLabel>
               {pic ? (
                 <Image
-                mt={4}
+                  mt={4}
                   src={pic}
                   boxSize="120px"
                   borderRadius="lg"

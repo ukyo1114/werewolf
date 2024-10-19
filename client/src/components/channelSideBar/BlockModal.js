@@ -1,27 +1,21 @@
 import React, { useState, useEffect, useCallback } from "react";
 import {
   Box,
-  Button,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
   ModalBody,
   Tabs,
   TabList,
   Tab,
   TabPanels,
   TabPanel,
-  Text,
-  Image,
-  Flex,
 } from "@chakra-ui/react";
 import "../styles.css";
 import { useUserState } from "../../context/userProvider";
 import axios from "axios";
 import useNotification from "../../hooks/notification";
+import DisplayUser from "../miscellaneous/DisplayUser";
+import ModalButton from "../miscellaneous/ModalButton";
 
-const BlockModal = ({ isOpen, onClose }) => {
+const BlockModal = () => {
   const { user, currentChannel } = useUserState();
   const [blockUserList, setBlockUserList] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -44,26 +38,34 @@ const BlockModal = ({ isOpen, onClose }) => {
     }
   }, [user, currentChannel, setBlockUserList, showToast]);
 
-  const handleOnClose = useCallback(() => {
-    setSelectedUser(null);
-    setSelectedBlockUser(null);
-    onClose();
-  }, [setSelectedUser, setSelectedBlockUser, onClose]);
-
   useEffect(() => {
     fetchBlockUserList();
   }, [fetchBlockUserList]);
 
   return (
-    <Modal isOpen={isOpen} onClose={handleOnClose} scrollBehavior="inside">
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>ブロック</ModalHeader>
         <ModalBody>
-          <Tabs>
+          <Tabs variant="soft-rounded" mb={4}>
             <TabList>
-              <Tab w="50%">参加中</Tab>
-              <Tab w="50%">ブロック済み</Tab>
+              <Tab
+                w="50%"
+                color="white"
+                _selected={{ bg: "#E17875" }}
+                _hover={{
+                  ":not([aria-selected='true'])": { bg: "#3B2C2F" },
+                }}
+              >
+                ブロック
+              </Tab>
+              <Tab
+                w="50%"
+                color="white"
+                _selected={{ bg: "#E17875" }}
+                _hover={{
+                  ":not([aria-selected='true'])": { bg: "#3B2C2F" },
+                }}
+              >
+                取消
+              </Tab>
             </TabList>
             <TabPanels>
               <TabPanel>
@@ -71,7 +73,6 @@ const BlockModal = ({ isOpen, onClose }) => {
                   selectedUser={selectedUser}
                   setSelectedUser={setSelectedUser}
                   setBlockUserList={setBlockUserList}
-                  onClose={handleOnClose}
                 />
               </TabPanel>
               <TabPanel>
@@ -80,14 +81,11 @@ const BlockModal = ({ isOpen, onClose }) => {
                   setSelectedBlockUser={setSelectedBlockUser}
                   blockUserList={blockUserList}
                   setBlockUserList={setBlockUserList}
-                  onClose={handleOnClose}
                 />
               </TabPanel>
             </TabPanels>
           </Tabs>
         </ModalBody>
-      </ModalContent>
-    </Modal>
   );
 };
 
@@ -95,7 +93,6 @@ const UserListTab = ({
   selectedUser,
   setSelectedUser,
   setBlockUserList,
-  onClose,
 }) => {
   const { user, currentChannel, setCurrentChannel } = useUserState();
   const showToast = useNotification();
@@ -103,11 +100,8 @@ const UserListTab = ({
   const block = useCallback(async () => {
     if (currentChannel.channelAdmin !== user._id) return;
     try {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
+      const config = { headers: { Authorization: `Bearer ${user.token}` } };
+
       const { data } = await axios.put(
         "api/block/register",
         {
@@ -145,15 +139,7 @@ const UserListTab = ({
   ]);
 
   return (
-    <Box
-      display="flex"
-      flexDir="column"
-      p={3}
-      bg="#E8E8E8"
-      w="100%"
-      h="100%"
-      borderRadius="lg"
-    >
+    <Box display="flex" flexDir="column">
       {currentChannel.users
         .filter((u) => u._id !== user._id)
         .map((u) => (
@@ -164,30 +150,23 @@ const UserListTab = ({
             mb={3}
             p={3}
             borderRadius="md"
-            bg={selectedUser === u._id ? "blue.100" : "white"}
+            borderWidth={2}
+            borderColor={selectedUser === u._id ? "white" : "#E17875"}
+            bg={selectedUser === u._id ? "#E17875" : "#2B2024"}
+            _hover={{
+              bg: selectedUser !== u._id ? "#3B2C2F" : undefined,
+            }}
             cursor="pointer"
             onClick={() => setSelectedUser(u._id)}
           >
-            <Image
-              src={u.pic}
-              alt={u.name}
-              boxSize={16}
-              borderRadius="md"
-              mr={5}
-            />
-            <Text fontSize="lg">{u.name}</Text>
+            <DisplayUser user={u} />
           </Box>
         ))}
-      <Flex width="100%" justifyContent="space-evenly">
-        <Button onClick={onClose}>Close</Button>
-        <Button
-          colorScheme="twitter"
-          onClick={block}
-          isDisabled={!selectedUser}
-        >
-          ブロック
-        </Button>
-      </Flex>
+      <ModalButton
+        innerText={"ブロック"}
+        onClick={block}
+        disableCondition={!selectedUser}
+      />
     </Box>
   );
 };
@@ -197,7 +176,6 @@ const BlockedUserListTab = ({
   setSelectedBlockUser,
   blockUserList,
   setBlockUserList,
-  onClose,
 }) => {
   const { user, currentChannel } = useUserState();
   const showToast = useNotification();
@@ -205,11 +183,8 @@ const BlockedUserListTab = ({
   const cancelBlock = useCallback(async () => {
     if (currentChannel.channelAdmin !== user._id) return;
     try {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
+      const config = { headers: { Authorization: `Bearer ${user.token}` } };
+
       const { data } = await axios.put(
         "api/block/cancel",
         {
@@ -219,7 +194,7 @@ const BlockedUserListTab = ({
         config,
       );
       setBlockUserList((prevBlockUserList) => {
-        const updatedBlockUserList =  prevBlockUserList.filter((user) =>
+        const updatedBlockUserList = prevBlockUserList.filter((user) =>
           data.some((u) => u === user._id)
         )
         return updatedBlockUserList;
@@ -238,15 +213,7 @@ const BlockedUserListTab = ({
   ]);
 
   return (
-    <Box
-      display="flex"
-      flexDir="column"
-      p={3}
-      bg="#E8E8E8"
-      w="100%"
-      h="100%"
-      borderRadius="lg"
-    >
+    <Box display="flex" flexDir="column">
       {blockUserList.map((u) => (
         <Box
           key={u._id}
@@ -255,30 +222,23 @@ const BlockedUserListTab = ({
           mb={3}
           p={3}
           borderRadius="md"
-          bg={selectedBlockUser === u._id ? "blue.100" : "white"}
+          borderWidth={2}
+          borderColor={selectedBlockUser === u._id ? "white" : "#E17875"}
+          bg={selectedBlockUser === u._id ? "#E17875" : "#2B2024"}
+          _hover={{
+            bg: selectedBlockUser !== u._id ? "#3B2C2F" : undefined,
+          }}
           cursor="pointer"
           onClick={() => setSelectedBlockUser(u._id)}
         >
-          <Image
-            src={u.pic}
-            alt={u.name}
-            boxSize={16}
-            borderRadius="md"
-            mr={5}
-          />
-          <Text fontSize="lg">{u.name}</Text>
+          <DisplayUser user={u} />
         </Box>
       ))}
-      <Flex width="100%" justifyContent="space-evenly">
-        <Button onClick={onClose}>Close</Button>
-        <Button
-          colorScheme="twitter"
-          onClick={cancelBlock}
-          isDisabled={!selectedBlockUser}
-        >
-          取消
-        </Button>
-      </Flex>
+      <ModalButton
+        innerText={"取消"}
+        onClick={cancelBlock}
+        disableCondition={!selectedBlockUser}
+      />
     </Box>
   );
 };

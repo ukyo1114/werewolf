@@ -20,6 +20,7 @@ import BlockModal from "./BlockModal";
 import ChannelSettingsModal from "./ChannelSettingsModal"
 import axios from "axios";
 import useNotification from "../../hooks/notification";
+import ModalTemplete from "../miscellaneous/ModalTemplete";
 
 const ChannelSidebar = () => {
   const { user, currentChannel, setCurrentChannel } = useUserState();
@@ -48,91 +49,104 @@ const ChannelSidebar = () => {
   };
 
   return (
-    <Box display="flex" flexDirection="column">
-      <Tooltip label="ユーザーリスト" hasArrow placement="bottom-end">
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems={{ base: 'center', lg: 'flex-start' }}
+      width="100%"
+    >
+      <Tooltip label="ユーザーリスト" placement="bottom-end">
         <Button variant="ghost" my={2} onClick={userListModal.onOpen}>
-          <FaUsers size="30px" />
-          <Text display={{ base: "none", lg: "flex" }} ml={3}>
+          <FaUsers size="30px" color="#E17875" />
+          <Text fontSize="lg" display={{ base: "none", lg: "flex" }} ml={3}>
             ユーザーリスト
           </Text>
         </Button>
       </Tooltip>
 
       {currentChannel && (
-        <UserList
+        <ModalTemplete
           isOpen={userListModal.isOpen}
           onClose={userListModal.onClose}
-          userList={currentChannel.users}
+          title={"ユーザーリスト"}
+          Contents={UserList}
+          contentsProps={{ userList: currentChannel.users }}
         />
       )}
 
-      <Tooltip label="観戦" hasArrow placement="bottom-end">
+      <Tooltip label="観戦" placement="bottom-end">
         <Button variant="ghost" my={2}>
-          <FaBinoculars size="30px" />
-          <Text display={{ base: "none", lg: "flex" }} ml={3}>
+          <FaBinoculars size="30px" color="#E17875" />
+          <Text fontSize="lg" display={{ base: "none", lg: "flex" }} ml={3}>
             観戦
           </Text>
         </Button>
       </Tooltip>
 
-      <Tooltip label="チャンネル一覧" hasArrow placement="bottom-end">
+      <Tooltip label="チャンネル一覧" placement="bottom-end">
         <Button variant="ghost" my={2} onClick={() => setCurrentChannel()}>
-          <FaArrowLeft size="30px" />
-          <Text display={{ base: "none", lg: "flex" }} ml={3}>
+          <FaArrowLeft size="30px" color="#E17875" />
+          <Text fontSize="lg" display={{ base: "none", lg: "flex" }} ml={3}>
             チャンネル一覧
           </Text>
         </Button>
       </Tooltip>
 
-      <Tooltip label="チャンネルを抜ける" hasArrow placement="bottom-end">
+      <Tooltip label="チャンネルを抜ける" placement="bottom-end">
         <Button
           variant="ghost"
           my={2}
           onClick={() => leaveChannel()}
           isDisabled={isAdmin}
         >
-          <FaSignOutAlt size="30px" />
-          <Text display={{ base: "none", lg: "flex" }} ml={3}>
+          <FaSignOutAlt size="30px" color="#E17875" />
+          <Text fontSize="lg" display={{ base: "none", lg: "flex" }} ml={3}>
             チャンネルを抜ける
           </Text>
         </Button>
       </Tooltip>
 
-      <Tooltip label="ブロック" hasArrow placement="bottom-end">
+      <Tooltip label="ブロック" placement="bottom-end">
         <Button
           variant="ghost"
           my={2}
           onClick={blockModal.onOpen}
           isDisabled={!isAdmin}
         >
-          <FaUserSlash size="30px" />
-          <Text display={{ base: "none", lg: "flex" }} ml={3}>
+          <FaUserSlash size="30px" color="#E17875" />
+          <Text fontSize="lg" display={{ base: "none", lg: "flex" }} ml={3}>
             ブロック
           </Text>
         </Button>
       </Tooltip>
 
       {currentChannel && isAdmin && (
-        <BlockModal isOpen={blockModal.isOpen} onClose={blockModal.onClose} />
+        <ModalTemplete
+          isOpen={blockModal.isOpen}
+          onClose={blockModal.onClose}
+          Contents={BlockModal}
+        />
       )}
 
-      <Tooltip label="チャンネル設定" hasArrow placement="bottom-end">
+      <Tooltip label="チャンネル設定" placement="bottom-end">
         <Button
           variant="ghost"
           my={2}
           onClick={chSettingsModal.onOpen}
           isDisabled={!isAdmin}>
-          <FaCog size="30px" />
-          <Text display={{ base: "none", lg: "flex" }} ml={3}>
+          <FaCog size="30px" color="#E17875" />
+          <Text fontSize="lg" display={{ base: "none", lg: "flex" }} ml={3}>
             チャンネル設定
           </Text>
         </Button>
       </Tooltip>
 
       {currentChannel && isAdmin && (
-        <ChannelSettingsModal
+        <ModalTemplete
           isOpen={chSettingsModal.isOpen}
           onClose={chSettingsModal.onClose}
+          title={"チャンネル設定"}
+          Contents={ChannelSettingsModal}
         />
       )}
     </Box>
