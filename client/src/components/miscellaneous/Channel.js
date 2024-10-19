@@ -103,14 +103,14 @@ const Channel = () => {
         display="flex"
         alignItems="center"
         flexDir="column"
-        bg="#ffe2f1"
         maxWidth="600px"
         width="100%"
-        borderLeftWidth={1}
-        borderColor="#ff94b1"
+        borderRightWidth={4}
+        borderLeftWidth={4}
+        borderColor="#E17875"
       >
         {gameState ? <GameTimer /> : <EntryCounter/>}
-        <Divider borderWidth={1} />
+        <Divider borderWidth={2} borderColor="#E17875" opacity={1} />
         <Box
           display="flex"
           flexDir="column"
@@ -119,7 +119,7 @@ const Channel = () => {
           w="100%"
           h="100%"
           borderRadius="lg"
-          overflowY="hidden"
+          overflowY="auto"
         >
           
           {loading ? (
@@ -142,7 +142,7 @@ const Channel = () => {
                   if (!chatUser) return null;
 
                   return (
-                    <Box display="flex" key={m._id} p={2} gap={1}>
+                    <Box display="flex" key={m._id} my={2} gap={1}>
                       <Avatar
                         size="lg"
                         src={chatUser.pic}
@@ -160,17 +160,15 @@ const Channel = () => {
                             m.messageType === "werewolf"
                               ? "#FFCCCB"
                               : m.messageType === "spectator"
-                                ? "#D3D3D3"
-                                : m.sender._id === user._id
-                                  ? "#BEE3F8"
-                                  : "#B9F5D0"
+                                ? "#DBD0D4"
+                                : "white"
                           }
                           borderRadius="md"
                           px={4}
                           py={2}
                           width="100%"
                         >
-                          <Text whiteSpace="pre-wrap">{m.content}</Text>
+                          <Text color="black" whiteSpace="pre-wrap">{m.content}</Text>
                         </Box>
                       </Flex>
                     </Box>
@@ -186,7 +184,7 @@ const Channel = () => {
           >
             {(formik) => (
               <Form>
-                <FormControl mt={3} isRequired>
+                <FormControl my={3} isRequired>
                   <Field name="newMessage">
                     {({ field }) => (
                       <Textarea
@@ -198,7 +196,9 @@ const Channel = () => {
                         overflowY="auto"
                         minHeight="42px"
                         maxHeight="400px"
+                        color="black"
                         bg="#E0E0E0"
+                        _focus={{ bg: "white" }} 
                         as={TextareaAutosize}
                         onKeyDown={(e) => {
                           if (e.key === "Enter" && !e.shiftKey) {

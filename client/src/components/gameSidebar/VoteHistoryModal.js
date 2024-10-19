@@ -101,7 +101,7 @@ const VoteHistory = () => {
         toast({
           title: "エラー発生！",
           description:
-            error.response?.data?.message ||
+            error.response?.data?.error ||
             "投票履歴の取得に失敗したようです。",
           status: "error",
           duration: 5000,
@@ -209,7 +209,7 @@ const FortuneResult = () => {
         toast({
           title: "エラー発生！",
           description:
-            error.response?.data?.message ||
+            error.response?.data?.error ||
             "占い結果の取得に失敗したようです。",
           status: "error",
           duration: 5000,
@@ -314,7 +314,7 @@ const MediumResult = () => {
         toast({
           title: "エラー発生！",
           description:
-            error.response?.data?.message ||
+            error.response?.data?.error ||
             "霊能結果の取得に失敗したようです。",
           status: "error",
           duration: 5000,
@@ -419,7 +419,7 @@ const GuardHistory = () => {
         toast({
           title: "エラー発生！",
           description:
-            error.response?.data?.message ||
+            error.response?.data?.error ||
             "護衛履歴の取得に失敗したようです。",
           status: "error",
           duration: 5000,
@@ -516,7 +516,7 @@ const AttackHistory = () => {
         toast({
           title: "エラー発生！",
           description:
-            error.response?.data?.message ||
+            error.response?.data?.error ||
             "襲撃履歴の取得に失敗したようです。",
           status: "error",
           duration: 5000,

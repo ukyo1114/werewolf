@@ -21,7 +21,7 @@ const userSchema = mongoose.Schema(
       minlength: 8,
       maxlength: 20,
     },
-    pic: { type: String, required: true },
+    pic: { type: String },
   },
   { timestamps: true },
 );

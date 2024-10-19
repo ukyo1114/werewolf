@@ -5,7 +5,6 @@ import {
   Tab,
   TabPanels,
   TabPanel,
-  useColorModeValue,
 } from "@chakra-ui/react";
 import Login from "./Login";
 import Signup from "./Signup";
@@ -13,7 +12,7 @@ import Signup from "./Signup";
 const Auth = () => {
   return (
     <Box w="100%">
-      <Tabs variant="enclosed" colorScheme="teal">
+      <Tabs variant="enclosed">
         <TabList bg="#3B2C2F" borderTopRadius="lg">
         <Tab
           w="50%"

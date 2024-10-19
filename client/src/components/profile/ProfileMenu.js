@@ -35,13 +35,13 @@ const ProfileMenu = () => {
   return (
     <Menu>
       <MenuButton
-        mb={3}
         px={4}
         py={2}
-        borderRadius="md"
+        borderRadius="lg"
         _hover={{ bg: "#3B2C2F" }}
+        width="90%"
       >
-        <Box display="flex" alignItems="center">
+        <Box display="flex" alignItems="center" justifyContent="center">
           <Avatar
             size="md"
             cursor="pointer"
@@ -54,8 +54,9 @@ const ProfileMenu = () => {
             alignItems="center"
             justifyContent="space-between"
             ml={3}
+            width="100%"
           >
-            <Text ><strong>{user.name}</strong></Text>
+            <Text><strong>{user.name}</strong></Text>
             <FaEllipsisH color="#E17875" />
           </Box>
         </Box>
@@ -92,6 +93,7 @@ const ProfileMenu = () => {
           onClose={psModal.onClose}
           title={"プロフィール設定"}
           Contents={ProfileSettingsModal}
+          contentsProps={{ onClose: psModal.onClose }}
         />
         <MenuDivider borderColor="#E17875" />
         <MenuItem
