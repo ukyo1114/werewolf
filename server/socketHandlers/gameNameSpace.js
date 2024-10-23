@@ -31,11 +31,11 @@ function gameNameSpaceHandler(io) {
 
   gameNameSpace.on("connection", (socket) => {
     socket.on("joinGame", (gameId, callback) => {
-      if (!games[gameId]) return callback({ gameState : null });
+      const game = games[gameId];
+      if (!game) return callback({ gameState : null });
+      const gameState = game.getGameState();
 
       socket.join(gameId);
-      const gameState = games[gameId].getGameState();
-
       callback({ gameState: gameState });
     });
   });

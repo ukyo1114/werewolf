@@ -245,13 +245,13 @@ const Signup = () => {
                 isOpen={imageCropper.isOpen}
                 onClose={imageCropper.onClose}
                 title={"トリミング"}
-                Contents={ImageCropper}
-                contentsProps={{
-                  imgSrc: imgSrc,
-                  setPic: setPic,
-                  onClose: imageCropper.onClose,
-                }}
-              />
+              >
+                <ImageCropper
+                  imgSrc={imgSrc}
+                  setPic={setPic}
+                  onClose={imageCropper.onClose}
+                />
+              </ModalTemplete>
             </FormControl>
 
             <Button

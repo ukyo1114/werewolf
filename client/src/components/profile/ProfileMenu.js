@@ -74,13 +74,17 @@ const ProfileMenu = () => {
         >
           プロフィール
         </MenuItem>
+
         <ModalTemplete
           isOpen={pModal.isOpen}
           onClose={pModal.onClose}
           title={"プロフィール"}
-          Contents={ProfileModal}
-        />
+        >
+          <ProfileModal />
+        </ModalTemplete>
+
         <MenuDivider borderColor="#E17875" />
+
         <MenuItem
           bg="#2B2024"
           _hover={{ bg: "#3B2C2F" }}
@@ -88,14 +92,17 @@ const ProfileMenu = () => {
         >
           プロフィール設定
         </MenuItem>
+
         <ModalTemplete
           isOpen={psModal.isOpen}
           onClose={psModal.onClose}
           title={"プロフィール設定"}
-          Contents={ProfileSettingsModal}
-          contentsProps={{ onClose: psModal.onClose }}
-        />
+        >
+          <ProfileSettingsModal onClose={psModal.onClose} />
+        </ModalTemplete>
+
         <MenuDivider borderColor="#E17875" />
+
         <MenuItem
           bg="#2B2024"
           _hover={{ bg: "#3B2C2F" }}
@@ -103,13 +110,17 @@ const ProfileMenu = () => {
         >
           Eメール・パスワード設定
         </MenuItem>
+
         <ModalTemplete
           isOpen={usModal.isOpen}
           onClose={usModal.onClose}
           title={"Eメール・パスワード設定"}
-          Contents={UserSettingsModal}
-        />
+        >
+          <UserSettingsModal />
+        </ModalTemplete>
+
         <MenuDivider borderColor="#E17875" />
+
         <MenuItem
           bg="#2B2024"
           _hover={{ bg: "#3B2C2F" }}

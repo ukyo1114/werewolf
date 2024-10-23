@@ -26,7 +26,7 @@ function getGamesByChannelId(channelId) {
 function createGameList(games) {
   return games.map((game) => ({
     gameId: game.gameId,
-    players: Array.from(game.players.keys()),
+    players: Array.from(game.players.players.keys()),
     currentDay: game.phase.currentDay,
     currentPhase: game.phase.currentPhase,
     result: game.result,

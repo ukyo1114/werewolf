@@ -1,9 +1,11 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { useToast, Box, HStack, Text } from "@chakra-ui/react";
+import { Box, HStack, Text } from "@chakra-ui/react";
 import { useUserState } from "../../context/userProvider";
 import axios from "axios";
 import "../styles.css";
 import io from "socket.io-client";
+import useNotification from "../../hooks/notification";
+import { errors } from "../../messages";
 let gameSocket;
 
 const GameTimer = () => {
@@ -12,31 +14,24 @@ const GameTimer = () => {
   const [time, setTime] = useState(null);
   const [status, setStatus] = useState("");
   const [role, setRole] = useState("");
-  const toast = useToast();
+  const showToast = useNotification();
 
   const fetchUserState = useCallback(async () => {
     try {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
+      const config = { headers: { Authorization: `Bearer ${user.token}` } };
+
       const { data } = await axios.get(
         `/api/game/player-state/${gameState.gameId}`,
         config,
       );
       setUser((prevUser) => ({ ...prevUser, ...data }));
     } catch (error) {
-      toast({
-        title: "Error !",
-        description: "プレイヤー状態の読み込みに失敗しました。",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom",
-      });
+      showToast(
+        error?.response?.data?.error || errors.PLAYER_LOAD_FAILED,
+        "error"
+      );
     }
-  }, [toast, user.token, gameState.gameId, setUser]);
+  }, [showToast, user.token, gameState.gameId, setUser]);
 
   useEffect(() => {
     fetchUserState();
@@ -50,66 +45,38 @@ const GameTimer = () => {
   }, [fetchUserState, setUser, gameState.phase]);
 
   useEffect(() => {
-    gameSocket = io("http://localhost:5000/game", {
-      auth: {
-        token: user.token,
-      },
-    });
+    const auth = { auth: { token: user.token } };
+    gameSocket = io("http://localhost:5000/game", auth);
 
     gameSocket.on("connect", async () => {
       try {
-        const response = await gameSocket.emitWithAck(
-          "joinGame",
-          gameState.gameId,
-        );
-        if (response.gameState) {
-          setGameState((prevCurrentGame) => ({
-            ...prevCurrentGame,
-            phase: response.gameState.phase,
-            users: response.gameState.users,
-          }));
-        } else {
-          toast({
-            title: "Error !",
-            description: "ゲームが見つかりませんでした。",
-            status: "error",
-            duration: 5000,
-            isClosable: true,
-            position: "bottom",
-          });
+        const gameId = gameState.gameId;
+        const response = await gameSocket.emitWithAck("joinGame", gameId);
+
+        if (!response.gameState) {
+          showToast(errors.GAME_NOT_FOUND, "error");
           setGameState(null); // 元のチャンネルに戻る処理を追加
         }
+
+        const { phase, users } = response.gameState;
+
+        setGameState((prevCurrentGame) => (
+          { ...prevCurrentGame, phase, users }
+        ));
       } catch (error) {
-        toast({
-          title: "Error !",
-          description: "接続に失敗しました。",
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-          position: "bottom",
-        });
+        showToast(
+          error?.response?.data?.error || errors.CONNECTION_FAILED, "error"
+        );
         gameSocket.disconnect();
       }
     });
 
-    gameSocket.on("updateGameState", (gameState) => {
-      setGameState(gameState);
-    });
+    gameSocket.on("updateGameState", (gameState) => setGameState(gameState));
     
-    gameSocket.on("connect_error", (err) => {
-      toast({
-        title: err.message,
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom",
-      });
-    });
+    gameSocket.on("connect_error", (err) => showToast(err.message, "error"));
 
-    return () => {
-      gameSocket.disconnect();
-    };
-  }, [user.token, gameState.gameId, toast, setGameState]);
+    return () => gameSocket.disconnect();
+  }, [user.token, gameState.gameId, showToast, setGameState]);
 
   useEffect(() => {
     if (gameState.phase) {
@@ -144,7 +111,7 @@ const GameTimer = () => {
         setTime(remaining);
         if (remaining <= 0) {
           if (gameState.phase.currentPhase === "end") {
-            setGameState(); // 元のチャンネルに戻る処理を追加
+            setGameState(null); // 元のチャンネルに戻る処理を追加
           }
           clearInterval(intervalId);
         }

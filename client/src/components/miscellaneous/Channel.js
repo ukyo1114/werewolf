@@ -92,7 +92,7 @@ const Channel = () => {
 
   useEffect(() => {
     return () => {
-      setCurrentChannel(null);
+      // setCurrentChannel(null);
     };
   }, [setCurrentChannel]);
 

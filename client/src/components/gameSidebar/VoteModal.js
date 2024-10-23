@@ -1,141 +1,85 @@
 import React, { useState, useEffect, useCallback } from "react";
-import {
-  Box,
-  Button,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Text,
-  Image,
-  Flex,
-} from "@chakra-ui/react";
+import { Box, ModalBody } from "@chakra-ui/react";
 import "../styles.css";
 import { useUserState } from "../../context/userProvider";
 import axios from "axios";
 import useNotification from "../../hooks/notification";
+import DisplayUser from "../miscellaneous/DisplayUser";
+import ModalButton from "../miscellaneous/ModalButton";
 
-const VoteModal = ({ isOpen, onClose, mode }) => {
+const VoteModal = ({ mode, onClose }) => {
   const { user, currentChannel, gameState } = useUserState();
-  const [title, setTitle] = useState("");
   const [button, setButton] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
-
+/* 
   const handleOnClose = useCallback(() => {
     setSelectedUser();
     onClose();
-  }, [setSelectedUser, onClose]);
-
+  }, [setSelectedUser, onClose]); */
+/* 
   useEffect(() => {
     handleOnClose();
-  }, [handleOnClose, gameState.phase]);
-
-  useEffect(() => {
-    const titleSet = {
-      vote: "投票先を選択",
-      fortune: "占い先を選択",
-      guard: "護衛先を選択",
-      attack: "襲撃先を選択",
-    };
-    setTitle(titleSet[mode]);
-  }, [gameState?.phase, setTitle, mode]);
+  }, [handleOnClose, gameState.phase]); */
 
   useEffect(() => {
     const buttons = {
-      vote: (
-        <VoteButton selectedUser={selectedUser} handleOnClose={handleOnClose} />
-      ),
-      fortune: (
-        <FortuneButton
-          selectedUser={selectedUser}
-          handleOnClose={handleOnClose}
-        />
-      ),
-      guard: (
-        <GuardButton
-          selectedUser={selectedUser}
-          handleOnClose={handleOnClose}
-        />
-      ),
-      attack: (
-        <AttackButton
-          selectedUser={selectedUser}
-          handleOnClose={handleOnClose}
-        />
-      ),
+      vote: (<VoteButton selectedUser={selectedUser} onClose={onClose} />),
+      fortune: (<FortuneButton selectedUser={selectedUser} onClose={onClose} />),
+      guard: (<GuardButton selectedUser={selectedUser} onClose={onClose} />),
+      attack: (<AttackButton selectedUser={selectedUser} onClose={onClose} />),
     };
     setButton(buttons[mode]);
-  }, [selectedUser, handleOnClose, gameState?.phase, setButton, mode]);
+  }, [selectedUser, onClose, gameState?.phase, setButton, mode]);
 
   return (
-    <Modal isOpen={isOpen} onClose={handleOnClose} scrollBehavior="inside">
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>{title}</ModalHeader>
-        <ModalBody>
+    <ModalBody>
+      <Box display="flex" flexDir="column" p={3} maxHeight="800px" overflowY="auto">
+        {gameState.users.map((u) => (
           <Box
+            key={u._id}
             display="flex"
-            flexDir="column"
+            alignItems="center"
+            mb={3}
             p={3}
-            bg="#E8E8E8"
-            w="100%"
-            h="100%"
-            borderRadius="lg"
+            borderRadius="md"
+            borderWidth={2}
+            borderColor={selectedUser === u._id ? "white" : "#E17875"}
+            bg={selectedUser === u._id ? "#E17875" : "#2B2024"}
+            _hover={{
+              bg: selectedUser !== u._id ? "#3B2C2F" : undefined,
+            }}
+            cursor="pointer"
+            onClick={() => setSelectedUser(u._id)}
+            pointerEvents={
+              u._id !== user._id &&
+              u.status === "alive" &&
+              (gameState.phase.currentPhase !== "night" ||
+                u._id !== user.partnerId)
+                ? "auto"
+                : "none"
+            }
+            opacity={
+              u._id !== user._id &&
+              u.status === "alive" &&
+              (gameState.phase.currentPhase !== "night" ||
+                u._id !== user.partnerId)
+                ? "1"
+                : "0.6"
+            }
           >
-            {currentChannel.users.map((u) => (
-              <Box
-                key={u._id}
-                display="flex"
-                alignItems="center"
-                mb={3}
-                p={3}
-                borderRadius="md"
-                bg={selectedUser === u._id ? "blue.100" : "white"}
-                cursor="pointer"
-                onClick={() => setSelectedUser(u._id)}
-                pointerEvents={
-                  u._id !== user._id &&
-                  u.status === "alive" &&
-                  (gameState.phase.currentPhase !== "night" ||
-                    u._id !== user.partnerId)
-                    ? "auto"
-                    : "none"
-                }
-                opacity={
-                  u._id !== user._id &&
-                  u.status === "alive" &&
-                  (gameState.phase.currentPhase !== "night" ||
-                    u._id !== user.partnerId)
-                    ? "1"
-                    : "0.6"
-                }
-              >
-                <Image
-                  src={u.pic}
-                  alt={u.name}
-                  boxSize={16}
-                  borderRadius="md"
-                  mr={5}
-                />
-                <Text fontSize="lg">{u.name}</Text>
-              </Box>
-            ))}
+            <DisplayUser user={
+              currentChannel.users.find((user) => user._id === u._id)
+            } />
           </Box>
-        </ModalBody>
-        <ModalFooter>
-          <Flex width="100%" justifyContent="space-evenly">
-            <Button onClick={handleOnClose}>Close</Button>
-            {button}
-          </Flex>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+        ))}
+      </Box>
+
+      {button}
+    </ModalBody>
   );
 };
 
-const VoteButton = ({ selectedUser, handleOnClose }) => {
+const VoteButton = ({ selectedUser, onClose }) => {
   const { user, gameState } = useUserState();
   const showToast = useNotification();
 
@@ -155,26 +99,24 @@ const VoteButton = ({ selectedUser, handleOnClose }) => {
         showToast("投票しました", "success");
       } catch (error) {
         showToast(error?.response?.data?.error || "投票に失敗しました", "error");
-      } finally{
-        handleOnClose();
+      } finally {
+        onClose();
       }
     } else {
       showToast("投票先が選択されていません", "warning");
     }
-  }, [selectedUser, user.token, gameState.gameId, showToast, handleOnClose]);
+  }, [selectedUser, user.token, gameState.gameId, showToast, onClose]);
 
   return (
-    <Button
-      colorScheme="twitter"
+    <ModalButton
+      innerText={"投票"}
       onClick={handleSubmit}
-      isDisabled={!selectedUser}
-    >
-      投票
-    </Button>
+      disableCondition={!selectedUser}
+    />
   );
 };
 
-const FortuneButton = ({ selectedUser, handleOnClose }) => {
+const FortuneButton = ({ selectedUser, onClose }) => {
   const { user, gameState } = useUserState();
   const showToast = useNotification();
 
@@ -195,25 +137,23 @@ const FortuneButton = ({ selectedUser, handleOnClose }) => {
       } catch (error) {
         showToast(error?.response?.data?.error || "送信に失敗しました", "error");
       } finally {
-        handleOnClose();
+        onClose();
       }
     } else {
       showToast("占い先が選択されていません", "warning");
     }
-  }, [selectedUser, user.token, gameState.gameId, showToast, handleOnClose]);
+  }, [selectedUser, user.token, gameState.gameId, showToast, onClose]);
 
   return (
-    <Button
-      colorScheme="twitter"
+    <ModalButton
+      innerText={"占う"}
       onClick={handleSubmit}
-      isDisabled={!selectedUser}
-    >
-      占う
-    </Button>
+      disableCondition={!selectedUser}
+    />
   );
 };
 
-const GuardButton = ({ selectedUser, handleOnClose }) => {
+const GuardButton = ({ selectedUser, onClose }) => {
   const { user, gameState } = useUserState();
   const showToast = useNotification();
 
@@ -234,25 +174,23 @@ const GuardButton = ({ selectedUser, handleOnClose }) => {
       } catch (error) {
         showToast(error?.response?.data?.error || "送信に失敗しました", "error");
       } finally {
-        handleOnClose();
+        onClose();
       }
     } else {
       showToast("護衛先が選択されていません", "warning");
     }
-  }, [selectedUser, user.token, gameState.gameId, showToast, handleOnClose]);
+  }, [selectedUser, user.token, gameState.gameId, showToast, onClose]);
 
   return (
-    <Button
-      colorScheme="twitter"
+    <ModalButton
+      innerText={"護衛する"}
       onClick={handleSubmit}
-      isDisabled={!selectedUser}
-    >
-      護衛する
-    </Button>
+      disableCondition={!selectedUser}
+    />
   );
 };
 
-const AttackButton = ({ selectedUser, handleOnClose }) => {
+const AttackButton = ({ selectedUser, onClose }) => {
   const { user, gameState } = useUserState();
   const showToast = useNotification();
 
@@ -273,21 +211,19 @@ const AttackButton = ({ selectedUser, handleOnClose }) => {
       } catch (error) {
         showToast(error?.response?.data?.error || "送信に失敗しました", "error");
       } finally {
-        handleOnClose();
+        onClose();
       }
     } else {
       showToast("襲撃先が選択されていません", "warning");
     }
-  }, [selectedUser, user.token, gameState.gameId, showToast, handleOnClose]);
+  }, [selectedUser, user.token, gameState.gameId, showToast, onClose]);
 
   return (
-    <Button
-      colorScheme="twitter"
+    <ModalButton
+      innerText={"襲撃する"}
       onClick={handleSubmit}
-      isDisabled={!selectedUser}
-    >
-      襲撃する
-    </Button>
+      disableCondition={!selectedUser}
+    />
   );
 };
 

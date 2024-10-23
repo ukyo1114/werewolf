@@ -1,24 +1,29 @@
-import { Text,  Avatar } from "@chakra-ui/react";
+import { Box, Text,  Avatar } from "@chakra-ui/react";
+import { StyledDivider } from "./CustomComponents";
 
-const DisplayUser = ({ user }) => {
+const DisplayUser = ({ children, user }) => {
   return (
-    <>
+    <Box display="flex" alignItems={children ? "flex-start" : "center"}>
       <Avatar
         size="lg"
         name={user.name}
         src={user.pic}
         borderRadius="lg"
-        mr={5}
+        mt={children && 1}
+        mr={4}
       />
-      
-      <Text fontSize="lg">{user.name}</Text>
-
+      <Box display="flex" flexDir="column" width="100%">
+        <Text fontSize="lg">{user.name}</Text>
+        {children && <StyledDivider />}
+        {children}
+      </Box>
+{/* 
       {user.status && (
         <Text fontSize="lg">
           {user.status === "alive" ? "生存" : "死亡"}
         </Text>
-      )}
-    </>
+      )} */}
+    </ Box>
   )
 };
 

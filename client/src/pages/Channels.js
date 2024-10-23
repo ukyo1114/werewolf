@@ -18,7 +18,7 @@ const Channels = () => {
         height="100vh"
       >
         {currentChannel ?
-          <Channel /> : <ChannelList />
+          <Channel key={currentChannel._id} /> : <ChannelList />
         }
       </Box>
     </div>

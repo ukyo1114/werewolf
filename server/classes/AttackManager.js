@@ -11,8 +11,8 @@ class AttackManager {
 
   receiveAttackTarget(playerId, targetId) {
     const { currentDay, currentPhase } = this.phase;
-    const werewolf = this.players.get(playerId);
-    const target = this.players.get(targetId);
+    const werewolf = this.players.players.get(playerId);
+    const target = this.players.players.get(targetId);
 
     if (
       currentPhase !== "night" ||
@@ -45,7 +45,7 @@ class AttackManager {
 
   getAttackHistory(playerId) {
     const { currentDay, currentPhase } = this.phase;
-    const werewolf = this.players.get(playerId);
+    const werewolf = this.players.players.get(playerId);
     if (werewolf?.role !== "werewolf" || currentPhase === "pre") return null;
 
     const attackHistory = {};

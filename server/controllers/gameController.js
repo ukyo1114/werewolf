@@ -33,6 +33,7 @@ const getGame = (req, res, next) => {
 
 const getPlayerState = (req, res) => {
   const { playerId, game } = req;
+  
   try {
     const playerState = game.players.getPlayerState(playerId);
     if (!playerState) throw new CustomError(404, errors.PLAYER_NOT_FOUND);

@@ -22,7 +22,7 @@ const buildMessageQuery = async (channelId, messageId, userId) => {
 async function getReceiveMessageType(channelId, userId) {
   const game = games[channelId];
   if (!game) return null;
-  const player = game.players.get(userId);
+  const player = game.players.players.get(userId);
   return receiveMessageTypeForPl(player);
 }
 
@@ -38,7 +38,7 @@ const getSendMessageType = async (channelId, userId) => {
   const game = games[channelId];
   if (!game)  throw new CustomError(403, errors.CHANNEL_ACCESS_FORBIDDEN);
 
-  const player = game.players.get(userId);
+  const player = game.players.players.get(userId);
   const currentPhase = game.phase.currentPhase;
   
   return sendMessageTypeForPl(player, currentPhase);
