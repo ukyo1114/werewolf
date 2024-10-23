@@ -15,7 +15,7 @@ import ModalTemplete from "./ModalTemplete";
 let entrySocket;
 
 const EntryCounter = () => {
-  const { user, currentChannel, setCurrentChannel } = useUserState();
+  const { user, currentChannel, setCurrentChannel, setGameState } = useUserState();
   const [users, setUsers] = useState([]);
   const [entryButtonState, setEntryButtonState] = useState(false);
   const toast = useToast();
@@ -53,7 +53,9 @@ const EntryCounter = () => {
     });
 
     entrySocket.on("gameStart", (game) => {
+      console.log("gameStart", game);
       setCurrentChannel(game);
+      setGameState({ gameId: game._id });
     });
 
     entrySocket.on("connect_error", (err) => {
@@ -69,7 +71,7 @@ const EntryCounter = () => {
     return () => {
       entrySocket.disconnect();
     };
-  }, [user.token, currentChannel._id, toast, setCurrentChannel]);
+  }, [user.token, currentChannel._id, toast, setCurrentChannel, setGameState]);
 
   useEffect(() => {
     if (users.some((u) => u === user._id)) {
@@ -107,6 +109,7 @@ const EntryCounter = () => {
           <ChevronDownIcon ml={1} />
         </Text>
         <Button
+          data-testid="entry-button" // テスト用
           colorScheme={entryButtonState ? "pink" : "teal"}
           onClick={() =>
             entryButtonState
@@ -123,13 +126,12 @@ const EntryCounter = () => {
           isOpen={userList.isOpen}
           onClose={userList.onClose}
           title={"エントリー中のユーザー"}
-          Contents={UserList}
-          contentsProps={{
-            userList: currentChannel.users.filter((user) =>
-              users.some((u) => u === user._id),
-            ) 
-          }}
-        />
+        >
+          <UserList userList={currentChannel.users.filter((user) =>
+              users.some((u) => u === user._id))
+            }
+          />
+        </ModalTemplete>
       )}
     </Box>
   );

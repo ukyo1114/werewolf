@@ -81,6 +81,7 @@ const ChannelList = () => {
 
               return (
                 <Box
+                  data-key={channel._id} // テスト用
                   onClick={() => handleChannelSelect(channel)}
                   cursor="pointer"
                   bg={channel.users.includes(user._id) ? "#E17875" : "#2B2024"}
@@ -125,9 +126,9 @@ const ChannelList = () => {
             isOpen={channelInfo.isOpen}
             onClose={channelInfo.onClose}
             title={"チャンネル情報"}
-            Contents={ChannelInfo}
-            contentsProps={{ selectedChannel }}
-          />
+          >
+            <ChannelInfo selectedChannel={selectedChannel} />
+          </ModalTemplete>
         )}
       </Box>
     </>

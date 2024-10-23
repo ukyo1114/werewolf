@@ -4,7 +4,8 @@ import { FaUsers } from "react-icons/fa";
 import { useUserState } from "../../context/userProvider";
 import UserList from "../miscellaneous/UserList";
 import VoteModal from "./VoteModal";
-import VoteHistoryModal from "./VoteHistoryModal";
+import VoteHistoryTabs from "./voteHistory/VoteHistory";
+import ModalTemplete from "../miscellaneous/ModalTemplete";
 
 const GameSidebar = () => {
   const { user, currentChannel, gameState } = useUserState();
@@ -34,23 +35,30 @@ const GameSidebar = () => {
   }, [setVoteHistoryModalMode, user.role]);
 
   return (
-    <Box display="flex" flexDirection="column">
-      <Tooltip label="ユーザーリスト" hasArrow placement="bottom-end">
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems={{ base: 'center', lg: 'flex-start' }}
+      width="100%"
+    >
+      <Tooltip label="ユーザーリスト" placement="bottom-end">
         <Button variant="ghost" my={2} onClick={userList.onOpen}>
-          <FaUsers size="30px" />
-          <Text display={{ base: "none", lg: "flex" }} ml={3}>
+          <FaUsers size="30px" color="#E17875" />
+          <Text fontSize="lg" display={{ base: "none", lg: "flex" }} ml={3}>
             ユーザーリスト
           </Text>
         </Button>
       </Tooltip>
 
-      <UserList
+      <ModalTemplete
         isOpen={userList.isOpen}
         onClose={userList.onClose}
-        userList={currentChannel.users}
-      />
+        title={"ユーザーリスト"}
+      >
+        <UserList userList={currentChannel.users} />
+      </ModalTemplete>
 
-      <Tooltip label="投票" hasArrow placement="bottom-end">
+      <Tooltip label="投票" placement="bottom-end">
         <Button
           variant="ghost"
           my={2}
@@ -60,50 +68,48 @@ const GameSidebar = () => {
             user.status !== "alive"
           }
         >
-          <FaUsers size="30px" />
-          <Text display={{ base: "none", lg: "flex" }} ml={3}>
+          <FaUsers size="30px" color="#E17875" />
+          <Text fontSize="lg" display={{ base: "none", lg: "flex" }} ml={3}>
             投票
           </Text>
         </Button>
       </Tooltip>
 
-      <Tooltip label="占い" hasArrow placement="bottom-end">
+      <Tooltip label="占い" placement="bottom-end">
         <Button
           variant="ghost"
           my={2}
           onClick={() => handleVoteModalOpen("fortune")}
           isDisabled={
             gameState.phase?.currentPhase !== "night" ||
-            user.status !== "alive" ||
-            user.role !== "seer"
+            user.status !== "alive" || user.role !== "seer"
           }
         >
-          <FaUsers size="30px" />
-          <Text display={{ base: "none", lg: "flex" }} ml={3}>
+          <FaUsers size="30px" color="#E17875" />
+          <Text fontSize="lg" display={{ base: "none", lg: "flex" }} ml={3}>
             占い
           </Text>
         </Button>
       </Tooltip>
 
-      <Tooltip label="護衛" hasArrow placement="bottom-end">
+      <Tooltip label="護衛" placement="bottom-end">
         <Button
           variant="ghost"
           my={2}
           onClick={() => handleVoteModalOpen("guard")}
           isDisabled={
             gameState.phase?.currentPhase !== "night" ||
-            user.status !== "alive" ||
-            user.role !== "hunter"
+            user.status !== "alive" || user.role !== "hunter"
           }
         >
-          <FaUsers size="30px" />
-          <Text display={{ base: "none", lg: "flex" }} ml={3}>
+          <FaUsers size="30px" color="#E17875" />
+          <Text fontSize="lg" display={{ base: "none", lg: "flex" }} ml={3}>
             護衛
           </Text>
         </Button>
       </Tooltip>
 
-      <Tooltip label="襲撃" hasArrow placement="bottom-end">
+      <Tooltip label="襲撃" placement="bottom-end">
         <Button
           variant="ghost"
           my={2}
@@ -114,21 +120,37 @@ const GameSidebar = () => {
             user.role !== "werewolf"
           }
         >
-          <FaUsers size="30px" />
-          <Text display={{ base: "none", lg: "flex" }} ml={3}>
+          <FaUsers size="30px" color="#E17875" />
+          <Text fontSize="lg" display={{ base: "none", lg: "flex" }} ml={3}>
             襲撃
           </Text>
         </Button>
       </Tooltip>
-      {gameState.phase && (
-        <VoteModal
-          isOpen={voteModal.isOpen}
-          onClose={voteModal.onClose}
-          mode={mode}
-        />
-      )}
+
+      {
+        gameState.phase && (() => {
+          // JSXの外で変数を定義
+          const titleSet = {
+            vote: "投票先を選択",
+            fortune: "占い先を選択",
+            guard: "護衛先を選択",
+            attack: "襲撃先を選択",
+          };
+
+          // JSXの返却
+          return (
+            <ModalTemplete
+              isOpen={voteModal.isOpen}
+              onClose={voteModal.onClose}
+              title={titleSet[mode]}
+            >
+              <VoteModal mode={mode} onClose={voteModal.onClose} />
+            </ModalTemplete>
+          );
+        })()
+      }
       
-      <Tooltip label="投票履歴" hasArrow placement="bottom-end">
+      <Tooltip label="投票履歴" placement="bottom-end">
         <Button
           variant="ghost"
           my={2}
@@ -137,17 +159,19 @@ const GameSidebar = () => {
             gameState.phase && gameState.phase.currentPhase === "pre"
           }
         >
-          <FaUsers size="30px" />
-          <Text display={{ base: "none", lg: "flex" }} ml={3}>
+          <FaUsers size="30px" color="#E17875" />
+          <Text fontSize="lg" display={{ base: "none", lg: "flex" }} ml={3}>
             投票履歴
           </Text>
         </Button>
       </Tooltip>
-      <VoteHistoryModal
+
+      <ModalTemplete
         isOpen={vHistoryModal.isOpen}
         onClose={vHistoryModal.onClose}
-        mode={voteHistoryModalMode}
-      />
+      >
+        <VoteHistoryTabs mode={voteHistoryModalMode} />
+      </ModalTemplete>
     </Box>
   );
 };

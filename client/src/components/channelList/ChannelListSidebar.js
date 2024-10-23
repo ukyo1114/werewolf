@@ -31,8 +31,9 @@ const ChannelListSidebar = () => {
         isOpen={createChModal.isOpen}
         onClose={createChModal.onClose}
         title={"チャンネル作成"}
-        Contents={CreateChannel}
-      />
+      >
+        <CreateChannel />
+      </ModalTemplete>
     </Box>
   );
 };

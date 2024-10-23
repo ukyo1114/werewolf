@@ -10,8 +10,8 @@ class FortuneManager {
 
   receiveFortuneTarget(playerId, targetId) {
     const { currentDay, currentPhase } = this.phase;
-    const seer = this.players.get(playerId);
-    const target = this.players.get(targetId);
+    const seer = this.players.players.get(playerId);
+    const target = this.players.players.get(targetId);
 
     if (
       currentPhase !== "night" ||
@@ -32,7 +32,7 @@ class FortuneManager {
     const fortuneResult = this.fortuneResult.get(currentDay) ||
       this.getRandomFortuneTarget();
 
-    const target = this.players.get(fortuneResult.playerId);
+    const target = this.players.players.get(fortuneResult.playerId);
 
     fortuneResult.team =
       target.role !== "werewolf" ? "villagers" : "werewolves";
@@ -55,7 +55,7 @@ class FortuneManager {
 
   getFortuneResult(playerId) {
     const { currentDay, currentPhase } = this.phase;
-    const seer = this.players.get(playerId);
+    const seer = this.players.players.get(playerId);
     if (seer?.role !== "seer" || currentPhase === "pre") return null;
 
     const fortuneResult = {};

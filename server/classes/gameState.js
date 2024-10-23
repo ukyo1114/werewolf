@@ -25,6 +25,7 @@ class GameState {
     this.guard = new GuardManager(this.players, this.phase);    
     this.attack = new AttackManager(this.players, this.phase, this.guard);
     this.isProcessing = false;
+    this.registerListeners();
   }
 
   static createGame(game) {
@@ -33,8 +34,8 @@ class GameState {
   }
 
   registerListeners() {
-    this.eventEmitter.on("timerEnd", this.handleTimerEnd);
-    this.eventEmitter.on("phaseSwitched", this.handlePhaseSwitched);
+    this.eventEmitter.on("timerEnd", () => this.handleTimerEnd());
+    this.eventEmitter.on("phaseSwitched", () => this.handlePhaseSwitched());
   }
 
   handleTimerEnd() {
@@ -118,7 +119,7 @@ class GameState {
   }
 
   static isUserInGame(userId) {
-    const game = Object.values(games).find((game) => game.players.has(userId));
+    const game = Object.values(games).find((game) => game.players.players.has(userId));
     return !!game && game.result === "running";
   }
 }

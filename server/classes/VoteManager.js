@@ -11,7 +11,7 @@ class VoteManager {
   receiveVote(vote) {
     const { voter, votee } = vote;
     const { currentDay, currentPhase } = this.phase;
-    const player = this.players.get(voter);
+    const player = this.players.players.get(voter);
 
     if (player?.status !== "alive" || currentPhase !== "day") {
       throw new Error(errors.INVALID_VOTE);

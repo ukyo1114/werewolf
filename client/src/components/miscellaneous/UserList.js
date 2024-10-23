@@ -1,9 +1,10 @@
 import React from "react";
-import { Box,  ModalBody, Text } from "@chakra-ui/react";
+import { Box, ModalBody } from "@chakra-ui/react";
 import "../styles.css";
 import DisplayUser from "./DisplayUser";
+import { StyledBox, StyledText } from "./CustomComponents";
 
-const UserList = ({ userList }) => {
+const UserList = ({ children, userList }) => {
   return (
     <ModalBody>
       <Box
@@ -14,29 +15,19 @@ const UserList = ({ userList }) => {
         h="100%"
         borderRadius="lg"
         mb={4}
+        maxHeight="800px"
+        overflowY="auto"
       >
         {userList.length > 0 ? (
           userList.map((user) => (
-            <Box 
-              key={user._id}
-              display="flex"
-              alignItems="center"
-              p={3}
-              mb={3}
-              borderRadius="lg"
-              bg="#3B2C2F"
-            >
-              <DisplayUser user={user} />
-            </Box>
+            <StyledBox key={user._id}>
+              <DisplayUser user={user}>
+                {children}
+              </DisplayUser>
+            </StyledBox>
           ))
         ) : (
-          <Text
-            fontSize="lg"
-            bg="#3B2C2F"
-            borderRadius="lg"
-            p={3}
-            textAlign="center" 
-          >ユーザーがいません</Text>
+          <StyledText>ユーザーがいません</StyledText>
         )}
       </Box>
     </ModalBody>

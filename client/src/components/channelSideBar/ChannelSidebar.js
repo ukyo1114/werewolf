@@ -64,15 +64,13 @@ const ChannelSidebar = () => {
         </Button>
       </Tooltip>
 
-      {currentChannel && (
-        <ModalTemplete
-          isOpen={userListModal.isOpen}
-          onClose={userListModal.onClose}
-          title={"ユーザーリスト"}
-          Contents={UserList}
-          contentsProps={{ userList: currentChannel.users }}
-        />
-      )}
+      <ModalTemplete
+        isOpen={userListModal.isOpen}
+        onClose={userListModal.onClose}
+        title={"ユーザーリスト"}
+      >
+        <UserList userList={currentChannel.users} />
+      </ModalTemplete>
 
       <Tooltip label="観戦" placement="bottom-end">
         <Button variant="ghost" my={2}>
@@ -121,11 +119,9 @@ const ChannelSidebar = () => {
       </Tooltip>
 
       {currentChannel && isAdmin && (
-        <ModalTemplete
-          isOpen={blockModal.isOpen}
-          onClose={blockModal.onClose}
-          Contents={BlockModal}
-        />
+        <ModalTemplete isOpen={blockModal.isOpen} onClose={blockModal.onClose}>
+          <BlockModal />
+        </ModalTemplete>
       )}
 
       <Tooltip label="チャンネル設定" placement="bottom-end">
@@ -146,8 +142,9 @@ const ChannelSidebar = () => {
           isOpen={chSettingsModal.isOpen}
           onClose={chSettingsModal.onClose}
           title={"チャンネル設定"}
-          Contents={ChannelSettingsModal}
-        />
+        >
+          <ChannelSettingsModal />
+        </ModalTemplete>
       )}
     </Box>
   );

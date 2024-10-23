@@ -8,7 +8,7 @@ import {
 } from "@chakra-ui/react";
 import "../styles.css";
 
-const ModalTemplete = ({ isOpen, onClose, title, Contents, contentsProps }) => {
+const ModalTemplete = ({ children, isOpen, onClose, title }) => {
   return (
     <Modal
       isOpen={isOpen}
@@ -21,6 +21,8 @@ const ModalTemplete = ({ isOpen, onClose, title, Contents, contentsProps }) => {
         borderWidth={2}
         borderColor="#E17875"
         boxShadow="0px 0px 15px 5px rgba(255, 255, 255, 0.1)"
+        maxHeight="1000px"
+        overflowY="auto"
       >
         <ModalHeader
           display="flex"
@@ -35,7 +37,7 @@ const ModalTemplete = ({ isOpen, onClose, title, Contents, contentsProps }) => {
           color="#ff94b1"
           _hover={{ bg: "#3B2C2F" }}
         />
-        {Contents && <Contents {...contentsProps} />}
+        {children}
       </ModalContent>
     </Modal>
   );

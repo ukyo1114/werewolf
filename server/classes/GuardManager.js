@@ -10,8 +10,8 @@ class GuardManager {
 
   receiveGuardTarget(playerId, targetId) {
     const { currentDay, currentPhase } = this.phase;
-    const hunter = this.players.get(playerId);
-    const target = this.players.get(targetId);
+    const hunter = this.players.players.get(playerId);
+    const target = this.players.players.get(targetId);
 
     if (
       currentPhase !== "night" ||
@@ -45,7 +45,7 @@ class GuardManager {
 
   getGuardHistory(playerId) {
     const { currentDay, currentPhase } = this.phase;
-    const hunter = this.players.get(playerId);
+    const hunter = this.players.players.get(playerId);
     if (hunter?.role !== "hunter" || currentPhase === "pre") return null;
 
     const guardHistory = {};

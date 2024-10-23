@@ -91,6 +91,7 @@ const ChannelInfo = ({ selectedChannel }) => {
       
       <ModalFooter justifyContent="center">
           <Button
+            data-testid="enter-button" // テスト用
             colorScheme={
               selectedChannel.blockUsers.some((u) => u === user._id) ? "pink" : "teal"
             }
