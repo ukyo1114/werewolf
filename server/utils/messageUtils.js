@@ -4,6 +4,7 @@ const Game = require("../models/gameModel");
 const CustomError = require("../classes/CustomError");
 const { errors } = require("../messages");
 const { games } = require("../classes/GameState");
+const _ = require('lodash');
 
 const buildMessageQuery = async (channelId, messageId, userId) => {
   const query = { channel: channelId };
@@ -68,10 +69,21 @@ async function isUserInChannel(channelId, userId) {
   if (!exists) throw new CustomError(403, errors.CHANNEL_ACCESS_FORBIDDEN);
 };
 
+const usersCanReceive = (channelId, messageType) => {
+  const game = games[channelId];
+  if (!game) return null;
+  const spectator = game.players.getDeadPlayers();
+  const werewolf = game.players.getWerewolves();
+
+  if (messageType === "spectator") return spectator;
+  if (messageType === "werewolf") return _.union(spectator, werewolf);
+};
+
 module.exports = {
   buildMessageQuery,
   getSendMessageType,
   canUserAccessChannel,
+  usersCanReceive,
 };
 
 // テスト済み

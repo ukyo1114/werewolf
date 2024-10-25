@@ -1,9 +1,9 @@
 class PhaseManager {
   static phaseDurations = {
-    pre     : 30,
-    day     : 10 * 60,
-    night   : 3 * 60,
-    finished: 10 * 60,
+    pre     : 10, // 30秒に戻す
+    day     : 30, // 10分に戻す
+    night   : 30, // 3分に戻す
+    finished: 10 //, 10分に戻す
   };
 
   constructor(eventEmitter, result) {
@@ -31,7 +31,8 @@ class PhaseManager {
   
   nextPhase() {
     this.changedAt = new Date();
-    if (this.result !== "running") return this.currentPhase = "finished";
+    console.log("nextPhase", this.result.value);
+    if (this.result.value !== "running") return this.currentPhase = "finished";
 
     if (this.currentPhase === "day") {
       this.currentPhase = "night";

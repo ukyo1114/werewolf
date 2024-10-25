@@ -1,16 +1,6 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
-import {
-  Box,
-  Divider,
-  Flex,
-  Text,
-  FormControl,
-  Spinner,
-  Avatar,
-  Textarea,
-} from "@chakra-ui/react";
+import { Box, Divider, FormControl, Spinner, Textarea } from "@chakra-ui/react";
 import { useUserState } from "../../context/userProvider";
-import "../styles.css";
 import ChannelSidebar from "../channelSideBar/ChannelSidebar";
 import GameSidebar from "../gameSidebar/GameSidebar";
 import useChatMessages from "../../hooks/chatMessages";
@@ -20,7 +10,9 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { channelValidationSchema } from "../channel/validationSchema";
 import EntryCounter from "./EntryCounter";
 import GameTimer from "./GameTimer";
-import Sidebar from "./SideBar";
+import Sidebar from "../miscellaneous/SideBar";
+import DisplayMessage from "./DisplayMessage";
+import { gameMaster } from "../../gameMaster";
 
 const Channel = () => {
   const [messages, setMessages] = useState([]);
@@ -131,50 +123,23 @@ const Channel = () => {
               margin="auto"
             />
           ) : (
-            <div
-              className="messages custom-scrollbar"
+            <Box
+              display="flex"
+              overflowY="auto"
+              flexDir="column-reverse"
               ref={scrollRef}
               onScroll={handleScroll}
             >
-              {messages &&
-                messages.map((m) => {
-                  const chatUser = currentChannel.users.find((u) => u._id === m.sender);
+              {messages && messages.map((m) => {
+                  const chatUser = (m.sender === gameMaster._id) ? gameMaster :
+                    currentChannel.users.find((u) => u._id === m.sender);
                   if (!chatUser) return null;
 
                   return (
-                    <Box display="flex" key={m._id} my={2} gap={1}>
-                      <Avatar
-                        size="lg"
-                        src={chatUser.pic}
-                        borderRadius="md"
-                      />
-                      <Flex direction="column" width="100%">
-                        <Flex justify="space-between" align="center" width="100%" px={2}>
-                          <Text fontWeight="bold">{chatUser.name}</Text>
-                            <Text fontWeight="bold">
-                              {new Date(m.createdAt).toLocaleString()}
-                          </Text>
-                        </Flex>
-                        <Box
-                          bg={
-                            m.messageType === "werewolf"
-                              ? "#FFCCCB"
-                              : m.messageType === "spectator"
-                                ? "#DBD0D4"
-                                : "white"
-                          }
-                          borderRadius="md"
-                          px={4}
-                          py={2}
-                          width="100%"
-                        >
-                          <Text color="black" whiteSpace="pre-wrap">{m.content}</Text>
-                        </Box>
-                      </Flex>
-                    </Box>
+                    <DisplayMessage key={m._id} message={m} user={chatUser} />
                   );
                 })}
-            </div>
+            </Box>
           )}
           <Formik
             initialValues={{ newMessage: "" }}

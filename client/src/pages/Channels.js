@@ -2,7 +2,7 @@ import React from "react";
 import { useUserState } from "../context/userProvider";
 import { Box } from "@chakra-ui/react";
 import ChannelList from "../components/channelList/ChannelList";
-import Channel from "../components/miscellaneous/Channel";
+import Channel from "../components/channel/Channel";
 
 const Channels = () => {
   const { user, currentChannel } = useUserState();

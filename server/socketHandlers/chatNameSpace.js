@@ -8,6 +8,7 @@ const { userEvents } = require("../controllers/userController");
 
 function chatNameSpaseHandler(io) {
   const chatNameSpace = io.of("/chat");
+  const userSocketMap = {};
 
   chatNameSpace.use(async (socket, next) => {
     const token = socket.handshake.auth.token;
@@ -20,11 +21,9 @@ function chatNameSpaseHandler(io) {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       const user = await User.findById(decoded.id).select("_id");
   
-      if (!user) {
-        return next(new Error(errors.USER_NOT_FOUND));
-      }
+      if (!user) return next(new Error(errors.USER_NOT_FOUND));
   
-      socket.user = user;
+      socket.user = user._id.toString();
       next();
     } catch (error) {
       return next(new Error(errors.INVALID_TOKEN));
@@ -33,6 +32,9 @@ function chatNameSpaseHandler(io) {
 
   chatNameSpace.on("connection", (socket) => {
     console.log("Connected to chatNameSpace !!");
+    const userId = socket.user;
+    userSocketMap[userId] = socket.id;
+
     socket.on("join channel", async (channelId) => {
       socket.join(channelId);
       socket.channelId = channelId;
@@ -40,12 +42,23 @@ function chatNameSpaseHandler(io) {
 
     socket.on("disconnect", async () => {
       console.log("USER DISCONNECTED !");
+      delete userSocketMap[userId];
     });
   });
 
-  channelEvents.on("newMessage", (message) => {
-    const channelId = message.channel.toString();
-    chatNameSpace.to(channelId).emit("messageReceived", message);
+  channelEvents.on("newMessage", (message, users) => {
+    const { channel, messageType } = message;
+    const channelId = channel.toString();
+    console.log("messageType", messageType, "users", users);
+
+    if (messageType === "normal") {
+      chatNameSpace.to(channelId).emit("messageReceived", message);
+    } else {
+      users.forEach((userId) => {
+        const socketId = userSocketMap[userId];
+        chatNameSpace.to(socketId).emit("messageReceived", message);
+      });
+    }
   });
 
   channelEvents.on("user added", (data) => {
@@ -67,10 +80,10 @@ function chatNameSpaseHandler(io) {
     const { channelId, blockUser } = data;
     chatNameSpace.to(channelId).emit("cancelBlockUser", blockUser);
   })
-
+/* 
   userEvents.on("profileUpdated", (user) => {
     // チャンネルをカプセル化したあとでいじる～
-  });
+  }); */
 }
 
 module.exports = { chatNameSpaseHandler, channelEvents };

@@ -1,10 +1,11 @@
 import React from "react";
-import { Box, ModalBody } from "@chakra-ui/react";
+import { Box, Text, ModalBody } from "@chakra-ui/react";
 import "../styles.css";
 import DisplayUser from "./DisplayUser";
 import { StyledBox, StyledText } from "./CustomComponents";
+import { USER_STATUS } from "../../constants";
 
-const UserList = ({ children, userList }) => {
+const UserList = ({ userList }) => {
   return (
     <ModalBody>
       <Box
@@ -22,7 +23,9 @@ const UserList = ({ children, userList }) => {
           userList.map((user) => (
             <StyledBox key={user._id}>
               <DisplayUser user={user}>
-                {children}
+                {user.status && 
+                  <Text>{USER_STATUS[user.status]}</Text>
+                }
               </DisplayUser>
             </StyledBox>
           ))

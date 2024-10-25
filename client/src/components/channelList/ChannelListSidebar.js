@@ -1,40 +1,31 @@
 import React from "react";
-import { Box, Tooltip,  Button, Text, useDisclosure } from "@chakra-ui/react";
+import { useDisclosure } from "@chakra-ui/react";
 import { FaPlus } from "react-icons/fa";
 import CreateChannel from "./CreateChannel";
 import ModalTemplete from "../miscellaneous/ModalTemplete";
+import {
+  SidebarBox,
+  SidebarButton,
+  iconProps,
+} from "../miscellaneous/CustomComponents";
 
 const ChannelListSidebar = () => {
-  const createChModal = useDisclosure();
+  const createChannel = useDisclosure();
 
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      alignItems={{ base: 'center', lg: 'flex-start' }}
-      width="100%"
-    >
-      <Tooltip label="チャンネル作成" placement="bottom-end">
-        <Button
-          variant="ghost"
-          my={2}
-          onClick={createChModal.onOpen}
-        >
-          <FaPlus size="30px" color="#E17875" />
-          <Text fontSize="lg" display={{ base: "none", lg: "flex" }} ml={3}>
-            チャンネル作成
-          </Text>
-        </Button>
-      </Tooltip>
+    <SidebarBox>
+      <SidebarButton label="チャンネル作成" onClick={createChannel.onOpen}>
+        <FaPlus {...iconProps} />
+      </SidebarButton>
 
       <ModalTemplete
-        isOpen={createChModal.isOpen}
-        onClose={createChModal.onClose}
+        isOpen={createChannel.isOpen}
+        onClose={createChannel.onClose}
         title={"チャンネル作成"}
       >
         <CreateChannel />
       </ModalTemplete>
-    </Box>
+    </SidebarBox>
   );
 };
 

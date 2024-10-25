@@ -24,6 +24,7 @@ class PlayerManager {
     users.forEach((user) => {
       this.players.set(user._id.toString(), {
         _id: user._id.toString(),
+        name: user.name,
         status: "alive",
         role: null,
       });
@@ -77,6 +78,19 @@ class PlayerManager {
 
   getPlayersWithoutRole() {
     return Array.from(this.players.values()).map(({ role, ...rest }) => rest);
+  }
+
+  // chatNameSpace
+  getWerewolves() {
+    return Array.from(this.players.values())
+      .filter((pl) => pl.role === "werewolf")
+      .map((pl) => pl._id);
+  }
+
+  getDeadPlayers() {
+    return Array.from(this.players.values())
+      .filter((pl) => pl.status === "dead")
+      .map((pl) => pl._id);
   }
 }
 
