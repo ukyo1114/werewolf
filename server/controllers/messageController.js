@@ -4,6 +4,7 @@ const {
   buildMessageQuery,
   getSendMessageType,
   canUserAccessChannel,
+  usersCanReceive,
 } = require("../utils/messageUtils");
 const { channelEvents } = require("../socketHandlers/chatNameSpace");
 
@@ -12,16 +13,17 @@ const sendMessage = asyncHandler(async (req, res) => {
   const userId = req.user._id.toString();
   await canUserAccessChannel(channelId, userId);
   const messageType = await getSendMessageType(channelId, userId);
+  const users = usersCanReceive(channelId, messageType);
 
   const newMessage = {
-    sender: req.user._id,
+    sender: userId,
     content,
     channel: channelId,
     messageType,
   };
 
   const message = await Message.create(newMessage);
-  channelEvents.emit("newMessage", message);
+  channelEvents.emit("newMessage", message, users);
   
   res.status(201).end();
 });

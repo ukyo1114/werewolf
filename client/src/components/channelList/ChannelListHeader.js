@@ -1,21 +1,12 @@
 import React from "react";
-import {
-  Box,
-  Checkbox,
-} from "@chakra-ui/react";
+import { Text, Checkbox } from "@chakra-ui/react";
+import { ChannelHeader } from "../miscellaneous/CustomComponents";
 
 const ChannelListHeader = ({ showJoinedCh, setShowJoinedCh }) => {
   return (
-    <Box
-      display="flex"
-      justifyContent="space-between"
-      alignItems="center"
-      w="100%"
-      px={4}
-      py={3}
-      fontSize="lg"
-    >
-      <strong>チャンネルリスト</strong>
+    <ChannelHeader>
+      <Text fontSize="lg"><strong>チャンネルリスト</strong></Text>
+
       <Checkbox
         id="isJoined"
         isChecked={showJoinedCh}
@@ -23,7 +14,7 @@ const ChannelListHeader = ({ showJoinedCh, setShowJoinedCh }) => {
       >
         参加中のみ
       </Checkbox>
-    </Box>
+    </ChannelHeader>
   );
 };
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   useToast,
   Box,
@@ -10,9 +10,10 @@ import { useUserState } from "../../context/userProvider";
 import "../styles.css";
 import io from "socket.io-client";
 import { ChevronDownIcon } from "@chakra-ui/icons";
-import UserList from "./UserList";
-import ModalTemplete from "./ModalTemplete";
-let entrySocket;
+import UserList from "../miscellaneous/UserList";
+import ModalTemplete from "../miscellaneous/ModalTemplete";
+import { ChannelHeader } from "../miscellaneous/CustomComponents";
+import useNotification from "../../hooks/notification";
 
 const EntryCounter = () => {
   const { user, currentChannel, setCurrentChannel, setGameState } = useUserState();
@@ -21,16 +22,17 @@ const EntryCounter = () => {
   const toast = useToast();
   const userList = useDisclosure();
 
-  useEffect(() => {
-    entrySocket = io("http://localhost:5000/entry", {
-      auth: {
-        token: user.token,
-      },
-    });
+  const entrySocketRef = useRef(null);
 
-    entrySocket.on("connect", async () => {
+  useEffect(() => {
+    if (entrySocketRef.current) return;
+
+    const auth = { auth: { token: user.token } };
+    entrySocketRef.current = io("http://localhost:5000/entry", auth);
+
+    entrySocketRef.current.on("connect", async () => {
       try {
-        const response = await entrySocket.emitWithAck(
+        const response = await entrySocketRef.current.emitWithAck(
           "joinChannel",
           currentChannel._id,
         );
@@ -44,21 +46,21 @@ const EntryCounter = () => {
           isClosable: true,
           position: "bottom",
         });
-        entrySocket.disconnect();
+        entrySocketRef.current.disconnect();
       }
     });
 
-    entrySocket.on("entryUpdate", (data) => {
+    entrySocketRef.current.on("entryUpdate", (data) => {
       setUsers(data);
     });
 
-    entrySocket.on("gameStart", (game) => {
+    entrySocketRef.current.on("gameStart", (game) => {
       console.log("gameStart", game);
       setCurrentChannel(game);
       setGameState({ gameId: game._id });
     });
 
-    entrySocket.on("connect_error", (err) => {
+    entrySocketRef.current.on("connect_error", (err) => {
       toast({
         title: err.message,
         status: "error",
@@ -69,7 +71,7 @@ const EntryCounter = () => {
     });
 
     return () => {
-      entrySocket.disconnect();
+      entrySocketRef.current.disconnect();
     };
   }, [user.token, currentChannel._id, toast, setCurrentChannel, setGameState]);
 
@@ -82,15 +84,9 @@ const EntryCounter = () => {
   }, [users, user, setEntryButtonState]);
 
   return (
-    <Box
-      display="flex"
-      justifyContent="space-between"
-      alignItems="center"
-      w="100%"
-      px={4}
-      py={3}
-    >
+    <ChannelHeader>
       <Text fontSize="lg"><strong>{currentChannel.channelName}</strong></Text>
+      
       <Box display="flex" alignItems="center">
         <Text
           fontSize="lg"
@@ -113,8 +109,8 @@ const EntryCounter = () => {
           colorScheme={entryButtonState ? "pink" : "teal"}
           onClick={() =>
             entryButtonState
-              ? entrySocket.emit("cancelEntry")
-              : entrySocket.emit("registerEntry", user)
+              ? entrySocketRef.current.emit("cancelEntry")
+              : entrySocketRef.current.emit("registerEntry", user)
           }
         >
           {entryButtonState ? "取消" : "参加"}
@@ -133,7 +129,7 @@ const EntryCounter = () => {
           />
         </ModalTemplete>
       )}
-    </Box>
+    </ChannelHeader>
   );
 };
 

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+// import axios from "axios";
 import {
   Box,
   Button,
@@ -13,36 +13,12 @@ import {
 } from "@chakra-ui/react";
 import "../styles.css";
 import { useUserState } from "../../context/userProvider";
-import useNotification from "../../hooks/notification";
-import { errors } from "../../messages";
+import { useEnterToChannel } from "../../hooks/useEnterToChannel";
 
 const ChannelInfo = ({ selectedChannel }) => {
-  const { user, setCurrentChannel } = useUserState();
+  const { user } = useUserState();
   const [password, setPassword] = useState("");
-  const showToast = useNotification();
-
-  const handleOnClick = async () => {
-    if (selectedChannel.blockUsers.some((u) => u === user._id)) {
-      showToast(errors.USER_BLOCKED, "error");
-      return;
-    }
-
-    try {
-      const config = { headers: { Authorization: `Bearer ${user.token}` } };
-
-      const { data } = await axios.post(
-        "/api/channel/enter",
-        {
-          channelId: selectedChannel._id,
-          password: password,
-        },
-        config,
-      );
-      setCurrentChannel(data);
-    } catch (error) {
-      showToast(error?.response?.data?.error || errors.CHANNEL_ENTER_FAILED, "error");
-    }
-  };
+  const enterToChannel = useEnterToChannel();
 
   return (
     <>        
@@ -96,7 +72,7 @@ const ChannelInfo = ({ selectedChannel }) => {
               selectedChannel.blockUsers.some((u) => u === user._id) ? "pink" : "teal"
             }
             width="100%"
-            onClick={handleOnClick}
+            onClick={() => enterToChannel(selectedChannel._id, password)}
             isDisabled={selectedChannel.blockUsers.some(
               (u) => u === user._id,
             )}

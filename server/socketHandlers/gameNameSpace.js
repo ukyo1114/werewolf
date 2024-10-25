@@ -36,7 +36,7 @@ function gameNameSpaceHandler(io) {
       const gameState = game.getGameState();
 
       socket.join(gameId);
-      callback({ gameState: gameState });
+      callback({ gameState });
     });
   });
 

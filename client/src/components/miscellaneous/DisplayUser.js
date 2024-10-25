@@ -3,7 +3,7 @@ import { StyledDivider } from "./CustomComponents";
 
 const DisplayUser = ({ children, user }) => {
   return (
-    <Box display="flex" alignItems={children ? "flex-start" : "center"}>
+    <Box display="flex" width="100%" alignItems={children ? "flex-start" : "center"}>
       <Avatar
         size="lg"
         name={user.name}

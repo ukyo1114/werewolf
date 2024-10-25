@@ -1,14 +1,21 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { Box, Tooltip, Button, Text, useDisclosure } from "@chakra-ui/react";
-import { FaUsers } from "react-icons/fa";
+import { useDisclosure } from "@chakra-ui/react";
+import { FaUsers, FaArrowLeft } from "react-icons/fa";
 import { useUserState } from "../../context/userProvider";
 import UserList from "../miscellaneous/UserList";
 import VoteModal from "./VoteModal";
 import VoteHistoryTabs from "./voteHistory/VoteHistory";
 import ModalTemplete from "../miscellaneous/ModalTemplete";
+import {
+  SidebarBox,
+  SidebarButton,
+  iconProps,
+} from "../miscellaneous/CustomComponents";
+import { TITLE_MAP, MODE_MAP } from "../../constants";
+import { useEnterToChannel } from "../../hooks/useEnterToChannel";
 
 const GameSidebar = () => {
-  const { user, currentChannel, gameState } = useUserState();
+  const { user, currentChannel, gameState, setGameState } = useUserState();
   const userList = useDisclosure();
   const voteModal = useDisclosure();
   const vHistoryModal = useDisclosure();
@@ -16,103 +23,64 @@ const GameSidebar = () => {
   const [mode, setMode] = useState("");
   const [voteHistoryModalMode, setVoteHistoryModalMode] = useState("");
 
-  const handleVoteModalOpen = useCallback(
-    (str) => {
-      setMode(str);
-      voteModal.onOpen();
-    },
-    [setMode, voteModal],
-  );
+  const enterToChannel = useEnterToChannel();
+
+  const handleVoteModalOpen = useCallback((str) => {
+    setMode(str);
+    voteModal.onOpen();
+  }, [setMode, voteModal]);
+
+  const backToChannel = useCallback(async () => {
+    await enterToChannel(currentChannel.channel);
+    setGameState(null);
+  }, [currentChannel.channel, enterToChannel, setGameState]);
 
   useEffect(() => {
-    const modeSet = {
-      seer: "fortune",
-      medium: "medium",
-      hunter: "guard",
-      werewolf: "attack",
-    };
-    setVoteHistoryModalMode(modeSet[user.role] || "others");
+    setVoteHistoryModalMode(MODE_MAP[user.role] || "others");
   }, [setVoteHistoryModalMode, user.role]);
 
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      alignItems={{ base: 'center', lg: 'flex-start' }}
-      width="100%"
-    >
-      <Tooltip label="ユーザーリスト" placement="bottom-end">
-        <Button variant="ghost" my={2} onClick={userList.onOpen}>
-          <FaUsers size="30px" color="#E17875" />
-          <Text fontSize="lg" display={{ base: "none", lg: "flex" }} ml={3}>
-            ユーザーリスト
-          </Text>
-        </Button>
-      </Tooltip>
+    <>
+      <SidebarBox>
+        <SidebarButton label="ユーザーリスト" onClick={userList.onOpen}>
+          <FaUsers {...iconProps} />
+        </SidebarButton>
 
-      <ModalTemplete
-        isOpen={userList.isOpen}
-        onClose={userList.onClose}
-        title={"ユーザーリスト"}
-      >
-        <UserList userList={currentChannel.users} />
-      </ModalTemplete>
-
-      <Tooltip label="投票" placement="bottom-end">
-        <Button
-          variant="ghost"
-          my={2}
+        <SidebarButton
+          label="投票"
           onClick={() => handleVoteModalOpen("vote")}
           isDisabled={
             gameState.phase?.currentPhase !== "day" ||
             user.status !== "alive"
           }
         >
-          <FaUsers size="30px" color="#E17875" />
-          <Text fontSize="lg" display={{ base: "none", lg: "flex" }} ml={3}>
-            投票
-          </Text>
-        </Button>
-      </Tooltip>
+          <FaUsers {...iconProps} />
+        </SidebarButton>
 
-      <Tooltip label="占い" placement="bottom-end">
-        <Button
-          variant="ghost"
-          my={2}
+        <SidebarButton
+          label="占い"
           onClick={() => handleVoteModalOpen("fortune")}
           isDisabled={
             gameState.phase?.currentPhase !== "night" ||
             user.status !== "alive" || user.role !== "seer"
           }
         >
-          <FaUsers size="30px" color="#E17875" />
-          <Text fontSize="lg" display={{ base: "none", lg: "flex" }} ml={3}>
-            占い
-          </Text>
-        </Button>
-      </Tooltip>
+          <FaUsers {...iconProps} />
+        </SidebarButton>
 
-      <Tooltip label="護衛" placement="bottom-end">
-        <Button
-          variant="ghost"
-          my={2}
+        <SidebarButton
+          label="護衛"
           onClick={() => handleVoteModalOpen("guard")}
           isDisabled={
             gameState.phase?.currentPhase !== "night" ||
             user.status !== "alive" || user.role !== "hunter"
           }
         >
-          <FaUsers size="30px" color="#E17875" />
-          <Text fontSize="lg" display={{ base: "none", lg: "flex" }} ml={3}>
-            護衛
-          </Text>
-        </Button>
-      </Tooltip>
+          <FaUsers {...iconProps} />
+        </SidebarButton>
 
-      <Tooltip label="襲撃" placement="bottom-end">
-        <Button
-          variant="ghost"
-          my={2}
+        <SidebarButton
+          label="襲撃"
           onClick={() => handleVoteModalOpen("attack")}
           isDisabled={
             gameState.phase?.currentPhase !== "night" ||
@@ -120,51 +88,40 @@ const GameSidebar = () => {
             user.role !== "werewolf"
           }
         >
-          <FaUsers size="30px" color="#E17875" />
-          <Text fontSize="lg" display={{ base: "none", lg: "flex" }} ml={3}>
-            襲撃
-          </Text>
-        </Button>
-      </Tooltip>
+          <FaUsers {...iconProps} />
+        </SidebarButton>
 
-      {
-        gameState.phase && (() => {
-          // JSXの外で変数を定義
-          const titleSet = {
-            vote: "投票先を選択",
-            fortune: "占い先を選択",
-            guard: "護衛先を選択",
-            attack: "襲撃先を選択",
-          };
 
-          // JSXの返却
-          return (
-            <ModalTemplete
-              isOpen={voteModal.isOpen}
-              onClose={voteModal.onClose}
-              title={titleSet[mode]}
-            >
-              <VoteModal mode={mode} onClose={voteModal.onClose} />
-            </ModalTemplete>
-          );
-        })()
-      }
-      
-      <Tooltip label="投票履歴" placement="bottom-end">
-        <Button
-          variant="ghost"
-          my={2}
+        
+        <SidebarButton
+          label="投票履歴"
           onClick={vHistoryModal.onOpen}
           isDisabled={
             gameState.phase && gameState.phase.currentPhase === "pre"
           }
         >
-          <FaUsers size="30px" color="#E17875" />
-          <Text fontSize="lg" display={{ base: "none", lg: "flex" }} ml={3}>
-            投票履歴
-          </Text>
-        </Button>
-      </Tooltip>
+          <FaUsers {...iconProps} />
+        </SidebarButton>
+
+        <SidebarButton
+          label="チャンネルへ戻る"
+          onClick={backToChannel}
+          isDisabled={
+            gameState.phase?.currentPhase !== "finished" &&
+            user.status === "alive"
+          }
+        >
+          <FaArrowLeft {...iconProps} />
+        </SidebarButton>
+      </SidebarBox>
+
+      <ModalTemplete
+        isOpen={userList.isOpen}
+        onClose={userList.onClose}
+        title={"ユーザーリスト"}
+      >
+        <UserList userList={currentChannel.users}/>
+      </ModalTemplete>
 
       <ModalTemplete
         isOpen={vHistoryModal.isOpen}
@@ -172,7 +129,17 @@ const GameSidebar = () => {
       >
         <VoteHistoryTabs mode={voteHistoryModalMode} />
       </ModalTemplete>
-    </Box>
+      
+      {gameState.phase && (
+        <ModalTemplete
+          isOpen={voteModal.isOpen}
+          onClose={voteModal.onClose}
+          title={TITLE_MAP[mode]}
+        >
+          <VoteModal mode={mode} onClose={voteModal.onClose} />
+        </ModalTemplete>
+      )}
+    </>
   );
 };
 

@@ -36,14 +36,14 @@ router.post(
   "/",
   [channelIdChainBody, contentChain],
   validateRequest,
-  sendMessage
+  sendMessage,
 );
 
 router.get(
   "/:channelId",
   [channelIdChainParam, messageIdChain],
   validateRequest,
-  getMessages
+  getMessages,
 );
 
 module.exports = router;

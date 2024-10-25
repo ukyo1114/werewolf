@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Box,
-  Tooltip,
-  Button,
-  Text,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { useDisclosure } from "@chakra-ui/react";
 import {
   FaUsers,
   FaBinoculars,
@@ -21,6 +15,11 @@ import ChannelSettingsModal from "./ChannelSettingsModal"
 import axios from "axios";
 import useNotification from "../../hooks/notification";
 import ModalTemplete from "../miscellaneous/ModalTemplete";
+import {
+  SidebarBox,
+  SidebarButton,
+  iconProps,
+} from "../miscellaneous/CustomComponents";
 
 const ChannelSidebar = () => {
   const { user, currentChannel, setCurrentChannel } = useUserState();
@@ -49,21 +48,45 @@ const ChannelSidebar = () => {
   };
 
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      alignItems={{ base: 'center', lg: 'flex-start' }}
-      width="100%"
-    >
-      <Tooltip label="ユーザーリスト" placement="bottom-end">
-        <Button variant="ghost" my={2} onClick={userListModal.onOpen}>
-          <FaUsers size="30px" color="#E17875" />
-          <Text fontSize="lg" display={{ base: "none", lg: "flex" }} ml={3}>
-            ユーザーリスト
-          </Text>
-        </Button>
-      </Tooltip>
+    <>
+      <SidebarBox>
+        <SidebarButton label="ユーザーリスト" onClick={userListModal.onOpen}>
+          <FaUsers {...iconProps} />
+        </SidebarButton>
 
+        <SidebarButton label="観戦">
+          <FaBinoculars {...iconProps} />
+        </SidebarButton>
+
+        <SidebarButton label="チャンネル一覧" onClick={() => setCurrentChannel()}>
+          <FaArrowLeft {...iconProps} />
+        </SidebarButton>
+
+        <SidebarButton
+          label="チャンネルを抜ける"
+          onClick={() => leaveChannel()}
+          isDisabled={isAdmin}
+        >
+          <FaSignOutAlt {...iconProps} />
+        </SidebarButton>
+
+        <SidebarButton
+          label="ブロック"
+          onClick={blockModal.onOpen}
+          isDisabled={!isAdmin}
+        >
+          <FaUserSlash {...iconProps} />
+        </SidebarButton>
+
+        <SidebarButton
+          label="チャンネル設定"
+          onClick={chSettingsModal.onOpen}
+          isDisabled={!isAdmin}
+        >
+          <FaCog {...iconProps} />
+        </SidebarButton>
+      </SidebarBox>
+      
       <ModalTemplete
         isOpen={userListModal.isOpen}
         onClose={userListModal.onClose}
@@ -72,70 +95,11 @@ const ChannelSidebar = () => {
         <UserList userList={currentChannel.users} />
       </ModalTemplete>
 
-      <Tooltip label="観戦" placement="bottom-end">
-        <Button variant="ghost" my={2}>
-          <FaBinoculars size="30px" color="#E17875" />
-          <Text fontSize="lg" display={{ base: "none", lg: "flex" }} ml={3}>
-            観戦
-          </Text>
-        </Button>
-      </Tooltip>
-
-      <Tooltip label="チャンネル一覧" placement="bottom-end">
-        <Button variant="ghost" my={2} onClick={() => setCurrentChannel()}>
-          <FaArrowLeft size="30px" color="#E17875" />
-          <Text fontSize="lg" display={{ base: "none", lg: "flex" }} ml={3}>
-            チャンネル一覧
-          </Text>
-        </Button>
-      </Tooltip>
-
-      <Tooltip label="チャンネルを抜ける" placement="bottom-end">
-        <Button
-          variant="ghost"
-          my={2}
-          onClick={() => leaveChannel()}
-          isDisabled={isAdmin}
-        >
-          <FaSignOutAlt size="30px" color="#E17875" />
-          <Text fontSize="lg" display={{ base: "none", lg: "flex" }} ml={3}>
-            チャンネルを抜ける
-          </Text>
-        </Button>
-      </Tooltip>
-
-      <Tooltip label="ブロック" placement="bottom-end">
-        <Button
-          variant="ghost"
-          my={2}
-          onClick={blockModal.onOpen}
-          isDisabled={!isAdmin}
-        >
-          <FaUserSlash size="30px" color="#E17875" />
-          <Text fontSize="lg" display={{ base: "none", lg: "flex" }} ml={3}>
-            ブロック
-          </Text>
-        </Button>
-      </Tooltip>
-
       {currentChannel && isAdmin && (
         <ModalTemplete isOpen={blockModal.isOpen} onClose={blockModal.onClose}>
           <BlockModal />
         </ModalTemplete>
       )}
-
-      <Tooltip label="チャンネル設定" placement="bottom-end">
-        <Button
-          variant="ghost"
-          my={2}
-          onClick={chSettingsModal.onOpen}
-          isDisabled={!isAdmin}>
-          <FaCog size="30px" color="#E17875" />
-          <Text fontSize="lg" display={{ base: "none", lg: "flex" }} ml={3}>
-            チャンネル設定
-          </Text>
-        </Button>
-      </Tooltip>
 
       {currentChannel && isAdmin && (
         <ModalTemplete
@@ -146,7 +110,7 @@ const ChannelSidebar = () => {
           <ChannelSettingsModal />
         </ModalTemplete>
       )}
-    </Box>
+    </>
   );
 };
 

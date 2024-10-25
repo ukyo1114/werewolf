@@ -1,4 +1,7 @@
+const Message = require("../models/messageModel");
 const Game = require("../models/gameModel");
+const { channelEvents } = require("../socketHandlers/chatNameSpace");
+
 const PlayerManager  = require("./PlayerManager");
 const VoteManager    = require("./VoteManager");
 const FortuneManager = require("./FortuneManager");
@@ -16,7 +19,7 @@ class GameState {
     this.eventEmitter = new EventEmitter();
     this.channelId = game.channel.toString();
     this.gameId = game._id.toString();
-    this.result = "running";
+    this.result = { value: "running" };
     this.players = new PlayerManager(game.users);
     this.phase = new PhaseManager(this.eventEmitter, this.result);
     this.votes = new VoteManager(this.players, this.phase);
@@ -26,6 +29,7 @@ class GameState {
     this.attack = new AttackManager(this.players, this.phase, this.guard);
     this.isProcessing = false;
     this.registerListeners();
+    this.sendMessage("ただいまゲームの準備中ですわ。もう少しお待ちくださいませ。");
   }
 
   static createGame(game) {
@@ -56,7 +60,8 @@ class GameState {
 
   handleDayPhaseEnd() {
     this.execution();
-    if (this.result === "villageAbandoned") return;
+    console.log("handleDayPhaseEnd", this.result.value);
+    if (this.result.value === "villageAbandoned") return;
     this.judgement();
   }
 
@@ -67,8 +72,9 @@ class GameState {
   }
 
   async handleGameEnd() {
+    console.log("handleGameEnd");
     try {
-      await Game.findByIdAndUpdate(this.gameId, { result: this.result });
+      await Game.findByIdAndUpdate(this.gameId, { result: this.result.value });
       this.eventEmitter.removeListener("timerEnd", this.handleTimerEnd);
       this.eventEmitter.removeListener("phaseSwitched", this.handlePhaseSwitched);
       delete games[this.gameId];
@@ -78,6 +84,7 @@ class GameState {
   }
 
   judgement() {
+    console.log("judgement");
     const livingPlayers = this.players.getLivingPlayers();
     let villagers = 0;
     let werewolves = 0;
@@ -86,13 +93,13 @@ class GameState {
       pl.role !== "werewolf" ? villagers++ : werewolves++;
     });
 
-    if (werewolves === 0) this.result = "villagersWin";
-    if (werewolves >= villagers) this.result = "werewolvesWin";
+    if (werewolves === 0) this.result.value = "villagersWin";
+    if (werewolves >= villagers) this.result.value = "werewolvesWin";
   }
 
   execution() {
     const executionTargetId = this.votes.getExecutionTarget();
-    if (!executionTargetId) return this.result = "villageAbandoned";
+    if (!executionTargetId) return this.result.value = "villageAbandoned";
 
     this.players.kill(executionTargetId);
     this.medium.medium(executionTargetId);
@@ -116,6 +123,23 @@ class GameState {
       users: users,
       phase: phase,
     };
+  }
+
+  async sendMessage(message) {
+    const newMessage = await this.createMessage(message);
+    channelEvents.emit("newMessage", newMessage);
+  }
+
+  async createMessage(message) {
+    const newMessage = {
+      sender: "67111215dad82ea879cff67b", // GMのid
+      content: message,
+      channel: this.gameId,
+      messageType: "normal",
+    }
+
+    await Message.create(newMessage);
+    return newMessage;
   }
 
   static isUserInGame(userId) {
