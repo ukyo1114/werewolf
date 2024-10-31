@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 const { errors } = require("../messages");
 const Channel = require("../models/channelModel");
-const EventEmitter = require('events');
+const EventEmitter = require("events");
 const channelEvents = new EventEmitter();
 const { userEvents } = require("../controllers/userController");
 
@@ -35,7 +35,7 @@ function chatNameSpaseHandler(io) {
     const userId = socket.user;
     userSocketMap[userId] = socket.id;
 
-    socket.on("join channel", async (channelId) => {
+    socket.on("joinChannel", async (channelId) => {
       socket.join(channelId);
       socket.channelId = channelId;
     });
@@ -49,7 +49,6 @@ function chatNameSpaseHandler(io) {
   channelEvents.on("newMessage", (message, users) => {
     const { channel, messageType } = message;
     const channelId = channel.toString();
-    console.log("messageType", messageType, "users", users);
 
     if (messageType === "normal") {
       chatNameSpace.to(channelId).emit("messageReceived", message);
@@ -61,14 +60,14 @@ function chatNameSpaseHandler(io) {
     }
   });
 
-  channelEvents.on("user added", (data) => {
+  channelEvents.on("userJoined", (data) => {
     const { channelId, user } = data;
-    chatNameSpace.to(channelId).emit("user added", user);
+    chatNameSpace.to(channelId).emit("userJoined", user);
   });
 
-  channelEvents.on("user left", (data) => {
+  channelEvents.on("userLeft", (data) => {
     const { channelId, userId } = data;
-    chatNameSpace.to(channelId).emit("user left", userId);
+    chatNameSpace.to(channelId).emit("userLeft", userId);
   });
 
   channelEvents.on("registerBlockUser", (data) => {

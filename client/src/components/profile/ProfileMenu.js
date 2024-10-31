@@ -24,11 +24,11 @@ const ProfileMenu = () => {
   const usModal = useDisclosure();
 
   const navigate = useNavigate();
-  const { user, setUser } = useUserState();
+  const { user, uDispatch } = useUserState();
 
   const logoutHandler = () => {
     localStorage.removeItem("userInfo");
-    setUser(null);
+    uDispatch({ type: "LOGOUT" });
     navigate("/");
   };
 

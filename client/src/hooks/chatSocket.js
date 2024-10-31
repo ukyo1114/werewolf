@@ -4,7 +4,8 @@ import useNotification from "./notification";
 import { useUserState } from "../context/userProvider";
 
 const useChatSocket = ({ setMessages }) => {
-  const { user, currentChannel, setCurrentChannel } = useUserState();
+  const { user, currentChannel, cDispatch } = useUserState();
+  const { _id: channelId } = currentChannel;
 
   const chatSocketRef = useRef(null);
   const showToast = useNotification();
@@ -16,7 +17,7 @@ const useChatSocket = ({ setMessages }) => {
     chatSocketRef.current = io("http://localhost:5000/chat", auth);
 
     chatSocketRef.current.on("connect", () => {
-      chatSocketRef.current.emit("join channel", currentChannel._id);
+      chatSocketRef.current.emit("joinChannel", channelId);
     });
 
     chatSocketRef.current.on("messageReceived", (newMessageReceived) => {
@@ -32,65 +33,20 @@ const useChatSocket = ({ setMessages }) => {
       });
     });
 
-    chatSocketRef.current.on("user added", (user) => {
-      const userId = user._id;
-      setCurrentChannel((prevCurrentChannel) => {
-        if (!prevCurrentChannel.users.some((u) => u._id === userId)) {
-          return {
-            ...prevCurrentChannel,
-            users: [...prevCurrentChannel.users, user],
-          };
-        }
-
-        return prevCurrentChannel;
-      });
+    chatSocketRef.current.on("userJoined", (user) => {
+      cDispatch({ type: "USER_JOINED", payload: user });
     });
 
-    chatSocketRef.current.on("user left", (userId) => {
-      setCurrentChannel((prevCurrentChannel) => {
-        const updatedUsers = prevCurrentChannel.users.filter(
-          (user) => user._id !== userId
-        );
-
-        return {
-          ...prevCurrentChannel,
-          users: updatedUsers,
-        };
-      });
+    chatSocketRef.current.on("userLeft", (userId) => {
+      cDispatch({ type: "USER_LEFT", payload: userId });
     });
 
     chatSocketRef.current.on("registerBlockUser", (blockUser) => {
-      setCurrentChannel((prevCurrentChannel) => {
-        const updatedUsers = prevCurrentChannel.users.filter(
-          (user) => user._id !== blockUser
-        );
-
-        if (!prevCurrentChannel.blockUsers.includes(blockUser)) {
-          return {
-            ...prevCurrentChannel,
-            users: updatedUsers,
-            blockUsers: [...prevCurrentChannel.blockUsers, blockUser],
-          };
-        }
-
-        return {
-          ...prevCurrentChannel,
-          users: updatedUsers,
-        };
-      });
+      cDispatch({ type: "USER_BLOCKED", payload: blockUser });
     });
 
     chatSocketRef.current.on("cancelBlockUser", (blockUser) => {
-      setCurrentChannel((prevCurrentChannel) => {
-        const updatedBlockUsers = prevCurrentChannel.blockUsers.filter(
-          (user) => user !== blockUser
-        );
-
-        return {
-          ...prevCurrentChannel,
-          blockUsers: updatedBlockUsers,
-        };
-      });
+      cDispatch({ type: "CANCEL_BLOCK", payload: blockUser });
     });
 
     chatSocketRef.current.on("connect_error", (err) => {
@@ -103,13 +59,7 @@ const useChatSocket = ({ setMessages }) => {
         chatSocketRef.current = null;
       }
     };
-  }, [
-    user.token,
-    currentChannel._id,
-    setCurrentChannel,
-    setMessages,
-    showToast,
-  ]);
+  }, [user.token, channelId, cDispatch, setMessages, showToast]);
 };
 
 export default useChatSocket;

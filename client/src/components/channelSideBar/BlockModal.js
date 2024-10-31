@@ -21,14 +21,16 @@ const BlockModal = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedBlockUser, setSelectedBlockUser] = useState(null);
   const showToast = useNotification();
+  const { _id: channelId, channelAdmin } = currentChannel;
 
   const fetchBlockUserList = useCallback(async () => {
-    if (currentChannel.channelAdmin !== user._id) return;
+    if (channelAdmin !== user._id) return;
+
     try {
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
 
       const { data } = await axios.get(
-        `api/block/user-list/${currentChannel._id}`,
+        `api/block/user-list/${channelId}`,
         config,
       );
       
@@ -36,7 +38,7 @@ const BlockModal = () => {
     } catch (error) {
       showToast(error?.response?.data?.error || "ブロック済みユーザーの取得に失敗しました", "error");
     }
-  }, [user, currentChannel, setBlockUserList, showToast]);
+  }, [user, channelId, channelAdmin, setBlockUserList, showToast]);
 
   useEffect(() => {
     fetchBlockUserList();
@@ -94,74 +96,71 @@ const UserListTab = ({
   setSelectedUser,
   setBlockUserList,
 }) => {
-  const { user, currentChannel, setCurrentChannel } = useUserState();
+  const { user, currentChannel } = useUserState();
+  const { _id: channelId, channelAdmin, users } = currentChannel;
   const showToast = useNotification();
 
   const block = useCallback(async () => {
-    if (currentChannel.channelAdmin !== user._id) return;
+    if (channelAdmin !== user._id) return;
     try {
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
 
       const { data } = await axios.put(
         "api/block/register",
-        {
-          channelId: currentChannel._id,
-          selectedUser: selectedUser,
-        },
+        { channelId, selectedUser: selectedUser },
         config,
       );
       setBlockUserList((prevBlockUserList) => {
         if (!prevBlockUserList.some((user) => user._id === data)) {
-          const blockedUser = currentChannel.users.find((user) => user._id === data);
+          const blockedUser = users.find((user) => user._id === data);
           return [...prevBlockUserList, blockedUser];
         }
-      }
-      );
-      setCurrentChannel((prevCurrentChannel) => {
+      } // 既にブロックされているときの処理を追加する
+      );/* 
+      cDispatch((prevCurrentChannel) => {
         const updatedUsers = prevCurrentChannel.users.filter((user) => user._id !== data);
         return {
           ...prevCurrentChannel,
           users: updatedUsers,
         };
-      });
+      }); */
       setSelectedUser(null);
     } catch (error) {
       showToast(error?.response?.data?.error || "ブロックに失敗しました", "error");
     }
   }, [
     user,
-    currentChannel,
+    channelId,
+    channelAdmin,
+    users,
     selectedUser,
     setSelectedUser,
     setBlockUserList,
-    setCurrentChannel,
     showToast,
   ]);
 
   return (
     <Box display="flex" flexDir="column">
-      {currentChannel.users
-        .filter((u) => u._id !== user._id)
-        .map((u) => (
-          <Box
-            key={u._id}
-            display="flex"
-            alignItems="center"
-            mb={3}
-            p={3}
-            borderRadius="md"
-            borderWidth={2}
-            borderColor={selectedUser === u._id ? "white" : "#E17875"}
-            bg={selectedUser === u._id ? "#E17875" : "#2B2024"}
-            _hover={{
-              bg: selectedUser !== u._id ? "#3B2C2F" : undefined,
-            }}
-            cursor="pointer"
-            onClick={() => setSelectedUser(u._id)}
-          >
-            <DisplayUser user={u} />
-          </Box>
-        ))}
+      {users.filter((u) => u._id !== user._id).map((u) => (
+        <Box
+          key={u._id}
+          display="flex"
+          alignItems="center"
+          mb={3}
+          p={3}
+          borderRadius="md"
+          borderWidth={2}
+          borderColor={selectedUser === u._id ? "white" : "#E17875"}
+          bg={selectedUser === u._id ? "#E17875" : "#2B2024"}
+          _hover={{
+            bg: selectedUser !== u._id ? "#3B2C2F" : undefined,
+          }}
+          cursor="pointer"
+          onClick={() => setSelectedUser(u._id)}
+        >
+          <DisplayUser user={u} />
+        </Box>
+      ))}
       <ModalButton
         innerText={"ブロック"}
         onClick={block}
@@ -178,21 +177,18 @@ const BlockedUserListTab = ({
   setBlockUserList,
 }) => {
   const { user, currentChannel } = useUserState();
+  const { _id: channelId, channelAdmin } = currentChannel;
   const showToast = useNotification();
 
   const cancelBlock = useCallback(async () => {
-    if (currentChannel.channelAdmin !== user._id) return;
+    if (channelAdmin !== user._id) return;
     try {
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
 
       const { data } = await axios.put(
-        "api/block/cancel",
-        {
-          channelId: currentChannel._id,
-          selectedBlockUser: selectedBlockUser,
-        },
-        config,
+        "api/block/cancel", { channelId, selectedBlockUser }, config,
       );
+
       setBlockUserList((prevBlockUserList) => {
         const updatedBlockUserList = prevBlockUserList.filter((user) =>
           data.some((u) => u === user._id)
@@ -205,7 +201,8 @@ const BlockedUserListTab = ({
     }
   }, [
     user,
-    currentChannel,
+    channelId,
+    channelAdmin,
     selectedBlockUser,
     setSelectedBlockUser,
     setBlockUserList,

@@ -17,11 +17,12 @@ import { chSettingsValidationSchema } from "./validationSchema";
 import TextareaAutosize from "react-textarea-autosize";
 
 const ChannelSettingsModal = () => {
-  const { user, currentChannel, setCurrentChannel } = useUserState();
+  const { user, currentChannel, cDispatch } = useUserState();
+  const { _id: channelId, channelAdmin, channelName, description } = currentChannel;
   const showToast = useNotification();
 
   const handleSubmit = useCallback(async (values, actions) => {
-    if (currentChannel.channelAdmin !== user._id) return;
+    if (channelAdmin !== user._id) return;
     const {
       channelName,
       description,
@@ -32,9 +33,7 @@ const ChannelSettingsModal = () => {
     } = values;
     actions.setSubmitting(true);
     
-    const payload = {
-      channelId: currentChannel._id,
-    };
+    const payload = { channelId };
     if (isChannelNameChanged && channelName) payload.channelName = channelName;
     if (isDescriptionChanged && description) payload.description = description;
     if (isPasswordChanged) payload.password = password;
@@ -48,11 +47,7 @@ const ChannelSettingsModal = () => {
         config,
       );
 
-      setCurrentChannel((prevCurrentChannel) => ({
-        ...prevCurrentChannel,
-        channelName: data.channelName,
-        description: data.description,
-      }));
+      cDispatch({ type: "CHANNEL_SETTINGS", payload: data }); // socketを使用して全員に通知
       showToast(messages.CHANNEL_SETTINGS_CHANGED, "success");
     } catch (error) {
       showToast(
@@ -62,14 +57,7 @@ const ChannelSettingsModal = () => {
     } finally {
       actions.setSubmitting(false);
     }
-  }, [
-    currentChannel.channelAdmin,
-    currentChannel._id,
-    user._id,
-    user.token,
-    setCurrentChannel,
-    showToast,
-  ]);
+  }, [channelAdmin, channelId, user._id, user.token, cDispatch, showToast]);
 
   return (
     <Formik
@@ -77,8 +65,8 @@ const ChannelSettingsModal = () => {
         isChannelNameChanged: false,
         isDescriptionChanged: false,
         isPasswordChanged: false,
-        channelName: currentChannel.channelName,
-        description: currentChannel.description,
+        channelName,
+        description,
         password: "",
       }}
       validationSchema={chSettingsValidationSchema}

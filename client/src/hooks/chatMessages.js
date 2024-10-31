@@ -9,7 +9,8 @@ const useChatMessages = ({
   messagesCompletedRef,
 }) => {
   const [loading, setLoading] = useState(false);
-  const { user, currentChannel, gameState } = useUserState();
+  const { user, currentChannel } = useUserState();
+  const { _id: channelId, phase } = currentChannel;
   const showToast = useNotification();
 
   const fetchMessages = useCallback(async () => {
@@ -23,10 +24,7 @@ const useChatMessages = ({
 
       setLoading(true);
 
-      const { data } = await axios.get(
-        `/api/message/${currentChannel._id}`,
-        config,
-      );
+      const { data } = await axios.get(`/api/message/${channelId}`, config);
 
       if (data.length < 50) messagesCompletedRef.current = true;
 
@@ -48,7 +46,7 @@ const useChatMessages = ({
       );
     }
   }, [
-    currentChannel._id,
+    channelId,
     user.token,
     messagesCompletedRef,
     messages,
@@ -61,13 +59,13 @@ const useChatMessages = ({
       user.status === "alive" && // ステータスはgameStateに移行
       user.role && // 役職はgameStateに移行
       user.role !== "werewolf" &&
-      gameState?.phase?.currentPhase === "night"
+      phase.currentPhase === "night"
     ) {
       showToast("発言が禁止されています", "error");
       return false;
     }
     return true;
-  }, [user, gameState, showToast]);
+  }, [user, phase, showToast]);
 
   const sendMessage = useCallback(async (newMessage) => {
     if (!canSendMessage()) return;
@@ -81,23 +79,14 @@ const useChatMessages = ({
       };
       await axios.post(
         "/api/message",
-        {
-          content: newMessage,
-          channelId: currentChannel._id,
-        },
-        config,
+        { content: newMessage, channelId }, config,
       );
     } catch (error) {
       showToast(
         error?.response?.data?.error || "メッセージの送信に失敗しました", "error"
       );
     }
-  }, [
-    canSendMessage,
-    user.token,
-    currentChannel._id,
-    showToast
-  ]);
+  }, [canSendMessage, user.token, channelId, showToast]);
 
   return { loading, fetchMessages, sendMessage };
 };

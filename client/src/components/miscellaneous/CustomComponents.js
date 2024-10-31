@@ -37,7 +37,7 @@ export const StyledText = ({ children, ...props }) => (
   </Text>
 );
 
-export const TimerAndRole = ({ children, status }) => (
+export const DisplayRole = ({ children, status }) => (
   <Text
     fontSize="md"
     fontWeight="bold"
@@ -81,7 +81,7 @@ export const SidebarBox = ({ children}) => (
   <Box
     display="flex"
     flexDirection="column"
-    alignItems={{ base: 'center', lg: 'flex-start' }}
+    alignItems={{ base: "center", lg: "flex-start" }}
     width="100%"
   >
     {children}
@@ -102,6 +102,60 @@ export const SidebarButton = ({ label, children, ...props }) => (
     </Button>
   </Tooltip>
 );
+
+export const ChannelBox = ({ children }) => (
+  <Box
+    display="flex"
+    alignItems="center"
+    flexDir="column"
+    maxWidth="600px"
+    width="100%"
+    borderRightWidth={4}
+    borderLeftWidth={4}
+    borderColor="#E17875"
+  >
+    {children}
+  </Box>
+);
+
+export const SelectableBox = ({ children, ...props }) => (
+  <Box
+    display="flex"
+    alignItems="center"
+    mb={3}
+    p={3}
+    borderRadius="md"
+    borderWidth={2}
+    cursor="pointer"
+    {...props}
+  >
+    {children}
+  </Box>
+);
+
+export const EllipsisText = ({ children, ...props }) => (
+  <Text
+    whiteSpace="nowrap"
+    overflow="hidden"
+    textOverflow="ellipsis"
+    {...props}
+  >
+    {children}
+  </Text>
+);
+
+export const ModalButton = ({ children, disableCondition, ...props }) => {
+  return (
+    <Button
+      mt={4}
+      colorScheme="teal"
+      width="100%"
+      {...props}
+    >
+      {children}
+    </Button>
+  )
+};
 
 export const iconProps = {
   size: "30px",

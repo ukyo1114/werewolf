@@ -1,4 +1,4 @@
-const { errors } = require('../messages');
+const { errors } = require("../messages");
 
 const errorHandler = (err, req, res, next) => {
   const statusCode = err.statusCode || 500;
@@ -6,7 +6,7 @@ const errorHandler = (err, req, res, next) => {
 
   res.status(statusCode).json({ error: message });
 
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === "development") {
     console.error(err);
   }
 };

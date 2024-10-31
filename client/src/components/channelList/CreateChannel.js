@@ -22,7 +22,7 @@ import TextareaAutosize from "react-textarea-autosize";
 
 const CreateChannel = () => {
   const showToast = useNotification();
-  const { user, setCurrentChannel } = useUserState();
+  const { user, cDispatch } = useUserState();
 
   const handleSubmit = useCallback(async (values, actions) => {
     const { channelName, description, password, isPasswordEnabled } = values;
@@ -44,14 +44,14 @@ const CreateChannel = () => {
       
       actions.setSubmitting(false);
       showToast(messages.CHANNEL_CREATED, "success");
-      setCurrentChannel(data);
+      cDispatch({ type: "JOIN_CHANNEL", payload: data });
     } catch (error) {
       const errorMessage =
         error?.response?.data?.error || errors.CHANNEL_CREATION_FAILED;
       showToast(errorMessage, "error");
       actions.setSubmitting(false);
     }
-  }, [setCurrentChannel, showToast, user.token]);
+  }, [cDispatch, showToast, user.token]);
 
   return (
     <Formik

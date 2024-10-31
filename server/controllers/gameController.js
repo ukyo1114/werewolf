@@ -1,3 +1,6 @@
+const Game = require("../models/gameModel");
+const User = require("../models/userModel");
+const asyncHandler = require("express-async-handler");
 const { games } = require("../classes/GameState");
 const { messages, errors } = require("../messages");
 const CustomError = require("../classes/CustomError");
@@ -5,6 +8,7 @@ const {
   handleServerError,
   checkErrorMessage,
 } = require("../utils/handleError");
+const { channelEvents } = require("../socketHandlers/chatNameSpace");
 
 const checkGame = (req, res, next) => {
   const playerId = req.user._id.toString();
@@ -23,7 +27,6 @@ const getGame = (req, res, next) => {
   const playerId = req.user._id.toString();
   const gameId = req.params.gameId;
   const game = games[gameId];
-
   if (!game) throw new CustomError(404, errors.GAME_NOT_FOUND);
 
   req.playerId = playerId;
@@ -31,12 +34,30 @@ const getGame = (req, res, next) => {
   next();
 };
 
+const joinGame = asyncHandler(async (req, res) => {
+  const userId = req.user._id.toString();
+  const gameId = req.params.gameId;
+  const game = await Game.findByIdAndUpdate(
+    gameId,
+    { $addToSet: { users: userId } },
+    { new: true },
+  )
+    .select("_id users channel")
+    .populate("users", "_id name pic");
+
+  const user = await User.findById(userId).select("_id name pic");
+  channelEvents.emit("userJoined", { channelId: gameId, user: user }); 
+
+  res.status(200).json(game);
+});
+
 const getPlayerState = (req, res) => {
   const { playerId, game } = req;
   
   try {
     const playerState = game.players.getPlayerState(playerId);
     if (!playerState) throw new CustomError(404, errors.PLAYER_NOT_FOUND);
+
     res.status(200).json(playerState);
   } catch (error) {
     handleServerError(error);
@@ -46,13 +67,9 @@ const getPlayerState = (req, res) => {
 const receiveVote = (req, res) => {
   const { playerId, game } = req;
   const { selectedUser } = req.body;
-  const vote = {
-    voter: playerId,
-    votee: selectedUser,
-  };
 
   try {
-    game.votes.receiveVote(vote);
+    game.votes.receiveVote(playerId, selectedUser);
     res.status(200).json({ message: messages.VOTE_COMPLETED });
   } catch (error) {
     checkErrorMessage(error, errors.INVALID_VOTE);
@@ -182,6 +199,7 @@ const getAttackHistory = (req, res) => {
 module.exports = {
   checkGame,
   getGame,
+  joinGame,
   getPlayerState,
   receiveVote,
   receiveFortuneTarget,

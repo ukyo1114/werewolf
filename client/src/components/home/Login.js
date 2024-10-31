@@ -29,12 +29,11 @@ const Login = () => {
     try {
       const config = { headers: { "Content-Type": "application/json" } };
 
-      const response = await axios.post(
+      const { data } = await axios.post(
         "/api/user/login",
         { email, password },
         config,
       );
-      const data = response.data;
       showToast(messages.USER_LOGIN, "success");
       localStorage.setItem("userInfo", JSON.stringify(data));
       actions.setSubmitting(false);

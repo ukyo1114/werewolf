@@ -1,12 +1,14 @@
-import { createContext, useState, useEffect, useContext } from "react";
+import { createContext, useReducer, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { userReducer, initialUserState } from "../reducers/userReducer";
+import { channelReducer, initialChannelState } from "../reducers/channelReducer";
 
 const UserContext = createContext();
 
 const UserProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [currentChannel, setCurrentChannel] = useState(null);
-  const [gameState, setGameState] = useState(null);
+  const [user, uDispatch] = useReducer(userReducer, initialUserState);
+  const [currentChannel, cDispatch] =
+    useReducer(channelReducer, initialChannelState);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -15,7 +17,7 @@ const UserProvider = ({ children }) => {
 
     try {
       const userIn = JSON.parse(userInfo);
-      setUser(userIn);
+      uDispatch({ type: "LOGIN", payload: userIn });
     } catch (error) {
       console.error("Error parsing userInfo from localStorage:", error);
       navigate("/");
@@ -24,14 +26,7 @@ const UserProvider = ({ children }) => {
 
   return (
     <UserContext.Provider
-      value={{
-        user,
-        setUser,
-        currentChannel,
-        setCurrentChannel,
-        gameState,
-        setGameState,
-      }}
+      value={{ user, uDispatch, currentChannel, cDispatch }}
     >
       {children}
     </UserContext.Provider>

@@ -1,4 +1,4 @@
-const _ = require('lodash');
+const _ = require("lodash");
 const { errors } = require("../messages");
 
 class VoteManager {
@@ -8,12 +8,16 @@ class VoteManager {
     this.phase = phase;
   }
 
-  receiveVote(vote) {
-    const { voter, votee } = vote;
+  receiveVote(playerId, targetId) {
     const { currentDay, currentPhase } = this.phase;
-    const player = this.players.players.get(voter);
+    const player = this.players.players.get(playerId);
+    const target = this.players.players.get(targetId);
 
-    if (player?.status !== "alive" || currentPhase !== "day") {
+    if (
+      player?.status !== "alive" ||
+      target?.status !== "alive" ||
+      currentPhase !== "day"
+    ) {
       throw new Error(errors.INVALID_VOTE);
     };
 
@@ -21,7 +25,7 @@ class VoteManager {
       this.voteHistory.set(currentDay, new Map());
     }
 
-    this.voteHistory.get(currentDay).set(voter, votee);
+    this.voteHistory.get(currentDay).set(playerId, targetId);
   }
 
   voteCounter() {

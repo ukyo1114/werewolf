@@ -13,12 +13,12 @@ import {
 } from "@chakra-ui/react";
 import "../styles.css";
 import { useUserState } from "../../context/userProvider";
-import { useEnterToChannel } from "../../hooks/useEnterToChannel";
+import { useJoinChannel } from "../../hooks/useJoinChannel";
 
 const ChannelInfo = ({ selectedChannel }) => {
   const { user } = useUserState();
   const [password, setPassword] = useState("");
-  const enterToChannel = useEnterToChannel();
+  const joinChannel = useJoinChannel();
 
   return (
     <>        
@@ -72,7 +72,7 @@ const ChannelInfo = ({ selectedChannel }) => {
               selectedChannel.blockUsers.some((u) => u === user._id) ? "pink" : "teal"
             }
             width="100%"
-            onClick={() => enterToChannel(selectedChannel._id, password)}
+            onClick={() => joinChannel(selectedChannel._id, password)}
             isDisabled={selectedChannel.blockUsers.some(
               (u) => u === user._id,
             )}

@@ -1,14 +1,14 @@
-const asyncHandler = require('express-async-handler');
-const Channel = require('../models/channelModel');
-const User = require('../models/userModel');
+const asyncHandler = require("express-async-handler");
+const Channel = require("../models/channelModel");
+const User = require("../models/userModel");
 const { channelEvents } = require("../socketHandlers/chatNameSpace");
-const { messages, errors } = require('../messages');
-const CustomError = require('../classes/CustomError');
+const { messages, errors } = require("../messages");
+const CustomError = require("../classes/CustomError");
 const {
   getChannelById,
   isChannelAdmin,
   isUserBlocked,
-} = require('../utils/channelUtils');
+} = require("../utils/channelUtils");
 
 const fetchChannelList = asyncHandler(async (req, res) => {
   const channels = await Channel.find({}).populate(
@@ -38,7 +38,7 @@ const createChannel = asyncHandler(async (req, res) => {
   });
 
   const fullChannel = await Channel.findById(channel._id)
-    .select("-password")
+    .select("_id channelName description users channelAdmin blockUsers")
     .populate("users", "_id name pic");
 
   res.status(201).json(fullChannel);
@@ -87,7 +87,7 @@ const enterToChannel = asyncHandler(async (req, res) => {
 
   const user = await User.findById(userId).select("_id name pic");
 
-  channelEvents.emit("user added", { channelId: channelId, user: user }); 
+  channelEvents.emit("userJoined", { channelId: channelId, user: user }); 
 
   res.json(fullChannel);
 });
@@ -108,7 +108,7 @@ const leaveChannel = asyncHandler(async (req, res) => {
     { new: true },
   );
 
-  channelEvents.emit("user left", {
+  channelEvents.emit("userLeft", {
     channelId: channelId,
     userId: userId,
   });

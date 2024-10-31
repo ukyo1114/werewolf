@@ -13,7 +13,7 @@ export const errors = {
 
   USER_BLOCKED: "ブロックされています",
   CHANNEL_ENTER_FAILED: "チャンネルへの入室に失敗しました",
-  FETCH_CHANNEL_LISET: "チャンネルリストの取得に失敗しました",
+  FETCH_CHANNEL_LIST: "チャンネルリストの取得に失敗しました",
   SIGNUP_FAILED: "ユーザーの作成に失敗しました",
   PLAYER_LOAD_FAILED: "プレイヤーの読み込みに失敗しました",
 
@@ -22,6 +22,7 @@ export const errors = {
   FETCH_VOTE_HISTORY_FAILED: "投票履歴の取得に失敗しました",
   FETCH_FORTUNE_RESULT_FAILED: "占い結果の取得に失敗しました",
   FETCH_MEDIUM_RESULT_FAILED: "霊能結果の取得に失敗しました",
+
   FETCH_GUARD_HISTORY_FAILED: "護衛履歴の取得に失敗しました",
   FETCH_ATTACK_HISTORY_FAILED: "襲撃履歴の取得に失敗しました",
 };
@@ -34,5 +35,6 @@ export const messages = {
   PROFILE_SETTINGS_CHANGED: "プロフィールが変更されました",
   
   USER_SETTINGS_UPDATED: "ユーザー情報が更新されました",
-
+  NAVIGATE_GAME: "参加中のゲームに移動しました",
+  NO_ACTIVE_GAME: "進行中のゲームがありません",
 };

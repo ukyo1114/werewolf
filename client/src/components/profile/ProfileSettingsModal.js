@@ -19,7 +19,7 @@ import ImageCropper from "../miscellaneous/ImageCropper";
 import usePostDetails from "../../hooks/postDetails";
 
 const ProfileSettingsModal = ({ onClose }) => {
-  const { user, setUser } = useUserState();
+  const { user, uDispatch } = useUserState();
   const showToast = useNotification();
   const [cropImage, setCropImage] = useState(false);
   const [isPictureChanged, setIsPictureChanged] = useState(false);
@@ -44,15 +44,14 @@ const ProfileSettingsModal = ({ onClose }) => {
 
     try {
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
-      console.log("送信前");
+
       await axios.put(
         "/api/user/profile",
         payload,
         config,
       );
-      console.log("送信後");
       if (isUserNameChanged && userName) {
-        setUser((prevUser) => ({ ...prevUser, name: userName }));
+        uDispatch({ type: "CHANGE_NAME", payload: userName });
       }
       
       showToast(messages.PROFILE_SETTINGS_CHANGED, "success");
@@ -65,7 +64,7 @@ const ProfileSettingsModal = ({ onClose }) => {
       actions.setSubmitting(false);
       onClose();
     }
-  }, [isPictureChanged, pic, user.token, setUser, showToast, onClose]);
+  }, [isPictureChanged, pic, user.token, uDispatch, showToast, onClose]);
 
   const handleImageClick = useCallback(() => {
     if (isPictureChanged)  inputRef.current.click();

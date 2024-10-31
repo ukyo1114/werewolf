@@ -20,28 +20,29 @@ import {
   SidebarButton,
   iconProps,
 } from "../miscellaneous/CustomComponents";
+import SpectatorModal from "./spectate/SpectatorModal";
 
 const ChannelSidebar = () => {
-  const { user, currentChannel, setCurrentChannel } = useUserState();
-  const isAdmin = currentChannel.channelAdmin === user._id;
+  const { user, currentChannel, cDispatch } = useUserState();
+  const { _id: channelId, channelAdmin, users } = currentChannel;
+  const isAdmin = channelAdmin === user._id;
   const showToast = useNotification();
 
   const userListModal = useDisclosure();
   const blockModal = useDisclosure();
   const chSettingsModal = useDisclosure();
+  const spectator = useDisclosure();
 
   const leaveChannel = async () => {
     try {
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
 
       const { data } = await axios.put(
-        `/api/channel/leave`,
-        { channelId: currentChannel._id },
-        config,
+        `/api/channel/leave`, { channelId }, config,
       );
 
       showToast(data.message, "success");
-      setCurrentChannel();
+      cDispatch({ type: "LEAVE_CHANNEL"});
     } catch (error) {
       showToast(error?.response?.data?.error, "error");
     }
@@ -54,11 +55,14 @@ const ChannelSidebar = () => {
           <FaUsers {...iconProps} />
         </SidebarButton>
 
-        <SidebarButton label="観戦">
+        <SidebarButton label="観戦" onClick={spectator.onOpen}>
           <FaBinoculars {...iconProps} />
         </SidebarButton>
 
-        <SidebarButton label="チャンネル一覧" onClick={() => setCurrentChannel()}>
+        <SidebarButton
+          label="チャンネル一覧"
+          onClick={() => cDispatch({ type: "LEAVE_CHANNEL"})}
+        >
           <FaArrowLeft {...iconProps} />
         </SidebarButton>
 
@@ -92,16 +96,24 @@ const ChannelSidebar = () => {
         onClose={userListModal.onClose}
         title={"ユーザーリスト"}
       >
-        <UserList userList={currentChannel.users} />
+        <UserList userList={users} />
       </ModalTemplete>
 
-      {currentChannel && isAdmin && (
+      <ModalTemplete
+        isOpen={spectator.isOpen}
+        onClose={spectator.onClose}
+        title={"ゲームリスト"}
+      >
+        <SpectatorModal />
+      </ModalTemplete>
+
+      {isAdmin && (
         <ModalTemplete isOpen={blockModal.isOpen} onClose={blockModal.onClose}>
           <BlockModal />
         </ModalTemplete>
       )}
 
-      {currentChannel && isAdmin && (
+      {isAdmin && (
         <ModalTemplete
           isOpen={chSettingsModal.isOpen}
           onClose={chSettingsModal.onClose}

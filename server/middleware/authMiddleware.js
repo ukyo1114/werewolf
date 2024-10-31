@@ -1,8 +1,8 @@
-const jwt = require('jsonwebtoken');
-const asyncHandler = require('express-async-handler');
-const User = require('../models/userModel');
-const CustomError = require('../classes/CustomError');
-const { errors } = require('../messages');
+const jwt = require("jsonwebtoken");
+const asyncHandler = require("express-async-handler");
+const User = require("../models/userModel");
+const CustomError = require("../classes/CustomError");
+const { errors } = require("../messages");
 
 const protect = asyncHandler(async (req, res, next) => {
   const header = req.headers.authorization;
