@@ -1,9 +1,9 @@
 class PhaseManager {
   static phaseDurations = {
-    pre     : 10, // 30秒に戻す
-    day     : 30, // 10分に戻す
-    night   : 30, // 3分に戻す
-    finished: 10 //, 10分に戻す
+    pre     : 30, // 30秒に戻す
+    day     : 10 * 60, // 10分に戻す
+    night   : 3 * 60, // 3分に戻す
+    finished: 10 * 60 //, 10分に戻す
   };
 
   constructor(eventEmitter, result) {

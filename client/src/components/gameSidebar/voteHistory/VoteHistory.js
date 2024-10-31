@@ -79,17 +79,18 @@ const VoteHistoryTabs = ({ mode }) => {
 };
 
 const VoteHistory = () => {
-  const { user, currentChannel, gameState } = useUserState();
+  const { user, currentChannel } = useUserState();
+  const { _id: channelId, users, phase } = currentChannel;
   const [voteHistory, setVoteHistory] = useState({});
   const showToast = useNotification();
 
   const fetchVoteHistory = useCallback(async () => {
-    if (gameState.phase && gameState.phase.currentPhase !== "pre") {
+    if (phase.currentPhase !== "pre") {
       try {
         const config = { headers: { Authorization: `Bearer ${user.token}` } };
 
         const { data } = await axios.get(
-          `/api/game/vote-history/${gameState.gameId}`,
+          `/api/game/vote-history/${channelId}`,
           config,
         );
 
@@ -101,11 +102,11 @@ const VoteHistory = () => {
         );
       }
     }
-  }, [user.token, gameState, setVoteHistory, showToast]);
+  }, [user.token, channelId, phase.currentPhase, setVoteHistory, showToast]);
 
   useEffect(() => {
     fetchVoteHistory();
-  }, [fetchVoteHistory, gameState?.phase]);
+  }, [fetchVoteHistory]);
 
   return (
     <Box display="flex" flexDir="column">
@@ -118,20 +119,20 @@ const VoteHistory = () => {
               <StyledDivider />
               <Box display="flex" flexDir="column">
                 {Object.entries(vote).map(([votee, voters]) => {
-                  const user = currentChannel.users.find((u) => u._id === votee);
+                  const user = users.find((u) => u._id === votee);
 
                   return user ? (
-                    <StyledBox>
+                    <StyledBox key={user._id}>
                       <DisplayUser user={user}>
                         <Text>投票数：{voters.length}票</Text>
                         <Text>投票者：
                           {voters.map((voter) => {
-                            const voteUser = currentChannel.users.find(
-                              (u) => u._id === voter,
+                            const voteUser = users.find((u) =>
+                              u._id === voter
                             );
 
                             return voteUser ? `【${voteUser.name}】` : null;
-                          }).join("、")}
+                          }).filter(Boolean).join("、")}
                         </Text>
                       </DisplayUser>
                     </StyledBox>
@@ -149,7 +150,8 @@ const VoteHistory = () => {
 };
 
 const FortuneResult = () => {
-  const { user, currentChannel, gameState } = useUserState();
+  const { user, currentChannel } = useUserState();
+  const { _id: channelId, users, phase } = currentChannel;
   const [fortuneResult, setFortuneResult] = useState({});
   const showToast = useNotification();
 
@@ -160,15 +162,12 @@ const FortuneResult = () => {
   };
 
   const fetchFortuneResult = useCallback(async () => {
-    if (
-      gameState?.phase && gameState.phase.currentPhase !== "pre" &&
-      user.role === "seer"
-    ) {
+    if (phase.currentPhase !== "pre" && user.role === "seer") {
       try {
         const config = { headers: { Authorization: `Bearer ${user.token}` } };
 
         const { data } = await axios.get(
-          `/api/game/fortune-result/${gameState.gameId}`,
+          `/api/game/fortune-result/${channelId}`,
           config,
         );
         setFortuneResult(data);
@@ -179,11 +178,11 @@ const FortuneResult = () => {
         );
       }
     }
-  }, [user, gameState, setFortuneResult, showToast]);
+  }, [user, channelId, phase.currentPhase, setFortuneResult, showToast]);
 
   useEffect(() => {
     fetchFortuneResult();
-  }, [fetchFortuneResult, gameState?.phase?.currentDay]);
+  }, [fetchFortuneResult]);
 
   return (
     <Box display="flex" flexDir="column">
@@ -191,9 +190,7 @@ const FortuneResult = () => {
         Object.entries(fortuneResult)
           .reverse()
           .map(([day, result]) => {
-            const player = currentChannel.users.find(
-              (u) => u._id === result.playerId,
-            );
+            const player = users.find((u) => u._id === result.playerId);
             return player ? (
               <Box key={day} mb={3}>
                 <DisplayDay day={day} />
@@ -214,7 +211,8 @@ const FortuneResult = () => {
 };
 
 const MediumResult = () => {
-  const { user, currentChannel, gameState } = useUserState();
+  const { user, currentChannel } = useUserState();
+  const { _id: channelId, users, phase } = currentChannel;
   const [mediumResult, setMediumResult] = useState({});
   const showToast = useNotification();
 
@@ -225,15 +223,12 @@ const MediumResult = () => {
   };
 
   const fetchMediumResult = useCallback(async () => {
-    if (
-      gameState?.phase && gameState.phase.currentPhase !== "pre" &&
-      user.role === "medium"
-    ) {
+    if (phase.currentPhase !== "pre" && user.role === "medium") {
       try {
         const config = { headers: { Authorization: `Bearer ${user.token}` } };
 
         const { data } = await axios.get(
-          `/api/game/medium-result/${gameState.gameId}`,
+          `/api/game/medium-result/${channelId}`,
           config,
         );
         setMediumResult(data);
@@ -244,11 +239,11 @@ const MediumResult = () => {
         );
       }
     }
-  }, [user, gameState, setMediumResult, showToast]);
+  }, [user, channelId, phase.currentPhase, setMediumResult, showToast]);
 
   useEffect(() => {
     fetchMediumResult();
-  }, [fetchMediumResult, gameState?.phase?.currentDay]);
+  }, [fetchMediumResult]);
 
   return (
     <Box display="flex" flexDir="column">
@@ -256,9 +251,7 @@ const MediumResult = () => {
         Object.entries(mediumResult)
           .reverse()
           .map(([day, result]) => {
-            const player = currentChannel.users.find(
-              (u) => u._id === result.playerId,
-            );
+            const player = users.find((u) => u._id === result.playerId);
             return player ? (
               <Box key={day} mb={3}>
                 <DisplayDay day={day} />
@@ -280,20 +273,18 @@ const MediumResult = () => {
 };
 
 const GuardHistory = () => {
-  const { user, currentChannel, gameState } = useUserState();
+  const { user, currentChannel } = useUserState();
+  const { _id: channelId, users, phase } = currentChannel;
   const [guardHistory, setGuardHistory] = useState({});
   const showToast = useNotification();
 
   const fetchGuardHistory = useCallback(async () => {
-    if (
-      gameState?.phase && gameState.phase.currentPhase !== "pre" &&
-      user.role === "hunter"
-    ) {
+    if (phase.currentPhase !== "pre" && user.role === "hunter") {
       try {
         const config = { headers: { Authorization: `Bearer ${user.token}` } };
 
         const { data } = await axios.get(
-          `/api/game/guard-history/${gameState.gameId}`,
+          `/api/game/guard-history/${channelId}`,
           config,
         );
         setGuardHistory(data);
@@ -304,11 +295,11 @@ const GuardHistory = () => {
         );
       }
     }
-  }, [user, gameState, setGuardHistory, showToast]);
+  }, [user, channelId, phase.currentPhase, setGuardHistory, showToast]);
 
   useEffect(() => {
     fetchGuardHistory();
-  }, [fetchGuardHistory, gameState?.phase?.currentDay]);
+  }, [fetchGuardHistory]);
 
   return (
     <Box display="flex" flexDir="column">
@@ -316,9 +307,8 @@ const GuardHistory = () => {
         Object.entries(guardHistory)
           .reverse()
           .map(([day, result]) => {
-            const player = currentChannel.users.find(
-              (u) => u._id === result.playerId,
-            );
+            const player = users.find((u) => u._id === result.playerId);
+
             return player ? (
               <Box key={day} mb={3}>
                 <DisplayDay day={day} />
@@ -337,20 +327,18 @@ const GuardHistory = () => {
 };
 
 const AttackHistory = () => {
-  const { user, currentChannel, gameState } = useUserState();
+  const { user, currentChannel } = useUserState();
+  const { _id: channelId, users, phase } = currentChannel;
   const [attackHistory, setAttackHistory] = useState({});
   const showToast = useNotification();
 
   const fetchAttackHistory = useCallback(async () => {
-    if (
-      gameState?.phase && gameState.phase.currentPhase !== "pre" &&
-      user.role === "werewolf"
-    ) {
+    if (phase.currentPhase !== "pre" && user.role === "werewolf") {
       try {
         const config = { headers: { Authorization: `Bearer ${user.token}` } };
 
         const { data } = await axios.get(
-          `/api/game/attack-history/${gameState.gameId}`,
+          `/api/game/attack-history/${channelId}`,
           config,
         );
         setAttackHistory(data);
@@ -361,11 +349,11 @@ const AttackHistory = () => {
         );
       }
     }
-  }, [user, gameState, setAttackHistory, showToast]);
+  }, [user, channelId, phase.currentPhase, setAttackHistory, showToast]);
 
   useEffect(() => {
     fetchAttackHistory();
-  }, [fetchAttackHistory, gameState?.phase?.currentDay]);
+  }, [fetchAttackHistory]);
 
   return (
     <Box display="flex" flexDir="column">
@@ -373,9 +361,8 @@ const AttackHistory = () => {
         Object.entries(attackHistory)
           .reverse()
           .map(([day, result]) => {
-            const player = currentChannel.users.find(
-              (u) => u._id === result.playerId,
-            );
+            const player = users.find((u) => u._id === result.playerId);
+
             return player ? (
               <Box key={day} mb={3}>
                 <DisplayDay day={day} />

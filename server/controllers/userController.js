@@ -1,11 +1,11 @@
-const asyncHandler = require('express-async-handler');
+const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
 const generateToken = require("../config/generateToken");
 const { GameState } = require("../classes/GameState");
 const { errors } = require("../messages");
 const EventEmitter = require("events");
 const userEvents = new EventEmitter();
-const CustomError = require('../classes/CustomError');
+const CustomError = require("../classes/CustomError");
 const {
   getUserById,
   matchPassword,
@@ -48,7 +48,6 @@ const authUser = asyncHandler(async (req, res) => {
   res.json({
     _id: user._id,
     name: user.name,
-    email: user.email,
     pic: user.pic,
     token: generateToken(user._id),
   });

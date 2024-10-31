@@ -13,13 +13,10 @@ const sendMessage = asyncHandler(async (req, res) => {
   const userId = req.user._id.toString();
   await canUserAccessChannel(channelId, userId);
   const messageType = await getSendMessageType(channelId, userId);
-  const users = usersCanReceive(channelId, messageType);
+  const users = await usersCanReceive(channelId, messageType);
 
   const newMessage = {
-    sender: userId,
-    content,
-    channel: channelId,
-    messageType,
+    sender: userId, content, channel: channelId, messageType,
   };
 
   const message = await Message.create(newMessage);

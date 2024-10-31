@@ -13,13 +13,16 @@ import GameTimer from "./GameTimer";
 import Sidebar from "../miscellaneous/SideBar";
 import DisplayMessage from "./DisplayMessage";
 import { gameMaster } from "../../gameMaster";
+import { ChannelBox } from "../miscellaneous/CustomComponents";
 
 const Channel = () => {
   const [messages, setMessages] = useState([]);
-  const { user, currentChannel, setCurrentChannel, gameState } = useUserState();
+  const { user, currentChannel, cDispatch } = useUserState();
   const scrollRef = useRef(null);
   const isScrollRef = useRef(null);
   const messagesCompletedRef = useRef(null);
+
+  const { users, blockUsers, isGame } = currentChannel;
 
   const { loading, fetchMessages, sendMessage } = useChatMessages({
     messages,
@@ -65,14 +68,14 @@ const Channel = () => {
   }, []); */
 
   useEffect(() => {
-    if (currentChannel?.blockUsers?.some((u) => u === user._id)) {
-      setCurrentChannel(null);
+    if (blockUsers?.some((u) => u === user._id)) {
+      cDispatch({ type: "LEAVE_CHANNEL"});
     }
-  }, [user._id, currentChannel.blockUsers, setCurrentChannel]);
+  }, [user._id, blockUsers, cDispatch]);
 
   useEffect(() => {
-    if (currentChannel._id && messages.length === 0) fetchMessages();
-  }, [currentChannel._id, messages, fetchMessages]);
+    if (messages.length === 0) fetchMessages();
+  }, [messages, fetchMessages]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -82,26 +85,11 @@ const Channel = () => {
     }
   }, [messages]);
 
-  useEffect(() => {
-    return () => {
-      // setCurrentChannel(null);
-    };
-  }, [setCurrentChannel]);
-
   return (
     <>
-      <Sidebar Component={gameState ? GameSidebar : ChannelSidebar} />
-      <Box
-        display="flex"
-        alignItems="center"
-        flexDir="column"
-        maxWidth="600px"
-        width="100%"
-        borderRightWidth={4}
-        borderLeftWidth={4}
-        borderColor="#E17875"
-      >
-        {gameState ? <GameTimer /> : <EntryCounter/>}
+      <Sidebar Component={isGame ? GameSidebar : ChannelSidebar} />
+      <ChannelBox>
+        {isGame ? <GameTimer /> : <EntryCounter/>}
         <Divider borderWidth={2} borderColor="#E17875" opacity={1} />
         <Box
           display="flex"
@@ -132,7 +120,7 @@ const Channel = () => {
             >
               {messages && messages.map((m) => {
                   const chatUser = (m.sender === gameMaster._id) ? gameMaster :
-                    currentChannel.users.find((u) => u._id === m.sender);
+                    users.find((u) => u._id === m.sender);
                   if (!chatUser) return null;
 
                   return (
@@ -184,7 +172,7 @@ const Channel = () => {
             )}
           </Formik>
         </Box>
-      </Box>
+      </ChannelBox>
     </>
   );
 };

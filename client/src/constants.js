@@ -6,7 +6,7 @@ export const PHASE_MAP = {
 };
 
 export const RESULT_MAP = {
-  running: "",
+  running: "進行中",
   villagersWin: "村人勝利",
   werewolvesWin: "人狼勝利",
   villageAbandoned: "廃村",
@@ -24,6 +24,7 @@ export const ROLE_MAP = {
   hunter: "狩人",
   werewolf: "人狼",
   madman: "狂人",
+  spectator: "観戦者",
 };
 
 export const PHASE_DURATIONS = {

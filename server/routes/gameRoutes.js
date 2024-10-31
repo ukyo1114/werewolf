@@ -3,6 +3,7 @@ const router = express.Router();
 const {
   checkGame,
   getGame,
+  joinGame,
   getPlayerState,
   receiveVote,
   receiveFortuneTarget,
@@ -53,6 +54,7 @@ const definePostRoute = (route, controllers) => {
 
 router.use(protect);
 
+defineGetRoute("/join/:gameId", [getGame, joinGame]);
 defineGetRoute("/player-state/:gameId", [getGame, getPlayerState]);
 defineGetRoute("/vote-history/:gameId", [getGame, getVoteHistory]);
 defineGetRoute("/fortune-result/:gameId", [getGame, getFortuneResult]);

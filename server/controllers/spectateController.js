@@ -1,36 +1,40 @@
+const asyncHandler = require("express-async-handler");
+const User = require("../models/userModel");
 const { games } = require("../classes/GameState");
-const { handleServerError } = require("../utils/handleError");
+const _ = require("lodash");
 
-const getGameList = (req, res) => {
+const getGameList = asyncHandler(async (req, res) => {
   const channelId = req.params.channelId;
+  const gameList = await getGamesByChannelId(channelId);
+  res.status(200).json(gameList);
+});
 
-  try {
-    const gameList = getGamesByChannelId(channelId);
-    res.status(200).json(gameList);
-  } catch (error) {
-    handleServerError(error);
-  }
-};
-
-function getGamesByChannelId(channelId) {
+async function getGamesByChannelId(channelId) {
   if (!games) return [];
-
   const allGames = Object.values(games);
-  const filteredGames = allGames.filter((game) =>
-    game.channelId === channelId
-  );
-  
-  return createGameList(filteredGames);
+  const filteredGames = _.filter(allGames, { channelId });
+  const gameList = await createGameList(filteredGames);
+
+  return gameList;
 };
 
-function createGameList(games) {
-  return games.map((game) => ({
-    gameId: game.gameId,
-    players: Array.from(game.players.players.keys()),
-    currentDay: game.phase.currentDay,
-    currentPhase: game.phase.currentPhase,
-    result: game.result,
-  }));
+async function createGameList(games) {
+  const gameListPromises  = games.map(async (game) => {
+    const { gameId, result, phase } = game;
+    const { currentDay, currentPhase } = phase; 
+    const players = await getPlayers(Array.from(game.players.players.keys()));
+
+    return { gameId, players, currentDay, currentPhase, result: result.value };
+  });
+
+  const gameList = await Promise.all(gameListPromises);
+  return gameList;
+}
+
+async function getPlayers(array) {
+  const players = await User.find({ _id: { $in: array } })
+    .populate("_id name pic");
+  return players;
 }
 
 module.exports = getGameList;

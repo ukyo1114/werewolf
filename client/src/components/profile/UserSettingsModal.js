@@ -24,7 +24,7 @@ import {
 } from "./validationSchema";
 
 const UserSettingsModal = () => {
-  const { user, setUser } = useUserState();
+  const { user } = useUserState();
   const showToast = useNotification();
   const [newPassShow, setNewPassShow] = useState(false);
   const [confirmNewPassShow, setConfirmNewPassShow] = useState(false);
@@ -49,22 +49,17 @@ const UserSettingsModal = () => {
     try {
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
 
-      const { data } = await axios.put(
+      await axios.put(
         "/api/user/settings",
         payload,
         config,
       );
-      setUser((prevUser) => {
-        return {
-          ...prevUser,
-          email: data.email,
-        }
-      });
+
       showToast(messages.USER_SETTINGS_UPDATED, "success");
     } catch (error) {
       showToast(error?.response?.data?.error || errors.USER_SETTINGS_FAILED, "error");
     }
-  }, [user.token, setUser, showToast]);
+  }, [user.token, showToast]);
 
   return (
       <Formik

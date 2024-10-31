@@ -47,21 +47,20 @@ class Entry {
 
   async startGame() {
     try {
-      const game = await Game.create({
+      const { _id: gameId } = await Game.create({
         users: this.userList(),
         channel: this.channelId,
         result: "running",
       });
 
-      const fullGame = await Game.findOne({ _id: game._id })
+      const newGame = await Game.findById(gameId)
         .select("_id users channel")
-        .populate("users", "_id name pic",);
+        .populate("users", "_id name");
 
-      GameState.createGame(fullGame);
+      GameState.createGame(newGame);
 
       entryEvents.emit("gameStart", {
-        socketIds: this.users.map((user) => user.socketId),
-        fullGame: fullGame,
+        socketIds: this.users.map((user) => user.socketId), gameId,
       });
     } catch (error) {
       this.gameCreationFailed(error);

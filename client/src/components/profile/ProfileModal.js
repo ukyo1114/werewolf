@@ -1,8 +1,4 @@
-import {
-  Image,
-  ModalBody,
-  Text,
-} from "@chakra-ui/react";
+import { Image, ModalBody } from "@chakra-ui/react";
 import React from "react";
 import { useUserState } from "../../context/userProvider";
 
@@ -22,12 +18,6 @@ const ProfileModal = () => {
         src={user.pic}
         alt={user.name}
       />
-      <Text
-        fontSize={{ base: "28px", md: "30px" }}
-        fontFamily="monospace"
-      >
-        Email: {user.email}
-      </Text>
     </ModalBody>
   );
 };

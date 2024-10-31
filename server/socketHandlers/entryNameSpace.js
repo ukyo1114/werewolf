@@ -1,8 +1,8 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 const { errors } = require("../messages");
-
 const { Entry, entryUsers, entryEvents } = require("../classes/Entry");
+const { GameState } = require("../classes/GameState");
 
 function entryNameSpaseHandler(io) {
   const entryNameSpace = io.of("/entry");
@@ -22,7 +22,7 @@ function entryNameSpaseHandler(io) {
         return next(new Error(errors.USER_NOT_FOUND));
       }
   
-      socket.user = user;
+      socket.userId = user._id.toString();
       next();
     } catch (error) {
       return next(new Error(errors.INVALID_TOKEN));
@@ -30,6 +30,9 @@ function entryNameSpaseHandler(io) {
   });
 
   entryNameSpace.on("connection", (socket) => {
+    const gameId = GameState.isPlayingGame(socket.userId);
+    if (gameId) entryNameSpace.to(socket.id).emit("navigateGame", gameId);
+
     socket.on("joinChannel", (channelId, callback) => {
       socket.join(channelId);
       socket.channelId = channelId;
@@ -42,7 +45,7 @@ function entryNameSpaseHandler(io) {
     });
 
     socket.on("registerEntry", () => {
-      const userId = socket.user._id.toString();
+      const userId = socket.userId;
       const channelId = socket.channelId;
 
       if (entryUsers[channelId]) {
@@ -73,10 +76,10 @@ function entryNameSpaseHandler(io) {
   });
 
   entryEvents.on("gameStart", (data) => {
-    const { socketIds, fullGame } = data;
+    const { socketIds, gameId } = data;
 
     socketIds.forEach((socketId) => {
-      entryNameSpace.to(socketId).emit("gameStart", fullGame);
+      entryNameSpace.to(socketId).emit("gameStart", gameId);
     });
   });
 

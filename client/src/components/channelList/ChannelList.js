@@ -19,6 +19,7 @@ import ChannelInfo from "./ChannelInfo";
 import useNotification from "../../hooks/notification";
 import { errors } from "../../messages";
 import ModalTemplete from "../miscellaneous/ModalTemplete";
+import { ChannelBox } from "../miscellaneous/CustomComponents";
 
 const ChannelList = () => {
   const { user } = useUserState();
@@ -30,15 +31,15 @@ const ChannelList = () => {
 
   const fetchChannelList = useCallback(async () => {
     try {
-      const config = {
-        headers: { Authorization: `Bearer ${user.token}` } };
+      const config = { headers: { Authorization: `Bearer ${user.token}` } };
+      console.log("fetchChannelList", config);
 
       const { data } = await axios.get("/api/channel/list", config);
       data.sort((a, b) => b.users.length - a.users.length);
       setChannelList(data);
     } catch (error) {
       showToast(
-        error?.response?.data?.error || errors.FETCH_CHANNEL_LISET, "error"
+        error?.response?.data?.error || errors.FETCH_CHANNEL_LIST, "error"
       );
     }
   }, [user.token, showToast]);
@@ -59,16 +60,7 @@ const ChannelList = () => {
   return (
     <>
       <Sidebar Component={ChannelListSidebar} />
-      <Box
-        display="flex"
-        alignItems="center"
-        flexDir="column"
-        maxWidth="600px"
-        width="100%"
-        borderRightWidth={4}
-        borderLeftWidth={4}
-        borderColor="#E17875"
-      >
+      <ChannelBox>
         <ChannelListHeader
           showJoinedCh={showJoinedCh}
           setShowJoinedCh={setShowJoinedCh}
@@ -130,7 +122,7 @@ const ChannelList = () => {
             <ChannelInfo selectedChannel={selectedChannel} />
           </ModalTemplete>
         )}
-      </Box>
+      </ChannelBox>
     </>
   );
 };

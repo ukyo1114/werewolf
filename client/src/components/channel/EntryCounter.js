@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
-  useToast,
   Box,
   Text,
   Button,
@@ -14,13 +13,17 @@ import UserList from "../miscellaneous/UserList";
 import ModalTemplete from "../miscellaneous/ModalTemplete";
 import { ChannelHeader } from "../miscellaneous/CustomComponents";
 import useNotification from "../../hooks/notification";
+import useJoinGame from "../../hooks/useJoinGame";
+import { errors, messages } from "../../messages";
 
 const EntryCounter = () => {
-  const { user, currentChannel, setCurrentChannel, setGameState } = useUserState();
+  const { user, currentChannel } = useUserState();
   const [users, setUsers] = useState([]);
   const [entryButtonState, setEntryButtonState] = useState(false);
-  const toast = useToast();
+  const showToast = useNotification();
   const userList = useDisclosure();
+  const { _id: channelId, channelName } = currentChannel;
+  const joinGame = useJoinGame();
 
   const entrySocketRef = useRef(null);
 
@@ -34,18 +37,13 @@ const EntryCounter = () => {
       try {
         const response = await entrySocketRef.current.emitWithAck(
           "joinChannel",
-          currentChannel._id,
+          channelId,
         );
         setUsers(response.users);
       } catch (error) {
-        toast({
-          title: "Error !",
-          description: "接続に失敗しました。",
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-          position: "bottom",
-        });
+        showToast(
+          error?.response?.data?.error || errors.CONNECTION_FAILED, "error"
+        );
         entrySocketRef.current.disconnect();
       }
     });
@@ -54,26 +52,23 @@ const EntryCounter = () => {
       setUsers(data);
     });
 
-    entrySocketRef.current.on("gameStart", (game) => {
-      console.log("gameStart", game);
-      setCurrentChannel(game);
-      setGameState({ gameId: game._id });
+    entrySocketRef.current.on("gameStart", async (gameId) => {
+      await joinGame(gameId);
+    });
+
+    entrySocketRef.current.on("navigateGame", async (gameId) => {
+      showToast(messages.NAVIGATE_GAME, "info");
+      await joinGame(gameId);
     });
 
     entrySocketRef.current.on("connect_error", (err) => {
-      toast({
-        title: err.message,
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom",
-      });
+      showToast(err.message, "error");
     });
 
     return () => {
       entrySocketRef.current.disconnect();
     };
-  }, [user.token, currentChannel._id, toast, setCurrentChannel, setGameState]);
+  }, [user.token, channelId, showToast, joinGame]);
 
   useEffect(() => {
     if (users.some((u) => u === user._id)) {
@@ -81,11 +76,11 @@ const EntryCounter = () => {
     } else {
       setEntryButtonState(false);
     }
-  }, [users, user, setEntryButtonState]);
+  }, [users, user._id, setEntryButtonState]);
 
   return (
     <ChannelHeader>
-      <Text fontSize="lg"><strong>{currentChannel.channelName}</strong></Text>
+      <Text fontSize="lg"><strong>{channelName}</strong></Text>
       
       <Box display="flex" alignItems="center">
         <Text
@@ -110,14 +105,14 @@ const EntryCounter = () => {
           onClick={() =>
             entryButtonState
               ? entrySocketRef.current.emit("cancelEntry")
-              : entrySocketRef.current.emit("registerEntry", user)
+              : entrySocketRef.current.emit("registerEntry")
           }
         >
           {entryButtonState ? "取消" : "参加"}
         </Button>
       </Box>
 
-      {users && currentChannel?.users && (
+      {users && currentChannel.users && (
         <ModalTemplete
           isOpen={userList.isOpen}
           onClose={userList.onClose}

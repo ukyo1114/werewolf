@@ -4,8 +4,11 @@ import "../styles.css";
 import DisplayUser from "./DisplayUser";
 import { StyledBox, StyledText } from "./CustomComponents";
 import { USER_STATUS } from "../../constants";
+import { useUserState } from "../../context/userProvider";
 
 const UserList = ({ userList }) => {
+  const { currentChannel } = useUserState();
+  const { isGame } = currentChannel;
   return (
     <ModalBody>
       <Box
@@ -20,15 +23,19 @@ const UserList = ({ userList }) => {
         overflowY="auto"
       >
         {userList.length > 0 ? (
-          userList.map((user) => (
-            <StyledBox key={user._id}>
-              <DisplayUser user={user}>
-                {user.status && 
-                  <Text>{USER_STATUS[user.status]}</Text>
-                }
-              </DisplayUser>
-            </StyledBox>
-          ))
+          userList.map((user) => {
+            if (isGame && !user.status) return null;
+            
+            return (
+              <StyledBox key={user._id}>
+                <DisplayUser user={user}>
+                  {user.status && 
+                    <Text>{USER_STATUS[user.status]}</Text>
+                  }
+                </DisplayUser>
+              </StyledBox>
+            )
+          })
         ) : (
           <StyledText>ユーザーがいません</StyledText>
         )}

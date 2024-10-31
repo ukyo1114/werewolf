@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import { useDisclosure } from "@chakra-ui/react";
 import { FaUsers, FaArrowLeft } from "react-icons/fa";
 import { useUserState } from "../../context/userProvider";
@@ -12,18 +12,16 @@ import {
   iconProps,
 } from "../miscellaneous/CustomComponents";
 import { TITLE_MAP, MODE_MAP } from "../../constants";
-import { useEnterToChannel } from "../../hooks/useEnterToChannel";
+import { useJoinChannel } from "../../hooks/useJoinChannel";
 
 const GameSidebar = () => {
-  const { user, currentChannel, gameState, setGameState } = useUserState();
+  const { user, currentChannel } = useUserState();
+  const { channel, users, phase } = currentChannel;
   const userList = useDisclosure();
   const voteModal = useDisclosure();
   const vHistoryModal = useDisclosure();
-
   const [mode, setMode] = useState("");
-  const [voteHistoryModalMode, setVoteHistoryModalMode] = useState("");
-
-  const enterToChannel = useEnterToChannel();
+  const joinChannel = useJoinChannel();
 
   const handleVoteModalOpen = useCallback((str) => {
     setMode(str);
@@ -31,13 +29,8 @@ const GameSidebar = () => {
   }, [setMode, voteModal]);
 
   const backToChannel = useCallback(async () => {
-    await enterToChannel(currentChannel.channel);
-    setGameState(null);
-  }, [currentChannel.channel, enterToChannel, setGameState]);
-
-  useEffect(() => {
-    setVoteHistoryModalMode(MODE_MAP[user.role] || "others");
-  }, [setVoteHistoryModalMode, user.role]);
+    await joinChannel(channel);
+  }, [channel, joinChannel]);
 
   return (
     <>
@@ -50,7 +43,7 @@ const GameSidebar = () => {
           label="投票"
           onClick={() => handleVoteModalOpen("vote")}
           isDisabled={
-            gameState.phase?.currentPhase !== "day" ||
+            phase.currentPhase !== "day" ||
             user.status !== "alive"
           }
         >
@@ -61,7 +54,7 @@ const GameSidebar = () => {
           label="占い"
           onClick={() => handleVoteModalOpen("fortune")}
           isDisabled={
-            gameState.phase?.currentPhase !== "night" ||
+            phase.currentPhase !== "night" ||
             user.status !== "alive" || user.role !== "seer"
           }
         >
@@ -72,7 +65,7 @@ const GameSidebar = () => {
           label="護衛"
           onClick={() => handleVoteModalOpen("guard")}
           isDisabled={
-            gameState.phase?.currentPhase !== "night" ||
+            phase.currentPhase !== "night" ||
             user.status !== "alive" || user.role !== "hunter"
           }
         >
@@ -83,22 +76,17 @@ const GameSidebar = () => {
           label="襲撃"
           onClick={() => handleVoteModalOpen("attack")}
           isDisabled={
-            gameState.phase?.currentPhase !== "night" ||
-            user.status !== "alive" ||
-            user.role !== "werewolf"
+            phase.currentPhase !== "night" ||
+            user.status !== "alive" || user.role !== "werewolf"
           }
         >
           <FaUsers {...iconProps} />
         </SidebarButton>
-
-
         
         <SidebarButton
           label="投票履歴"
           onClick={vHistoryModal.onOpen}
-          isDisabled={
-            gameState.phase && gameState.phase.currentPhase === "pre"
-          }
+          isDisabled={phase.currentPhase === "pre"}
         >
           <FaUsers {...iconProps} />
         </SidebarButton>
@@ -107,7 +95,7 @@ const GameSidebar = () => {
           label="チャンネルへ戻る"
           onClick={backToChannel}
           isDisabled={
-            gameState.phase?.currentPhase !== "finished" &&
+            phase.currentPhase !== "finished" &&
             user.status === "alive"
           }
         >
@@ -120,25 +108,23 @@ const GameSidebar = () => {
         onClose={userList.onClose}
         title={"ユーザーリスト"}
       >
-        <UserList userList={currentChannel.users}/>
+        <UserList userList={users}/>
       </ModalTemplete>
 
       <ModalTemplete
         isOpen={vHistoryModal.isOpen}
         onClose={vHistoryModal.onClose}
       >
-        <VoteHistoryTabs mode={voteHistoryModalMode} />
+        <VoteHistoryTabs mode={MODE_MAP[user.role] || "others"} />
       </ModalTemplete>
-      
-      {gameState.phase && (
-        <ModalTemplete
-          isOpen={voteModal.isOpen}
-          onClose={voteModal.onClose}
-          title={TITLE_MAP[mode]}
-        >
-          <VoteModal mode={mode} onClose={voteModal.onClose} />
-        </ModalTemplete>
-      )}
+
+      <ModalTemplete
+        isOpen={voteModal.isOpen}
+        onClose={voteModal.onClose}
+        title={TITLE_MAP[mode]}
+      >
+        <VoteModal mode={mode} onClose={voteModal.onClose} />
+      </ModalTemplete>
     </>
   );
 };

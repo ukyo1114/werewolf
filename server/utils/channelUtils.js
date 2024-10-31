@@ -1,6 +1,6 @@
-const Channel = require('../models/channelModel');
-const CustomError = require('../classes/CustomError');
-const { errors } = require('../messages');
+const Channel = require("../models/channelModel");
+const CustomError = require("../classes/CustomError");
+const { errors } = require("../messages");
 
 const getChannelById = async (channelId, password = true) => {
   let query = Channel.findById(channelId);

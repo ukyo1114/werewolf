@@ -6,8 +6,8 @@ import Channel from "../components/channel/Channel";
 
 const Channels = () => {
   const { user, currentChannel } = useUserState();
-
-  if (!user) return null;
+  const { _id: channelId } = currentChannel;
+  if (!user.token) return null;
 
   return (
     <div style={{ width: "100%" }}>
@@ -17,8 +17,8 @@ const Channels = () => {
         width="100%"
         height="100vh"
       >
-        {currentChannel ?
-          <Channel key={currentChannel._id} /> : <ChannelList />
+        {channelId ?
+          <Channel key={channelId} /> : <ChannelList />
         }
       </Box>
     </div>

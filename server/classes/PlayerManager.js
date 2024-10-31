@@ -47,11 +47,15 @@ class PlayerManager {
 
   getPlayerState(playerId) {
     const player = this.players.get(playerId);
-    if (!player) return null;
+    if (!player) return { _id: playerId, status: "spectator", role: "" };
     if (player.role !== "werewolf") return player;
     
     player.partnerId = this.getWerewolfPartner(playerId);
     return player;
+  }
+
+  getPlayerById(playerId) {
+    return Array.from(this.players.values()).find((pl) => pl._id === playerId);
   }
 
   getWerewolfPartner(playerId) {

@@ -144,7 +144,19 @@ class GameState {
 
   static isUserInGame(userId) {
     const game = Object.values(games).find((game) => game.players.players.has(userId));
-    return !!game && game.result === "running";
+    return !! game && game.result === "running";
+  }
+
+  static isPlayingGame(userId) {
+    const game = Object.values(games).find((game) =>
+      Array.from(game.players.players.values()).some((pl) => pl._id === userId)
+    );
+    if (!game) return false;
+    const currentPhase = game.phase.currentPhase;
+    const player = game.players.getPlayerById(userId);
+    const isPlaying = (currentPhase !== "finished" && player.status === "alive");
+
+    return isPlaying ? game.gameId : null;
   }
 }
 

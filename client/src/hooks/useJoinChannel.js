@@ -4,11 +4,11 @@ import { useUserState } from "../context/userProvider";
 import useNotification from "./notification";
 import { errors } from "../messages";
 
-export const useEnterToChannel = () => {
-  const { user, setCurrentChannel } = useUserState();
+export const useJoinChannel = () => {
+  const { user, cDispatch } = useUserState();
   const showToast = useNotification();
 
-  const enterToChannel = useCallback(async (channelId, password) => {
+  const joinChannel = useCallback(async (channelId, password) => {
     try {
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
 
@@ -17,11 +17,11 @@ export const useEnterToChannel = () => {
         { channelId: channelId, password: password || "" },
         config,
       );
-      setCurrentChannel(data);
+      cDispatch({ type: "JOIN_CHANNEL", payload: data });
     } catch (error) {
       showToast(error?.response?.data?.error || errors.CHANNEL_ENTER_FAILED, "error");
     }
-  }, [user.token, setCurrentChannel, showToast]);
+  }, [user.token, cDispatch, showToast]);
 
-  return enterToChannel;
+  return joinChannel;
 };

@@ -1,51 +1,53 @@
-import React, { useState, useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { Box } from "@chakra-ui/react";
+import Countdown from "react-countdown";
 import { useUserState } from "../../context/userProvider";
 import axios from "axios";
 import "../styles.css";
 import io from "socket.io-client";
 import useNotification from "../../hooks/notification";
+import { useJoinChannel } from "../../hooks/useJoinChannel";
 import { errors } from "../../messages";
+import { PHASE_MAP, ROLE_MAP, PHASE_DURATIONS } from "../../constants";
 import {
-  PHASE_MAP,
-  ROLE_MAP,
-  PHASE_DURATIONS,
-} from "../../constants";
-import { TimerAndRole, DisplayPhase, ChannelHeader } from "../miscellaneous/CustomComponents";
+  DisplayRole,
+  DisplayPhase,
+  ChannelHeader,
+} from "../miscellaneous/CustomComponents";
 
 const GameTimer = () => {
-  const { user, setUser, setCurrentChannel, gameState, setGameState } = useUserState();
-  const [currentPhase, setCurrentPhase] = useState("");
-  const [time, setTime] = useState(null);
-  const [role, setRole] = useState("");
+  const { user, uDispatch, currentChannel, cDispatch } = useUserState();
+  const { _id: channelId, channel, phase } = currentChannel;
+  const { currentDay, currentPhase, changedAt } = phase;
   const showToast = useNotification();
   const gameSocketRef = useRef(null);
+  const joinChannel = useJoinChannel();
 
   const fetchUserState = useCallback(async () => {
     try {
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
 
       const { data } = await axios.get(
-        `/api/game/player-state/${gameState.gameId}`, config
+        `/api/game/player-state/${channelId}`, config
       );
-      setUser((prevUser) => ({ ...prevUser, ...data }));
+      uDispatch({ type: "JOIN_GAME", payload: data });
     } catch (error) {
       showToast(
         error?.response?.data?.error || errors.PLAYER_LOAD_FAILED, "error"
       );
     }
-  }, [showToast, user.token, gameState.gameId, setUser]);
+  }, [showToast, user.token, channelId, uDispatch]);
+
+  const calcTimer = useCallback(() =>{
+    const duration = PHASE_DURATIONS[currentPhase] * 1000;
+    return new Date(changedAt).getTime() + duration;
+  }, [currentPhase, changedAt]);
 
   useEffect(() => {
     fetchUserState();
     
-    return () => {
-      setUser((prevUser) => {
-        const { status, role, partnerId, ...remainingUser } = prevUser;
-        return remainingUser;
-      });
-    };
-  }, [fetchUserState, setUser, gameState.phase]);
+    return () => uDispatch({ type: "LEAVE_GAME" });
+  }, [fetchUserState, uDispatch]);
 
   useEffect(() => {
     if (gameSocketRef.current) return;
@@ -55,15 +57,17 @@ const GameTimer = () => {
 
     gameSocketRef.current.on("connect", async () => {
       try {
-        const gameId = gameState.gameId;
-        const response = await gameSocketRef.current.emitWithAck("joinGame", gameId);
+        const { gameState } = await gameSocketRef.current.emitWithAck(
+          "joinGame", channelId
+        );
 
-        if (!response.gameState) {
+        if (!gameState) {
           showToast(errors.GAME_NOT_FOUND, "error");
-          setGameState(null); // 元のチャンネルに戻る処理を追加
+          await joinChannel(channel);
         }
-
-        updateGameState(response.gameState)
+        
+        cDispatch({ type: "UPDATE_GAME_STATE", payload: gameState });
+        uDispatch({ type: "UPDATE_STATUS", payload: gameState });
       } catch (error) {
         showToast(
           error?.response?.data?.error || errors.CONNECTION_FAILED, "error"
@@ -72,78 +76,53 @@ const GameTimer = () => {
       }
     });
 
-    gameSocketRef.current.on("updateGameState", (gameState) => updateGameState(gameState));
-    
-    gameSocketRef.current.on("connect_error", (err) => showToast(err.message, "error"));
-
-    function updateGameState(gameState) {
-      setGameState(gameState);
-      setCurrentChannel((prevCurrentChannel) => {
-        const usersAddStatus = prevCurrentChannel.users.map((user) => {
-          const userFromGameState = gameState.users.find((u) => 
-            u._id === user._id
-          );
-          if (!userFromGameState) return user;
-          return { ...user, ...userFromGameState };
-        });
-
-        return { ...prevCurrentChannel, users: usersAddStatus };
-      });
-    }
-
-    return () => gameSocketRef.current.disconnect();
-  }, [user.token, gameState.gameId, showToast, setCurrentChannel, setGameState]);
-
-  useEffect(() => {
-    if (!gameState.phase) return;
-
-    const phase = PHASE_MAP[gameState.phase.currentPhase];
-    setCurrentPhase(phase);
-  }, [gameState.phase, setCurrentPhase]);
-
-  useEffect(() => {
-    if (!gameState.phase) return;
-    
-    console.log("gameState.phase:", gameState?.phase, "currentPhase", gameState?.phase?.currentPhase);
-
-    const duration = PHASE_DURATIONS[gameState.phase.currentPhase];
-    const elapsed = Math.floor(
-      (new Date() - new Date(gameState.phase.changedAt)) / 1000,
-    );
-    let remaining = duration - elapsed;
-    if (remaining < 0) remaining = 0;
-    setTime(remaining);
-    const intervalId = setInterval(() => {
-      remaining--;
-      setTime(remaining);
-      if (remaining <= 0) {
-        if (gameState.phase.currentPhase === "finished") {
-          setGameState(null); // 元のチャンネルに戻る処理を追加
-        }
-        clearInterval(intervalId);
+    gameSocketRef.current.on(
+      "updateGameState",
+      (gameState) => {
+        cDispatch({ type: "UPDATE_GAME_STATE", payload: gameState });
+        uDispatch({ type: "UPDATE_STATUS", payload: gameState });
       }
-    }, 1000);
-    return () => clearInterval(intervalId);
-  }, [gameState.phase, setTime, setGameState]);
+    );
 
-  useEffect(() => {
-    const role = ROLE_MAP[user.role] || "観戦者";
-    setRole(role);
-  }, [user.role, setRole]);
+    gameSocketRef.current.on(
+      "connect_error", (err) => showToast(err.message, "error")
+    );
+
+    return () => {
+      if (gameSocketRef.current) {
+        gameSocketRef.current.disconnect();
+      }
+    };
+  }, [
+    user.token,
+    channelId,
+    channel,
+    showToast,
+    uDispatch,
+    cDispatch,
+    joinChannel,
+  ]);
 
   return (
     <ChannelHeader>
       <Box display="flex">
         <DisplayPhase mr={2}>
-          {gameState.phase && `${gameState.phase.currentDay}日目`}
+          {currentDay}日目
         </DisplayPhase>
-
-        <DisplayPhase>{currentPhase}</DisplayPhase>
+        <DisplayPhase>
+          {PHASE_MAP[currentPhase || "pre"]}
+        </DisplayPhase>
       </Box>
 
-      <TimerAndRole>{time}</TimerAndRole>
-
-      <TimerAndRole status={user.status}>{role}</TimerAndRole>
+      {currentPhase && changedAt &&
+        <Countdown
+          date={calcTimer()}
+          renderer={({ minutes, seconds }) => (minutes * 60 + seconds)} 
+        />
+      }
+      <DisplayRole status={user.status}>
+        {ROLE_MAP[user.role || "spectator"]}
+      </DisplayRole>
     </ChannelHeader>
   );
 };

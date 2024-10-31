@@ -6,9 +6,11 @@ import axios from "axios";
 import useNotification from "../../hooks/notification";
 import DisplayUser from "../miscellaneous/DisplayUser";
 import ModalButton from "../miscellaneous/ModalButton";
+import { SelectableBox } from "../miscellaneous/CustomComponents";
 
 const VoteModal = ({ mode, onClose }) => {
-  const { user, currentChannel, gameState } = useUserState();
+  const { user, currentChannel } = useUserState();
+  const { users, phase } = currentChannel;
   const [button, setButton] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
 /* 
@@ -29,49 +31,38 @@ const VoteModal = ({ mode, onClose }) => {
       attack: (<AttackButton selectedUser={selectedUser} onClose={onClose} />),
     };
     setButton(buttons[mode]);
-  }, [selectedUser, onClose, gameState?.phase, setButton, mode]);
+  }, [selectedUser, onClose, phase, setButton, mode]);
 
   return (
     <ModalBody>
-      <Box display="flex" flexDir="column" p={3} maxHeight="800px" overflowY="auto">
-        {gameState.users.map((u) => (
-          <Box
-            key={u._id}
-            display="flex"
-            alignItems="center"
-            mb={3}
-            p={3}
-            borderRadius="md"
-            borderWidth={2}
-            borderColor={selectedUser === u._id ? "white" : "#E17875"}
-            bg={selectedUser === u._id ? "#E17875" : "#2B2024"}
-            _hover={{
-              bg: selectedUser !== u._id ? "#3B2C2F" : undefined,
-            }}
-            cursor="pointer"
-            onClick={() => setSelectedUser(u._id)}
-            pointerEvents={
-              u._id !== user._id &&
-              u.status === "alive" &&
-              (gameState.phase.currentPhase !== "night" ||
-                u._id !== user.partnerId)
-                ? "auto"
-                : "none"
-            }
-            opacity={
-              u._id !== user._id &&
-              u.status === "alive" &&
-              (gameState.phase.currentPhase !== "night" ||
-                u._id !== user.partnerId)
-                ? "1"
-                : "0.6"
-            }
-          >
-            <DisplayUser user={
-              currentChannel.users.find((user) => user._id === u._id)
-            } />
-          </Box>
-        ))}
+      <Box display="flex" flexDir="column" p={3} maxH="800px" overflowY="auto">
+        {users.map((u) => {
+          if (!u.status) return null;
+          
+          return (
+            <SelectableBox
+              key={u._id}
+              borderColor={selectedUser === u._id ? "white" : "#E17875"}
+              bg={selectedUser === u._id ? "#E17875" : "#2B2024"}
+              _hover={{
+                bg: selectedUser !== u._id ? "#3B2C2F" : undefined,
+              }}
+              onClick={() => setSelectedUser(u._id)}
+              pointerEvents={
+                u._id !== user._id && u.status === "alive" &&
+                (phase.currentPhase !== "night" || u._id !== user.partnerId)
+                  ? "auto" : "none"
+              }
+              opacity={
+                u._id !== user._id && u.status === "alive" &&
+                (phase.currentPhase !== "night" || u._id !== user.partnerId)
+                  ? "1" : "0.6"
+              }
+            >
+              <DisplayUser user={u} />
+            </SelectableBox>
+          )
+        })}
       </Box>
 
       {button}
@@ -80,7 +71,8 @@ const VoteModal = ({ mode, onClose }) => {
 };
 
 const VoteButton = ({ selectedUser, onClose }) => {
-  const { user, gameState } = useUserState();
+  const { user, currentChannel } = useUserState();
+  const { _id: channelId } = currentChannel;
   const showToast = useNotification();
 
   const handleSubmit = useCallback(async () => {
@@ -90,10 +82,7 @@ const VoteButton = ({ selectedUser, onClose }) => {
         
         await axios.post(
           "/api/game/vote",
-          {
-            gameId: gameState.gameId,
-            selectedUser: selectedUser,
-          },
+          { gameId: channelId, selectedUser: selectedUser },
           config,
         );
         showToast("投票しました", "success");
@@ -105,7 +94,7 @@ const VoteButton = ({ selectedUser, onClose }) => {
     } else {
       showToast("投票先が選択されていません", "warning");
     }
-  }, [selectedUser, user.token, gameState.gameId, showToast, onClose]);
+  }, [selectedUser, user.token, channelId, showToast, onClose]);
 
   return (
     <ModalButton
@@ -117,7 +106,8 @@ const VoteButton = ({ selectedUser, onClose }) => {
 };
 
 const FortuneButton = ({ selectedUser, onClose }) => {
-  const { user, gameState } = useUserState();
+  const { user, currentChannel } = useUserState();
+  const { _id: channelId } = currentChannel;
   const showToast = useNotification();
 
   const handleSubmit = useCallback(async () => {
@@ -127,10 +117,7 @@ const FortuneButton = ({ selectedUser, onClose }) => {
 
         await axios.post(
           "/api/game/fortune",
-          {
-            gameId: gameState.gameId,
-            selectedUser: selectedUser,
-          },
+          { gameId: channelId, selectedUser: selectedUser },
           config,
         );
         showToast("送信しました", "success");
@@ -142,7 +129,7 @@ const FortuneButton = ({ selectedUser, onClose }) => {
     } else {
       showToast("占い先が選択されていません", "warning");
     }
-  }, [selectedUser, user.token, gameState.gameId, showToast, onClose]);
+  }, [selectedUser, user.token, channelId, showToast, onClose]);
 
   return (
     <ModalButton
@@ -154,7 +141,8 @@ const FortuneButton = ({ selectedUser, onClose }) => {
 };
 
 const GuardButton = ({ selectedUser, onClose }) => {
-  const { user, gameState } = useUserState();
+  const { user, currentChannel } = useUserState();
+  const { _id: channelId } = currentChannel;
   const showToast = useNotification();
 
   const handleSubmit = useCallback(async () => {
@@ -164,10 +152,7 @@ const GuardButton = ({ selectedUser, onClose }) => {
 
         await axios.post(
           "/api/game/guard",
-          {
-            gameId: gameState.gameId,
-            selectedUser: selectedUser,
-          },
+          { gameId: channelId, selectedUser: selectedUser },
           config,
         );
         showToast("送信しました", "success");
@@ -179,7 +164,7 @@ const GuardButton = ({ selectedUser, onClose }) => {
     } else {
       showToast("護衛先が選択されていません", "warning");
     }
-  }, [selectedUser, user.token, gameState.gameId, showToast, onClose]);
+  }, [selectedUser, user.token, channelId, showToast, onClose]);
 
   return (
     <ModalButton
@@ -191,7 +176,8 @@ const GuardButton = ({ selectedUser, onClose }) => {
 };
 
 const AttackButton = ({ selectedUser, onClose }) => {
-  const { user, gameState } = useUserState();
+  const { user, currentChannel } = useUserState();
+  const { _id: channelId } = currentChannel;
   const showToast = useNotification();
 
   const handleSubmit = useCallback(async () => {
@@ -201,10 +187,7 @@ const AttackButton = ({ selectedUser, onClose }) => {
 
         await axios.post(
           "/api/game/attack",
-          {
-            gameId: gameState.gameId,
-            selectedUser: selectedUser,
-          },
+          { gameId: channelId, selectedUser: selectedUser },
           config,
         );
         showToast("送信しました", "success");
@@ -216,7 +199,7 @@ const AttackButton = ({ selectedUser, onClose }) => {
     } else {
       showToast("襲撃先が選択されていません", "warning");
     }
-  }, [selectedUser, user.token, gameState.gameId, showToast, onClose]);
+  }, [selectedUser, user.token, channelId, showToast, onClose]);
 
   return (
     <ModalButton

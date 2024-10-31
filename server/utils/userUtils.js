@@ -1,7 +1,7 @@
 const User = require("../models/userModel");
 const CustomError = require("../classes/CustomError");
 const { errors } = require("../messages");
-const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
+const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
 const dotenv = require("dotenv");
 
 dotenv.config();
@@ -17,7 +17,7 @@ const s3 = new S3Client({
 const uploadPicture = async (userId, pic) => {
   if (!pic) throw new CustomError(400, errors.IMAGE_MISSING);
   const filePath = `user-icons/${userId}_profile.jpeg`;
-  const base64Data = pic.replace(/^data:image\/\w+;base64,/, '');
+  const base64Data = pic.replace(/^data:image\/\w+;base64,/, "");
   const buffer = Buffer.from(base64Data, "base64");
 
   const params = {
@@ -25,7 +25,7 @@ const uploadPicture = async (userId, pic) => {
     Key: filePath,
     Body: buffer,
     ContentType: "image/jpeg",
-    CacheControl: 'no-cache',
+    CacheControl: "no-cache",
   };
 
   try {
