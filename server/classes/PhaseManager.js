@@ -1,8 +1,8 @@
 class PhaseManager {
   static phaseDurations = {
     pre     : 30, // 30秒に戻す
-    day     : 10 * 60, // 10分に戻す
-    night   : 3 * 60, // 3分に戻す
+    day     : 60, // 10分に戻す
+    night   : 60, // 3分に戻す
     finished: 10 * 60 //, 10分に戻す
   };
 

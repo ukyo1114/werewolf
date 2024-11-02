@@ -3,7 +3,7 @@ import io from "socket.io-client";
 import useNotification from "./notification";
 import { useUserState } from "../context/userProvider";
 
-const useChatSocket = ({ setMessages }) => {
+const useChatSocket = ({ mDispatch }) => {
   const { user, currentChannel, cDispatch } = useUserState();
   const { _id: channelId } = currentChannel;
 
@@ -21,16 +21,7 @@ const useChatSocket = ({ setMessages }) => {
     });
 
     chatSocketRef.current.on("messageReceived", (newMessageReceived) => {
-      console.log("messageReceived");
-      setMessages((prevMessages) => {
-        if (!prevMessages.some((msg) => msg._id === newMessageReceived._id)) {
-          const updatedMessages = [newMessageReceived, ...prevMessages];
-          return updatedMessages.sort(
-            (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-          );
-        }
-        return prevMessages;
-      });
+      mDispatch({ type: "RECEIVE_MESSAGE", payload: newMessageReceived });
     });
 
     chatSocketRef.current.on("userJoined", (user) => {
@@ -59,7 +50,7 @@ const useChatSocket = ({ setMessages }) => {
         chatSocketRef.current = null;
       }
     };
-  }, [user.token, channelId, cDispatch, setMessages, showToast]);
+  }, [user.token, channelId, cDispatch, mDispatch, showToast]);
 };
 
 export default useChatSocket;

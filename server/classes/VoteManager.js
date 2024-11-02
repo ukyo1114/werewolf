@@ -46,7 +46,8 @@ class VoteManager {
       .filter(([_, count]) => count === maxVotes)
       .map(([votee]) => votee);
 
-    return _.sample(executionTargets);
+    const targetId = _.sample(executionTargets);
+    return this.players.players.get(targetId);
   }
 
   getVoteHistory() {

@@ -5,7 +5,7 @@ import useNotification from "./notification";
 
 const useChatMessages = ({
   messages,
-  setMessages,
+  mDispatch,
   messagesCompletedRef,
 }) => {
   const [loading, setLoading] = useState(false);
@@ -36,7 +36,7 @@ const useChatMessages = ({
         const allMessages = [...messages, ...uniqueMessages].sort(
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
         );
-        setMessages(allMessages);
+        mDispatch({ type: "FETCH_MESSAGES", payload: allMessages });
       }
 
       setLoading(false);
@@ -50,7 +50,7 @@ const useChatMessages = ({
     user.token,
     messagesCompletedRef,
     messages,
-    setMessages,
+    mDispatch,
     showToast,
   ]);
 

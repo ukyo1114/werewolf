@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import React, { useEffect, useReducer, useCallback, useRef } from "react";
 import { Box, Divider, FormControl, Spinner, Textarea } from "@chakra-ui/react";
 import { useUserState } from "../../context/userProvider";
 import ChannelSidebar from "../channelSideBar/ChannelSidebar";
@@ -14,9 +14,27 @@ import Sidebar from "../miscellaneous/SideBar";
 import DisplayMessage from "./DisplayMessage";
 import { gameMaster } from "../../gameMaster";
 import { ChannelBox } from "../miscellaneous/CustomComponents";
+import _ from "lodash";
 
 const Channel = () => {
-  const [messages, setMessages] = useState([]);
+  const messagesReducer = (state, action) => {
+    switch (action.type) {
+      case "FETCH_MESSAGES": 
+        return action.payload;
+      case "RECEIVE_MESSAGE": {
+        const updatedMessages = _.uniqBy(
+          [action.payload, ...state], "_id",
+        );
+        return updatedMessages.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
+      }
+      default:
+        return state;
+    }
+  };
+
+  const [messages, mDispatch] = useReducer(messagesReducer, []);
   const { user, currentChannel, cDispatch } = useUserState();
   const scrollRef = useRef(null);
   const isScrollRef = useRef(null);
@@ -26,11 +44,11 @@ const Channel = () => {
 
   const { loading, fetchMessages, sendMessage } = useChatMessages({
     messages,
-    setMessages,
+    mDispatch,
     messagesCompletedRef,
   });
 
-  useChatSocket({ setMessages });
+  useChatSocket({ mDispatch });
 
   const handleSendMessage = async (values, actions) => {
     const { newMessage } = values;
@@ -59,13 +77,6 @@ const Channel = () => {
       }
     }
   }, [fetchMessages]);
-
-/*   useEffect(() => { // 処理を変更
-    if (chatSocketRef.current) {
-      chatSocketRef.current.on("reconnect", () => {
-      });
-    }
-  }, []); */
 
   useEffect(() => {
     if (blockUsers?.some((u) => u === user._id)) {
@@ -119,16 +130,17 @@ const Channel = () => {
               onScroll={handleScroll}
             >
               {messages && messages.map((m) => {
-                  const chatUser = (m.sender === gameMaster._id) ? gameMaster :
-                    users.find((u) => u._id === m.sender);
-                  if (!chatUser) return null;
+                const chatUser = (m.sender === gameMaster._id) ? gameMaster :
+                  users.find((u) => u._id === m.sender);
+                if (!chatUser) return null;
 
-                  return (
-                    <DisplayMessage key={m._id} message={m} user={chatUser} />
-                  );
-                })}
+                return (
+                  <DisplayMessage key={m._id} message={m} user={chatUser} />
+                );
+              })}
             </Box>
           )}
+
           <Formik
             initialValues={{ newMessage: "" }}
             validationSchema={channelValidationSchema}

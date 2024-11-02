@@ -25,11 +25,15 @@ class AttackManager {
 
   attack() {
     const { currentDay } = this.phase;
-    const attackTarget = this.attackHistory.get(currentDay)?.playerId ||
+    const attackTargetId = this.attackHistory.get(currentDay)?.playerId ||
       this.getRandomAttackTarget();
-    const result = this.guard.guard(attackTarget);
+    const result = this.guard.guard(attackTargetId);
 
-    if (!result) this.players.kill(attackTarget);
+    if (!result) {
+      this.players.kill(attackTargetId);
+      return this.players.players.get(attackTargetId);
+    }
+    return null;
   }
 
   getRandomAttackTarget() {
