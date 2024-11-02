@@ -1,6 +1,7 @@
 const Message = require("../models/messageModel");
 const Game = require("../models/gameModel");
 const { channelEvents } = require("../socketHandlers/chatNameSpace");
+const { gameMaster } = require("../messages");
 
 const PlayerManager  = require("./PlayerManager");
 const VoteManager    = require("./VoteManager");
@@ -29,7 +30,7 @@ class GameState {
     this.attack = new AttackManager(this.players, this.phase, this.guard);
     this.isProcessing = false;
     this.registerListeners();
-    this.sendMessage("ただいまゲームの準備中ですわ。もう少しお待ちくださいませ。");
+    this.sendMessage(gameMaster.PREPARATION);
   }
 
   static createGame(game) {
@@ -38,16 +39,17 @@ class GameState {
   }
 
   registerListeners() {
-    this.eventEmitter.on("timerEnd", () => this.handleTimerEnd());
+    this.eventEmitter.on("timerEnd", async() => await this.handleTimerEnd());
     this.eventEmitter.on("phaseSwitched", () => this.handlePhaseSwitched());
   }
 
-  handleTimerEnd() {
+  async handleTimerEnd() {
     const { currentPhase } = this.phase;
     this.isProcessing = true;
 
-    if (currentPhase === "day")  this.handleDayPhaseEnd();
-    if (currentPhase === "night")  this.handleNightPhaseEnd();
+    if (currentPhase === "pre") await this.sendMessage(gameMaster.MORNING);
+    if (currentPhase === "day")  await this.handleDayPhaseEnd();
+    if (currentPhase === "night")  await this.handleNightPhaseEnd();
     if (currentPhase === "finished") return this.handleGameEnd();
 
     this.eventEmitter.emit("processCompleted");
@@ -58,21 +60,26 @@ class GameState {
     this.isProcessing = false;
   }
 
-  handleDayPhaseEnd() {
-    this.execution();
-    console.log("handleDayPhaseEnd", this.result.value);
+  async handleDayPhaseEnd() {
+    await this.execution();
     if (this.result.value === "villageAbandoned") return;
-    this.judgement();
+    await this.judgement();
+    if (this.result.value === "running") {
+      await this.sendMessage(gameMaster.NIGHT);
+    }
   }
 
-  handleNightPhaseEnd() {
+  async handleNightPhaseEnd() {
     this.fortune.fortune();
-    this.attack.attack();
-    this.judgement();
+    const player = this.attack.attack();
+    await this.sendMessage(gameMaster.ATTACK(player?.name));
+    await this.judgement();
+    if (this.result.value === "running") {
+      await this.sendMessage(gameMaster.MORNING);
+    }
   }
 
   async handleGameEnd() {
-    console.log("handleGameEnd");
     try {
       await Game.findByIdAndUpdate(this.gameId, { result: this.result.value });
       this.eventEmitter.removeListener("timerEnd", this.handleTimerEnd);
@@ -83,8 +90,7 @@ class GameState {
     }
   }
 
-  judgement() {
-    console.log("judgement");
+  async judgement() {
     const livingPlayers = this.players.getLivingPlayers();
     let villagers = 0;
     let werewolves = 0;
@@ -93,16 +99,28 @@ class GameState {
       pl.role !== "werewolf" ? villagers++ : werewolves++;
     });
 
-    if (werewolves === 0) this.result.value = "villagersWin";
-    if (werewolves >= villagers) this.result.value = "werewolvesWin";
+    if (werewolves === 0) {
+      this.result.value = "villagersWin";
+      await this.sendMessage(gameMaster.VILLAGERS_WIN);
+    }
+    if (werewolves >= villagers) {
+      this.result.value = "werewolvesWin";
+      await this.sendMessage(gameMaster.WEREWOLVES_WIN);
+    }
   }
 
-  execution() {
-    const executionTargetId = this.votes.getExecutionTarget();
-    if (!executionTargetId) return this.result.value = "villageAbandoned";
+  async execution() {
+    const executionTarget = this.votes.getExecutionTarget();
+    if (!executionTarget) return await this.villageAbandoned();
 
-    this.players.kill(executionTargetId);
-    this.medium.medium(executionTargetId);
+    this.players.kill(executionTarget._id);
+    await this.sendMessage(gameMaster.EXECUTION(executionTarget.name));
+    this.medium.medium(executionTarget._id);
+  }
+
+  async villageAbandoned() {
+    this.result.value = "villageAbandoned";
+    await this.sendMessage(gameMaster.VILLAGE_ABANDONED);
   }
 
   updateGameState() {
@@ -131,14 +149,13 @@ class GameState {
   }
 
   async createMessage(message) {
-    const newMessage = {
+    const newMessage = await Message.create({
       sender: "67111215dad82ea879cff67b", // GMのid
       content: message,
       channel: this.gameId,
       messageType: "normal",
-    }
+    });
 
-    await Message.create(newMessage);
     return newMessage;
   }
 

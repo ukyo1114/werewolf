@@ -90,12 +90,6 @@ class PlayerManager {
       .filter((pl) => pl.role === "werewolf")
       .map((pl) => pl._id);
   }
-
-  getDeadPlayers() {
-    return Array.from(this.players.values())
-      .filter((pl) => pl.status === "dead")
-      .map((pl) => pl._id);
-  }
 }
 
 module.exports = PlayerManager;

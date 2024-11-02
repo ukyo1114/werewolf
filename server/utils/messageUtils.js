@@ -34,7 +34,7 @@ function receiveMessageTypeForPl(player) {
 }
 
 const getSendMessageType = async (channelId, userId) => {
-  if (await Channel.exists({ _id: channelId})) return "normal"
+  if (await Channel.exists({ _id: channelId })) return "normal"
 
   const game = games[channelId];
   if (!game)  throw new CustomError(403, errors.CHANNEL_ACCESS_FORBIDDEN);
@@ -68,13 +68,12 @@ async function isUserInChannel(channelId, userId) {
 
 const usersCanReceive = async(channelId, messageType) => {
   const gameState = games[channelId];
-  if (!gameState || messageType !== "spectator" || messageType !== "werewolf") {
-    throw new CustomError(404, errors.GAME_NOT_FOUND);
-  }
+  if (!gameState) return null;
   const spectators = await getSpectators(channelId, gameState);
   if (messageType === "spectator") return spectators;
   const werewolf = gameState.players.getWerewolves();
   if (messageType === "werewolf") return _.union(spectators, werewolf);
+  return null;
 };
 
 async function getSpectators(channelId, gameState) {
