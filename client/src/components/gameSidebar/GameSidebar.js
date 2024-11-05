@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { useDisclosure } from "@chakra-ui/react";
-import { FaUsers, FaArrowLeft } from "react-icons/fa";
+import { FaUsers, FaVoteYea, FaShieldAlt, FaFileAlt, FaArrowLeft } from "react-icons/fa";
+import { GiCrystalBall, GiWolfHowl } from 'react-icons/gi';
 import { useUserState } from "../../context/userProvider";
 import UserList from "../miscellaneous/UserList";
 import VoteModal from "./VoteModal";
@@ -47,7 +48,7 @@ const GameSidebar = () => {
             user.status !== "alive"
           }
         >
-          <FaUsers {...iconProps} />
+          <FaVoteYea {...iconProps} />
         </SidebarButton>
 
         <SidebarButton
@@ -58,7 +59,7 @@ const GameSidebar = () => {
             user.status !== "alive" || user.role !== "seer"
           }
         >
-          <FaUsers {...iconProps} />
+          <GiCrystalBall {...iconProps} />
         </SidebarButton>
 
         <SidebarButton
@@ -69,7 +70,7 @@ const GameSidebar = () => {
             user.status !== "alive" || user.role !== "hunter"
           }
         >
-          <FaUsers {...iconProps} />
+          <FaShieldAlt {...iconProps} />
         </SidebarButton>
 
         <SidebarButton
@@ -80,7 +81,7 @@ const GameSidebar = () => {
             user.status !== "alive" || user.role !== "werewolf"
           }
         >
-          <FaUsers {...iconProps} />
+          <GiWolfHowl {...iconProps} />
         </SidebarButton>
         
         <SidebarButton
@@ -88,7 +89,7 @@ const GameSidebar = () => {
           onClick={vHistoryModal.onOpen}
           isDisabled={phase.currentPhase === "pre"}
         >
-          <FaUsers {...iconProps} />
+          <FaFileAlt {...iconProps} />
         </SidebarButton>
 
         <SidebarButton

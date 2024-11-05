@@ -19,7 +19,9 @@ const messageModel = mongoose.Schema(
       default: "normal",
     },
   },
-  { timestamps: true },
+  {
+    timestamps: { createdAt: true, updatedAt: false },
+  }
 );
 const Message = mongoose.model("Message", messageModel);
 module.exports = Message;

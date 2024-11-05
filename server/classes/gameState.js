@@ -150,7 +150,7 @@ class GameState {
 
   async createMessage(message) {
     const newMessage = await Message.create({
-      sender: "67111215dad82ea879cff67b", // GMのid
+      sender: "672626acf66b851cf141bd0f", // GMのid
       content: message,
       channel: this.gameId,
       messageType: "normal",
