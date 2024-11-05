@@ -14,26 +14,9 @@ import Sidebar from "../miscellaneous/SideBar";
 import DisplayMessage from "./DisplayMessage";
 import { gameMaster } from "../../gameMaster";
 import { ChannelBox } from "../miscellaneous/CustomComponents";
-import _ from "lodash";
+import messagesReducer from "../../reducers/messageReducer";
 
 const Channel = () => {
-  const messagesReducer = (state, action) => {
-    switch (action.type) {
-      case "FETCH_MESSAGES": 
-        return action.payload;
-      case "RECEIVE_MESSAGE": {
-        const updatedMessages = _.uniqBy(
-          [action.payload, ...state], "_id",
-        );
-        return updatedMessages.sort(
-          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-        );
-      }
-      default:
-        return state;
-    }
-  };
-
   const [messages, mDispatch] = useReducer(messagesReducer, []);
   const { user, currentChannel, cDispatch } = useUserState();
   const scrollRef = useRef(null);
