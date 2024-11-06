@@ -1,5 +1,3 @@
-// tests/VoteManager.test.js
-
 const VoteManager = require('../../classes/VoteManager');
 const { errors } = require('../../messages');
 

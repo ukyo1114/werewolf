@@ -74,5 +74,3 @@ class VoteManager {
 }
 
 module.exports = VoteManager;
-
-// テスト済み
