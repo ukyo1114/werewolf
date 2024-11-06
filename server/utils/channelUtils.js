@@ -5,12 +5,8 @@ const { errors } = require("../messages");
 const getChannelById = async (channelId, password = true) => {
   let query = Channel.findById(channelId);
   if (!password) query = query.select("-password");
-
   const channel = await query;
-  
-  if (!channel) {
-    throw new CustomError(404, errors.CHANNEL_NOT_FOUND);
-  }
+  if (!channel) throw new CustomError(404, errors.CHANNEL_NOT_FOUND);
 
   return channel;
 };
