@@ -6,11 +6,11 @@ class MediumManager {
   }
 
   medium(targetId) {
-    const { currentDay } = this.phase;
+    const { currentDay, currentPhase } = this.phase;
     const medium = this.players.findPlayerByRole("medium");
     const target = this.players.players.get(targetId);
     
-    if (medium?.status !== "alive") return;
+    if (medium?.status !== "alive" || currentPhase !== "night") return;
 
     this.mediumResult.set(currentDay, {
       playerId: target._id,
