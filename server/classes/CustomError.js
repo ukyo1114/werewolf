@@ -8,5 +8,3 @@ class CustomError extends Error {
 }
 
 module.exports = CustomError;
-
-// テスト済み
