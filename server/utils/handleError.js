@@ -2,16 +2,14 @@ const { errors } = require("../messages");
 const CustomError = require("../classes/CustomError");
 
 const handleServerError = (error) => {
-  console.error("error:", error.message);
+  console.error("error:", error?.message || undefined);
   throw new CustomError(500, errors.SERVER_ERROR);
 };
 
 const checkErrorMessage = (error, errorMessage) => {
-  if (error.message === errorMessage) {
+  if (error?.message === errorMessage) {
     throw new CustomError(400, errorMessage);
   }
 };
 
 module.exports = { handleServerError, checkErrorMessage };
-
-// テスト済み
