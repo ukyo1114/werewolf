@@ -14,13 +14,13 @@ class PlayerManager {
     "madman",
   ];
 
-  constructor(users) {
-    this.players = new Map();
+  constructor(users, assignDefaultRoles = true) {
     this.setPlayers(users);
-    this.assignRoles(PlayerManager.roles);
+    if (assignDefaultRoles) this.assignRoles(PlayerManager.roles);
   }
 
   setPlayers(users) {
+    this.players = new Map();
     users.forEach((user) => {
       this.players.set(user._id.toString(), {
         _id: user._id.toString(),
@@ -35,7 +35,7 @@ class PlayerManager {
     const shuffledRoles = _.shuffle(roles);
 
     this.players.forEach((pl) => {
-      const role = shuffledRoles.shift();
+      const role = shuffledRoles.shift() || null;
       if (role) pl.role = role;
     });
   }
@@ -64,6 +64,7 @@ class PlayerManager {
         return pl._id;
       }
     }
+    return null;
   }
 
   getFilteredPlayers(predicate) {
