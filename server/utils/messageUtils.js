@@ -54,7 +54,7 @@ function sendMessageTypeForPl(player, currentPhase) {
 }
 
 const canUserAccessChannel = async (channelId, userId) => {
-  const game = await Game.findById(channelId).select("channel");
+  const game = await Game.findById(channelId).select("channel").lean();
   const targetChannelId = game ? game.channel.toString() : channelId;
   
   await isUserInChannel(targetChannelId, userId);
@@ -67,13 +67,13 @@ async function isUserInChannel(channelId, userId) {
 };
 
 const usersCanReceive = async(channelId, messageType) => {
+  if (messageType !== "spectator" && messageType !== "werewolf") return null;
   const gameState = games[channelId];
   if (!gameState) return null;
   const spectators = await getSpectators(channelId, gameState);
   if (messageType === "spectator") return spectators;
   const werewolf = gameState.players.getWerewolves();
-  if (messageType === "werewolf") return _.union(spectators, werewolf);
-  return null;
+  return _.union(spectators, werewolf);
 };
 
 async function getSpectators(channelId, gameState) {
@@ -91,6 +91,10 @@ module.exports = {
   getSendMessageType,
   canUserAccessChannel,
   usersCanReceive,
-};
 
-// テスト済み
+  getReceiveMessageType,
+  receiveMessageTypeForPl,
+  sendMessageTypeForPl,
+  isUserInChannel,
+  getSpectators,
+};
