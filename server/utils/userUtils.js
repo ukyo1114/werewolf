@@ -31,7 +31,7 @@ const uploadPicture = async (userId, pic) => {
   try {
     const command = new PutObjectCommand(params);
     await s3.send(command);
-    return `https://${params.Bucket}.s3.${process.env.AWS_REGION}.amazonaws.com/${encodeURIComponent(params.Key)}`;
+    return `https://${params.Bucket}.s3.${process.env.AWS_REGION}.amazonaws.com/${params.Key}`;
   } catch (error) {
     console.error("S3 Upload Error:", error);
     throw new CustomError(500, errors.SERVER_ERROR);
