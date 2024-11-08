@@ -11,7 +11,7 @@ const {
 const { channelEvents } = require("../socketHandlers/chatNameSpace");
 
 const checkGame = (req, res, next) => {
-  const playerId = req.user._id.toString();
+  const playerId = req.userId;
   const { gameId } = req.body;
   const game = games[gameId];
 
@@ -24,7 +24,7 @@ const checkGame = (req, res, next) => {
 };
 
 const getGame = (req, res, next) => {
-  const playerId = req.user._id.toString();
+  const playerId = req.userId;
   const gameId = req.params.gameId;
   const game = games[gameId];
   if (!game) throw new CustomError(404, errors.GAME_NOT_FOUND);
@@ -35,7 +35,7 @@ const getGame = (req, res, next) => {
 };
 
 const joinGame = asyncHandler(async (req, res) => {
-  const userId = req.user._id.toString();
+  const userId = req.userId;
   const gameId = req.params.gameId;
   const game = await Game.findByIdAndUpdate(
     gameId,

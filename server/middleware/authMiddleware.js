@@ -20,11 +20,10 @@ const protect = asyncHandler(async (req, res, next) => {
     throw new CustomError(401, errors.INVALID_TOKEN);
   }
 
-  const user = await User.findById(decoded.id).select("_id");
-
+  const user = await User.findById(decoded.id).select("_id").lean();
   if (!user) throw new CustomError(401, errors.USER_NOT_FOUND);
 
-  req.user = user;
+  req.userId = user._id.toString();
   next();
 });
 

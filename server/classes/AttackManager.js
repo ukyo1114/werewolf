@@ -41,9 +41,6 @@ class AttackManager {
     const attackTargets = this.players.getFilteredPlayers((pl) => 
       pl.status === "alive" && pl.role !== "werewolf"
     );
-    if (this.attackHistory.has(currentDay)) {
-      return this.attackHistory.get(currentDay).playerId;
-    }
     const randomAttackTarget = _.sample(attackTargets);
     this.attackHistory.set(currentDay, { playerId: randomAttackTarget._id });
 

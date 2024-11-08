@@ -48,16 +48,13 @@ channelModel.methods.matchPassword = async function (enteredPassword) {
 };
 
 channelModel.pre("validate", function (next) {
-  if (this.password === "") {
-    this.password = null;
-  }
+  if (this.password === "") this.password = null;
+  
   next();
 });
 
 channelModel.pre("save", async function (next) {
-  if (!this.isModified("password")) {
-    return next();
-  }
+  if (!this.isModified("password")) return next();
   if (this.password === null) return next();
 
   const salt = await bcrypt.genSalt(10);

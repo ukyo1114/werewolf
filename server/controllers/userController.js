@@ -55,7 +55,7 @@ const authUser = asyncHandler(async (req, res) => {
 
 // プロフィールの変更を通知する処理を追加してね
 const updateProfile = asyncHandler(async (req, res) => {
-  const userId = req.user._id.toString();
+  const userId = req.userId;
   const { userName, pic } = req.body;
   if (!userName && !pic) throw new CustomError(400, errors.MISSING_DATA);
 
@@ -72,7 +72,7 @@ const updateProfile = asyncHandler(async (req, res) => {
 });
 
 const updateUserSettings = asyncHandler(async (req, res) => {
-  const userId = req.user._id.toString();
+  const userId = req.userId;
   const { email, currentPassword, newPassword } = req.body;
 
   await matchPassword(userId, currentPassword);

@@ -1,10 +1,8 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 const { errors } = require("../messages");
-const Channel = require("../models/channelModel");
 const EventEmitter = require("events");
 const channelEvents = new EventEmitter();
-const { userEvents } = require("../controllers/userController");
 
 function chatNameSpaseHandler(io) {
   const chatNameSpace = io.of("/chat");
@@ -12,18 +10,14 @@ function chatNameSpaseHandler(io) {
 
   chatNameSpace.use(async (socket, next) => {
     const token = socket.handshake.auth.token;
-  
-    if (!token) {
-      return next(new Error(errors.TOKEN_MISSING));
-    }
+    if (!token) return next(new Error(errors.TOKEN_MISSING));
   
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      const user = await User.findById(decoded.id).select("_id");
-  
+      const user = await User.findById(decoded.id).select("_id").lean();
       if (!user) return next(new Error(errors.USER_NOT_FOUND));
   
-      socket.user = user._id.toString();
+      socket.userId = user._id.toString();
       next();
     } catch (error) {
       return next(new Error(errors.INVALID_TOKEN));
@@ -31,8 +25,7 @@ function chatNameSpaseHandler(io) {
   });
 
   chatNameSpace.on("connection", (socket) => {
-    console.log("Connected to chatNameSpace !!");
-    const userId = socket.user;
+    const userId = socket.userId;
     userSocketMap[userId] = socket.id;
 
     socket.on("joinChannel", async (channelId) => {
@@ -41,7 +34,6 @@ function chatNameSpaseHandler(io) {
     });
 
     socket.on("disconnect", async () => {
-      console.log("USER DISCONNECTED !");
       delete userSocketMap[userId];
     });
   });
@@ -79,10 +71,8 @@ function chatNameSpaseHandler(io) {
     const { channelId, blockUser } = data;
     chatNameSpace.to(channelId).emit("cancelBlockUser", blockUser);
   })
-/* 
-  userEvents.on("profileUpdated", (user) => {
-    // チャンネルをカプセル化したあとでいじる～
-  }); */
+
+  // userEvents.on("profileUpdated", (user) => { });
 }
 
 module.exports = { chatNameSpaseHandler, channelEvents };
