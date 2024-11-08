@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import useNotification from "./useNotification";
+import useNotification from "./useNotification.jsx";
 import { errors } from "../messages";
 
 const usePostDetails = ({ setImgSrc, onOpen, inputRef }) => {
