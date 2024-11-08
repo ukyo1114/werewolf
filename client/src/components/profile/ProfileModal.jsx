@@ -1,6 +1,6 @@
 import { Image, ModalBody } from "@chakra-ui/react";
 import React from "react";
-import { useUserState } from "../../context/userProvider";
+import { useUserState } from "../../context/UserProvider.jsx";
 
 const ProfileModal = () => {
   const { user } = useUserState();

@@ -8,10 +8,10 @@ import {
   ModalFooter,
   FormLabel,
 } from "@chakra-ui/react";
-import { useUserState } from "../../context/userProvider.jsx";
+import { useUserState } from "../../context/UserProvider.jsx";
 import React, { useCallback } from "react";
 import axios from "axios";
-import useNotification from "../../hooks/notification";
+import useNotification from "../../hooks/useNotification";
 import { errors, messages } from "../../messages";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import {

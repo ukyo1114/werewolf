@@ -1,7 +1,7 @@
 import { useCallback } from "react";
-import { useUserState } from "../context/userProvider";
+import { useUserState } from "../context/UserProvider.jsx";
 import axios from "axios";
-import useNotification from "./notification";
+import useNotification from "./useNotification";
 import { errors } from "../messages";
 
 const useJoinGame = () => {

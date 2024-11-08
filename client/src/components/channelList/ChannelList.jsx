@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { useUserState } from "../../context/userProvider";
+import { useUserState } from "../../context/UserProvider.jsx";
 import {
   Box,
   Divider,
@@ -16,7 +16,7 @@ import ChannelListHeader from "./ChannelListHeader.jsx";
 import Sidebar from "../miscellaneous/SideBar.jsx";
 import ChannelListSidebar from "./ChannelListSidebar.jsx";
 import ChannelInfo from "./ChannelInfo.jsx";
-import useNotification from "../../hooks/notification";
+import useNotification from "../../hooks/useNotification";
 import { errors } from "../../messages";
 import ModalTemplete from "../miscellaneous/ModalTemplete.jsx";
 import { ChannelBox } from "../miscellaneous/CustomComponents.jsx";

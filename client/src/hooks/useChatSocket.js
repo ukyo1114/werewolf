@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import io from "socket.io-client";
-import useNotification from "./notification";
-import { useUserState } from "../context/userProvider";
+import useNotification from "./useNotification";
+import { useUserState } from "../context/UserProvider.jsx";
 
 const useChatSocket = ({ mDispatch }) => {
   const { user, currentChannel, cDispatch } = useUserState();

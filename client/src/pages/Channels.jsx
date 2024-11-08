@@ -1,5 +1,5 @@
 import React from "react";
-import { useUserState } from "../context/userProvider.jsx";
+import { useUserState } from "../context/UserProvider.jsx";
 import { Box } from "@chakra-ui/react";
 import ChannelList from "../components/channelList/ChannelList.jsx";
 import Channel from "../components/channel/Channel.jsx";

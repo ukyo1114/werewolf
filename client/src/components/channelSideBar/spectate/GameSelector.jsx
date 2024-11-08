@@ -1,6 +1,6 @@
 import { Box, Image, Text, Spinner } from "@chakra-ui/react";
 import { useUserState } from "../context/UserContext.jsx";
-import useFetchGameList from "../hooks/fetchGameList";
+import useFetchGameList from "../hooks/useFetchGameList";
 import { PHASE_MAP, RESULT_MAP } from "../constants";
 
 const GameSelector = ({ setSelectedGame }) => {

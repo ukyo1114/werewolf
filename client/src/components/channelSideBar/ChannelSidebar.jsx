@@ -8,12 +8,12 @@ import {
   FaCog,
   FaUserSlash,
 } from "react-icons/fa";
-import { useUserState } from "../../context/userProvider.jsx";
+import { useUserState } from "../../context/UserProvider.jsx";
 import UserList from "../miscellaneous/UserList.jsx";
 import BlockModal from "./BlockModal.jsx";
 import ChannelSettingsModal from "./ChannelSettingsModal.jsx"
 import axios from "axios";
-import useNotification from "../../hooks/notification";
+import useNotification from "../../hooks/useNotification";
 import ModalTemplete from "../miscellaneous/ModalTemplete.jsx";
 import {
   SidebarBox,

@@ -4,7 +4,7 @@ import "../styles.css";
 import DisplayUser from "./DisplayUser.jsx";
 import { StyledBox, StyledText } from "./CustomComponents.jsx";
 import { USER_STATUS } from "../../constants";
-import { useUserState } from "../../context/userProvider.jsx";
+import { useUserState } from "../../context/UserProvider.jsx";
 
 const UserList = ({ userList }) => {
   const { currentChannel } = useUserState();

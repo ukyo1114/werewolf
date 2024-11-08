@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Box, ModalBody } from "@chakra-ui/react";
 import "../styles.css";
-import { useUserState } from "../../context/userProvider.jsx";
+import { useUserState } from "../../context/UserProvider.jsx";
 import axios from "axios";
-import useNotification from "../../hooks/notification";
+import useNotification from "../../hooks/useNotification";
 import DisplayUser from "../miscellaneous/DisplayUser.jsx";
 import ModalButton from "../miscellaneous/ModalButton.jsx";
 import { SelectableBox } from "../miscellaneous/CustomComponents.jsx";
