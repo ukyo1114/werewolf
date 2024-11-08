@@ -10,7 +10,7 @@ const {
 
 const getBlockUsers = asyncHandler(async (req, res) => {
   const channelId = req.params.channelId;
-  const userId = req.user._id.toString();
+  const userId = req.userId;
 
   const channel = await Channel.findById(channelId)
     .select("channelAdmin blockUsers")
@@ -24,7 +24,7 @@ const getBlockUsers = asyncHandler(async (req, res) => {
 
 const registerBlock = asyncHandler(async (req, res) => {
   const { channelId, selectedUser } = req.body;
-  const userId = req.user._id.toString();
+  const userId = req.userId;
   if (selectedUser === userId) throw new CustomError(403, errors.SELF_BLOCK);
 
   const channel = await getChannelById(channelId, false);
@@ -50,7 +50,7 @@ const registerBlock = asyncHandler(async (req, res) => {
 
 const cancelBlock = asyncHandler(async (req, res) => {
   const { channelId, selectedBlockUser } = req.body;
-  const userId = req.user._id.toString();
+  const userId = req.userId;
 
   const channel = await getChannelById(channelId, false);
   isChannelAdmin(channel, userId);

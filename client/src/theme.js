@@ -35,7 +35,7 @@ const theme = extendTheme({
     },
     Text: {
       baseStyle: {
-        color: "#ffffff", // テキストのデフォルト色
+        color: "white", // テキストのデフォルト色
       },
     },
     Checkbox: {

@@ -9,18 +9,12 @@ function entryNameSpaseHandler(io) {
 
   entryNameSpace.use(async (socket, next) => {
     const token = socket.handshake.auth.token;
-  
-    if (!token) {
-      return next(new Error(errors.TOKEN_MISSING));
-    }
+    if (!token) return next(new Error(errors.TOKEN_MISSING));
   
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      const user = await User.findById(decoded.id).select("_id");
-  
-      if (!user) {
-        return next(new Error(errors.USER_NOT_FOUND));
-      }
+      const user = await User.findById(decoded.id).select("_id").lean();
+      if (!user) return next(new Error(errors.USER_NOT_FOUND));
   
       socket.userId = user._id.toString();
       next();
@@ -30,13 +24,13 @@ function entryNameSpaseHandler(io) {
   });
 
   entryNameSpace.on("connection", (socket) => {
-    const gameId = GameState.isPlayingGame(socket.userId);
+    const userId = socket.userId;
+    const gameId = GameState.isPlayingGame(userId);
     if (gameId) entryNameSpace.to(socket.id).emit("navigateGame", gameId);
 
     socket.on("joinChannel", (channelId, callback) => {
       socket.join(channelId);
       socket.channelId = channelId;
-
       if (!entryUsers[channelId]) entryUsers[channelId] = new Entry(channelId);
 
       callback({
@@ -47,26 +41,20 @@ function entryNameSpaseHandler(io) {
     socket.on("registerEntry", () => {
       const userId = socket.userId;
       const channelId = socket.channelId;
-
-      if (entryUsers[channelId]) {
-        entryUsers[channelId].register(socket.id, userId);
-      }
+      const users = entryUsers[channelId];
+      if (users) users.register(socket.id, userId);
     });
 
     socket.on("cancelEntry", () => {
       const channelId = socket.channelId;
-
-      if (entryUsers[channelId]) {
-        entryUsers[channelId].cancel(socket.id);
-      }
+      const users = entryUsers[channelId];
+      if (users) users.cancel(socket.id);
     });
 
     socket.on("disconnect", () => {
       const channelId = socket.channelId;
-
-      if (channelId && entryUsers[channelId]) {
-        entryUsers[channelId].cancel(socket.id);
-      }
+      const users = entryUsers[channelId];
+      if (channelId && users) users.cancel(socket.id);
     });
   });
 

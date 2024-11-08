@@ -9,20 +9,13 @@ function gameNameSpaceHandler(io) {
 
   gameNameSpace.use(async (socket, next) => {
     const token = socket.handshake.auth.token;
-  
-    if (!token) {
-      return next(new Error(errors.TOKEN_MISSING));
-    }
+    if (!token) return next(new Error(errors.TOKEN_MISSING));
   
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      const user = await User.findById(decoded.id).select("_id");
+      const user = await User.findById(decoded.id).select("_id").lean();
+      if (!user) return next(new Error(errors.USER_NOT_FOUND));
   
-      if (!user) {
-        return next(new Error(errors.USER_NOT_FOUND));
-      }
-  
-      socket.user = user;
       next();
     } catch (error) {
       return next(new Error(errors.INVALID_TOKEN));
@@ -33,8 +26,8 @@ function gameNameSpaceHandler(io) {
     socket.on("joinGame", (gameId, callback) => {
       const game = games[gameId];
       if (!game) return callback({ gameState : null });
+      
       const gameState = game.getGameState();
-
       socket.join(gameId);
       callback({ gameState });
     });

@@ -25,7 +25,7 @@ const fetchChannelList = asyncHandler(async (req, res) => {
 });
 
 const createChannel = asyncHandler(async (req, res) => {
-  const userId = req.user._id.toString();
+  const userId = req.userId;
   const { channelName, description, password } = req.body;
   
   const channel = await Channel.create({
@@ -46,7 +46,7 @@ const createChannel = asyncHandler(async (req, res) => {
 
 const channelSettings = asyncHandler(async (req, res) => {
   const { channelId, channelName, description, password } = req.body;
-  const userId = req.user._id.toString();
+  const userId = req.userId;
 
   const channel = await getChannelById(channelId, false);
   isChannelAdmin(channel, userId);
@@ -65,7 +65,7 @@ const channelSettings = asyncHandler(async (req, res) => {
 
 const enterToChannel = asyncHandler(async (req, res) => {
   const { channelId, password } = req.body;
-  const userId = req.user._id.toString();
+  const userId = req.userId;
 
   const channel = await getChannelById(channelId);
   isUserBlocked(channel, userId);
@@ -93,7 +93,7 @@ const enterToChannel = asyncHandler(async (req, res) => {
 });
 
 const leaveChannel = asyncHandler(async (req, res) => {
-  const userId = req.user._id.toString();
+  const userId = req.userId;
   const { channelId } = req.body;
 
   const channel = await getChannelById(channelId);
