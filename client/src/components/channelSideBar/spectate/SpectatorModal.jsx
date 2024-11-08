@@ -3,13 +3,13 @@ import {
   Box, ModalBody, Avatar, Divider,
 } from "@chakra-ui/react";
 import axios from "axios";
-import { useUserState } from "../../../context/userProvider.jsx";
+import { useUserState } from "../../../context/UserProvider.jsx";
 import { errors, messages } from "../../../messages";
 import {
   SelectableBox, StyledText, EllipsisText, ModalButton,
 } from "../../miscellaneous/CustomComponents.jsx";
 import { PHASE_MAP, RESULT_MAP } from "../../../constants";
-import useNotification from "../../../hooks/notification";
+import useNotification from "../../../hooks/useNotification";
 import useJoinGame from "../../../hooks/useJoinGame";
 
 const SpectatorModal = () => {

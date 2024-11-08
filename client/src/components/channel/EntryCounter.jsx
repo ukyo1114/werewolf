@@ -2,14 +2,14 @@ import React, { useState, useEffect, useRef } from "react";
 import {
   Box, Text, Button, useDisclosure,
 } from "@chakra-ui/react";
-import { useUserState } from "../../context/userProvider.jsx";
+import { useUserState } from "../../context/UserProvider.jsx";
 import "../styles.css";
 import io from "socket.io-client";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import UserList from "../miscellaneous/UserList.jsx";
 import ModalTemplete from "../miscellaneous/ModalTemplete.jsx";
 import { ChannelHeader } from "../miscellaneous/CustomComponents.jsx";
-import useNotification from "../../hooks/notification";
+import useNotification from "../../hooks/useNotification";
 import useJoinGame from "../../hooks/useJoinGame";
 import { errors, messages } from "../../messages";
 

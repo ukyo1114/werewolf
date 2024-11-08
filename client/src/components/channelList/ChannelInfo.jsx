@@ -11,7 +11,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import "../styles.css";
-import { useUserState } from "../../context/userProvider.jsx";
+import { useUserState } from "../../context/UserProvider.jsx";
 import { useJoinChannel } from "../../hooks/useJoinChannel";
 
 const ChannelInfo = ({ selectedChannel }) => {

@@ -12,10 +12,10 @@ import {
 } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
-import { useUserState } from "../../context/userProvider";
+import { useUserState } from "../../context/UserProvider.jsx";
 import React, { useState, useCallback } from "react";
 import axios from "axios";
-import useNotification from "../../hooks/notification";
+import useNotification from "../../hooks/useNotification";
 import { errors, messages } from "../../messages";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import {

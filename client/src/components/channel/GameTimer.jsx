@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useRef } from "react";
 import { Box } from "@chakra-ui/react";
 import Countdown from "react-countdown";
-import { useUserState } from "../../context/userProvider.jsx";
+import { useUserState } from "../../context/UserProvider.jsx";
 import axios from "axios";
 import "../styles.css";
 import io from "socket.io-client";
-import useNotification from "../../hooks/notification";
+import useNotification from "../../hooks/useNotification";
 import { useJoinChannel } from "../../hooks/useJoinChannel";
 import { errors } from "../../messages";
 import { PHASE_MAP, ROLE_MAP, PHASE_DURATIONS } from "../../constants";

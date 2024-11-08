@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import { useDisclosure } from "@chakra-ui/react";
 import { FaUsers, FaVoteYea, FaShieldAlt, FaFileAlt, FaArrowLeft } from "react-icons/fa";
 import { GiCrystalBall, GiWolfHowl } from 'react-icons/gi';
-import { useUserState } from "../../context/userProvider.jsx";
+import { useUserState } from "../../context/UserProvider.jsx";
 import UserList from "../miscellaneous/UserList.jsx";
 import VoteModal from "./VoteModal.jsx";
 import VoteHistoryTabs from "./voteHistory/VoteHistory.jsx";

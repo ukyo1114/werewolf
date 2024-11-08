@@ -8,15 +8,15 @@ import {
   Box,
   Image,
 } from "@chakra-ui/react";
-import { useUserState } from "../../context/userProvider";
+import { useUserState } from "../../context/UserProvider.jsx";
 import React, { useState, useRef, useCallback } from "react";
 import axios from "axios";
-import useNotification from "../../hooks/notification";
+import useNotification from "../../hooks/useNotification";
 import { errors, messages } from "../../messages";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { profileSettingsValidationSchema } from "./validationSchema";
 import ImageCropper from "../miscellaneous/ImageCropper";
-import usePostDetails from "../../hooks/postDetails";
+import usePostDetails from "../../hooks/usePostDetails";
 
 const ProfileSettingsModal = ({ onClose }) => {
   const { user, uDispatch } = useUserState();

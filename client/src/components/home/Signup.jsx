@@ -15,12 +15,12 @@ import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import ImageCropper from "../miscellaneous/ImageCropper.jsx";
-import useNotification from "../../hooks/notification";
+import useNotification from "../../hooks/useNotification";
 import { errors, messages } from "../../messages";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { signupValidationSchema, signupInitialValues } from "./validationSchema";
 import ModalTemplete from "../miscellaneous/ModalTemplete.jsx";
-import usePostDetails from "../../hooks/postDetails";
+import usePostDetails from "../../hooks/usePostDetails";
 
 const Signup = () => {
   const [pshow, setPShow] = useState(false);

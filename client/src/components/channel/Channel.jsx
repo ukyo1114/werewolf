@@ -1,10 +1,10 @@
 import React, { useEffect, useReducer, useCallback, useRef } from "react";
 import { Box, Divider, FormControl, Spinner, Textarea } from "@chakra-ui/react";
-import { useUserState } from "../../context/userProvider.jsx";
+import { useUserState } from "../../context/UserProvider.jsx";
 import ChannelSidebar from "../channelSideBar/ChannelSidebar.jsx";
 import GameSidebar from "../gameSidebar/GameSidebar.jsx";
-import useChatMessages from "../../hooks/chatMessages";
-import useChatSocket from "../../hooks/chatSocket";
+import useChatMessages from "../../hooks/useChatMessages";
+import useChatSocket from "../../hooks/useChatSocket";
 import TextareaAutosize from "react-textarea-autosize";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { channelValidationSchema } from "../channel/validationSchema";

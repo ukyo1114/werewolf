@@ -10,10 +10,10 @@ import {
   Text,
 } from "@chakra-ui/react";
 import "../../styles.css";
-import { useUserState } from "../../../context/userProvider.jsx";
+import { useUserState } from "../../../context/UserProvider.jsx";
 import axios from "axios";
 import DisplayUser from "../../miscellaneous/DisplayUser.jsx";
-import useNotification from "../../../hooks/notification";
+import useNotification from "../../../hooks/useNotification";
 import { errors } from "../../../messages";
 import {
   DisplayDay,
