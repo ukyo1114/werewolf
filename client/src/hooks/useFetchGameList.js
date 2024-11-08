@@ -1,7 +1,7 @@
 import { errors } from "../messages";
 import { useCallback, useState } from "react";
 import axios from "axios";
-import { useNotification } from "./useNotification";
+import { useNotification } from "./useNotification.jsx";
 
 const useFetchGameList = (token, channelId) => {
   const [gameList, setGameList] = useState([]);
