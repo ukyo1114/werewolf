@@ -30,7 +30,7 @@ const theme = extendTheme({
     },
     Icon: {
       baseStyle: {
-        color: "#E17875", // アイコンの色
+        color: "white", // アイコンの色
       },
     },
     Text: {

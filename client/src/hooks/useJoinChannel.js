@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import axios from "axios";
 import { useUserState } from "../context/UserProvider.jsx";
-import useNotification from "./useNotification.jsx";
+import useNotification from "./useNotification";
 import { errors } from "../messages";
 
 export const useJoinChannel = () => {

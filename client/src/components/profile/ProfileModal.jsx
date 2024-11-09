@@ -1,6 +1,8 @@
-import { Image, ModalBody } from "@chakra-ui/react";
+import { ModalBody } from "@chakra-ui/react";
 import React from "react";
 import { useUserState } from "../../context/UserProvider.jsx";
+import { StyledBox } from "../miscellaneous/CustomComponents.jsx";
+import DisplayUser from "../miscellaneous/DisplayUser.jsx";
 
 const ProfileModal = () => {
   const { user } = useUserState();
@@ -9,15 +11,15 @@ const ProfileModal = () => {
     <ModalBody
       display="flex"
       flexDir="column"
-      alignItems="center"
-      justifyContent="space-between"
+      p={3}
+      w="100%"
+      h="100%"
+      borderRadius="lg"
+      mb={4}
     >
-      <Image
-        borderRadius="lg"
-        boxSize="150px"
-        src={user.pic}
-        alt={user.name}
-      />
+      <StyledBox key={user._id}>
+        <DisplayUser user={user} />
+      </StyledBox>
     </ModalBody>
   );
 };
