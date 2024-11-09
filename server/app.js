@@ -15,7 +15,8 @@ const errorHandler = require("./middleware/errorHandler");
 
 const app = express();
 
-dotenv.config();
+const envFile = `config/.env.${process.env.NODE_ENV || "development"}`;
+dotenv.config({ path: envFile });
 connectDB();
 
 // ミドルウェアの設定

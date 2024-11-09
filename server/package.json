@@ -4,7 +4,10 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js",
+    "start": "NODE_ENV=development nodemon app.js",
+    "start:dev": "NODE_ENV=development nodemon app.js",
+    "start:staging": "NODE_ENV=staging nodemon app.js",
+    "start:prod": "NODE_ENV=production nodemon app.js",
     "test": "jest"
   },
   "keywords": [],
