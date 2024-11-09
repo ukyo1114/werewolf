@@ -32,7 +32,6 @@ const ChannelList = () => {
   const fetchChannelList = useCallback(async () => {
     try {
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
-      console.log("fetchChannelList", config);
 
       const { data } = await axios.get("/api/channel/list", config);
       data.sort((a, b) => b.users.length - a.users.length);

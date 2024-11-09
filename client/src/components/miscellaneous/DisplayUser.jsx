@@ -17,12 +17,6 @@ const DisplayUser = ({ children, user }) => {
         {children && <StyledDivider />}
         {children}
       </Box>
-{/* 
-      {user.status && (
-        <Text fontSize="lg">
-          {user.status === "alive" ? "生存" : "死亡"}
-        </Text>
-      )} */}
     </ Box>
   )
 };

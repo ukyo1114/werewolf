@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import axios from "axios";
 import { useUserState } from "../context/UserProvider.jsx";
-import useNotification from "./useNotification.jsx";
+import useNotification from "./useNotification";
 
 const useChatMessages = ({
   messages,
