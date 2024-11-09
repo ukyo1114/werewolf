@@ -1,7 +1,10 @@
+const dotenv = require("dotenv");
+const envFile = `config/.env.${process.env.NODE_ENV || "development"}`;
+dotenv.config({ path: envFile });
+
 const express = require("express");
 const http = require("http");
 const createError = require("http-errors");
-const dotenv = require("dotenv");
 const path = require('path');
 const connectDB = require("./config/connectDB");
 const userRoutes = require("./routes/userRoutes");
@@ -14,9 +17,6 @@ const socketHandler = require("./socketHandlers/socketHandler");
 const errorHandler = require("./middleware/errorHandler");
 
 const app = express();
-
-const envFile = `config/.env.${process.env.NODE_ENV || "development"}`;
-dotenv.config({ path: envFile });
 connectDB();
 
 // ミドルウェアの設定
