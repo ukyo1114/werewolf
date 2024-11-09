@@ -38,5 +38,5 @@ jobs:
 
       - name: サーバーにデプロイ
         run: |
-          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./client/dist/ ec2-user@13.230.224.202:./werewolf/client
+          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./client/dist/ ec2-user@13.230.224.202:./werewolf/client/dist
           rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./server/ ec2-user@13.230.224.202:./werewolf/server
