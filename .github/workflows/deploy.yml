@@ -1,0 +1,42 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: コードをチェックアウト
+        uses: actions/checkout@v3
+
+      - name: Node.jsをセットアップ
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: 依存関係をインストール
+        run: |
+          cd server 
+          npm install
+          cd ../client
+          npm install
+
+      - name: アプリをビルド
+        run: |
+          cd client
+          npm run build
+
+      - name: デプロイ用SSHキーを設定
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
+
+      - name: サーバーにデプロイ
+        run: |
+          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./client/dist/ ec2-user@13.230.224.202:/path/to/deploy/werewolf/client
+          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./server/ ec2-user@13.230.224.202:/path/to/deploy/werewolf/server
