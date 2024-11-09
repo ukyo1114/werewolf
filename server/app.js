@@ -2,6 +2,7 @@ const express = require("express");
 const http = require("http");
 const createError = require("http-errors");
 const dotenv = require("dotenv");
+const path = require('path');
 const connectDB = require("./config/connectDB");
 const userRoutes = require("./routes/userRoutes");
 const channelRoutes = require("./routes/channelRoutes");
@@ -20,18 +21,19 @@ connectDB();
 // ミドルウェアの設定
 app.use(express.json()); // JSONリクエストボディの解析
 app.use(express.urlencoded({ extended: true })); // URLエンコードされたデータの解析
+app.use(express.static(path.join(__dirname, "../client/dist")));
 
 // ルートの設定
-app.get("/", (req, res) => {
-  res.send("Hello, World!");
-});
-
 app.use("/api/user", userRoutes);
 app.use("/api/channel", channelRoutes);
 app.use("/api/message", messageRoutes);
 app.use("/api/spectate", spectateRoutes);
 app.use("/api/block", blockRoutes);
 app.use("/api/game", gameRoutes);
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../client/dist", "index.html"));
+});
 
 // HTTPサーバーの作成
 const server = http.createServer(app);
