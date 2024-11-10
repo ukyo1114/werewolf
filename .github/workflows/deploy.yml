@@ -38,5 +38,5 @@ jobs:
 
       - name: サーバーにデプロイ
         run: |
-          rsync -avz --chmod=D755,F644 --perms ./server/ ec2-user@13.230.224.202:./werewolf/server
+          rsync -avz --chmod=D755,F644 --perms -e "ssh -o StrictHostKeyChecking=no" ./server/ ec2-user@13.230.224.202:./werewolf/server
           rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./client/dist/ ec2-user@13.230.224.202:./werewolf/client/dist
