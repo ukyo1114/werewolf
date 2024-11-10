@@ -3,8 +3,6 @@ const User = require("../models/userModel");
 const generateToken = require("../config/generateToken");
 const { GameState } = require("../classes/GameState");
 const { errors } = require("../messages");
-const EventEmitter = require("events");
-const userEvents = new EventEmitter();
 const CustomError = require("../classes/CustomError");
 const {
   getUserById,
@@ -68,7 +66,6 @@ const updateProfile = asyncHandler(async (req, res) => {
   if (userName) await User.findByIdAndUpdate(userId, { name: userName });
 
   res.status(200).send();
-  // userEvents.emit("profileUpdated");
 });
 
 const updateUserSettings = asyncHandler(async (req, res) => {
@@ -84,18 +81,10 @@ const updateUserSettings = asyncHandler(async (req, res) => {
   await user.save();
   res.status(200).json({ email: user.email });
 });
-
-const getSignedUrl = asyncHandler(async (req, res) => {
-  const userId = req.user._id.tostring();
-  const url = await generatePresignedUrl(userId);
-  res.status(200).json({ url });
-});
  
 module.exports = {
   registerUser,
   authUser,
   updateProfile,
   updateUserSettings,
-  userEvents,
-  getSignedUrl,
 };
