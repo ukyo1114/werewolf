@@ -51,7 +51,10 @@ const GameTimer = () => {
     if (gameSocketRef.current) return;
 
     const auth = { auth: { token: user.token } };
-    gameSocketRef.current = io("http://localhost:5000/game", auth);
+    gameSocketRef.current = io(
+      `${import.meta.env.VITE_SERVER_URL}/game`,
+      auth,
+    );
 
     gameSocketRef.current.on("connect", async () => {
       try {

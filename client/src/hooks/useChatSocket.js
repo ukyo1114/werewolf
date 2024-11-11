@@ -14,7 +14,10 @@ const useChatSocket = ({ mDispatch }) => {
     if (chatSocketRef.current) return;
     
     const auth = { auth: { token: user.token } };
-    chatSocketRef.current = io("http://localhost:5000/chat", auth);
+    chatSocketRef.current = io(
+      `${import.meta.env.VITE_SERVER_URL}/chat`,
+      auth,
+    );
 
     chatSocketRef.current.on("connect", () => {
       chatSocketRef.current.emit("joinChannel", channelId);

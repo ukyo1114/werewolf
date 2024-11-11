@@ -28,7 +28,10 @@ const EntryCounter = () => {
     if (entrySocketRef.current) return;
 
     const auth = { auth: { token: user.token } };
-    entrySocketRef.current = io("http://localhost:5000/entry", auth);
+    entrySocketRef.current = io(
+      `${import.meta.env.VITE_SERVER_URL}/entry`,
+      auth,
+    );
 
     entrySocketRef.current.on("connect", async () => {
       try {
