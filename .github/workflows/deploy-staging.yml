@@ -6,7 +6,7 @@ on:
       - staging
 
 jobs:
-  build-and-deploy:
+  build-and-deploy-for-staging:
     runs-on: ubuntu-latest
 
     steps:
@@ -33,7 +33,7 @@ jobs:
       - name: デプロイ用SSHキーを設定
         uses: shimataro/ssh-key-action@v2
         with:
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          key: ${{ secrets.SSH_PRIVATE_KEY_STAGING }}
           known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
 
       - name: サーバーにデプロイ
