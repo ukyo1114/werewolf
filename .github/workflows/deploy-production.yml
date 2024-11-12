@@ -1,4 +1,4 @@
-name: Build and Deploy
+name: Build and Deploy for Production
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  build-and-deploy:
+  build-and-deploy-production:
     runs-on: ubuntu-latest
 
     steps:
@@ -34,7 +34,7 @@ jobs:
         uses: shimataro/ssh-key-action@v2
         with:
           key: ${{ secrets.SSH_PRIVATE_KEY_PRODUCTION }}
-          known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
+          known_hosts: ${{ secrets.SSH_KNOWN_HOSTS_PRODUCTION }}
 
       - name: サーバーにデプロイ
         run: |
