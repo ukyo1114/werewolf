@@ -34,13 +34,13 @@ jobs:
         uses: shimataro/ssh-key-action@v2
         with:
           key: ${{ secrets.SSH_PRIVATE_KEY_STAGING }}
-          known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
+          known_hosts: ${{ secrets.SSH_KNOWN_HOSTS_STAGING }}
 
       - name: サーバーにデプロイ
         run: |
-          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./client/dist/ ec2-user@13.230.224.202:./werewolf/client/dist
-          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./server/ ec2-user@13.230.224.202:./werewolf/server
+          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./client/dist/ ec2-user@3.112.223.140:./werewolf/client/dist
+          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./server/ ec2-user@3.112.223.140:./werewolf/server
 
       - name: Set permissions for node_modules binaries
-        run: ssh -o StrictHostKeyChecking=no ec2-user@13.230.224.202 "chmod -R u+x /home/ec2-user/werewolf/server/node_modules/.bin"
+        run: ssh -o StrictHostKeyChecking=no ec2-user@3.112.223.140 "chmod -R u+x /home/ec2-user/werewolf/server/node_modules/.bin"
 
