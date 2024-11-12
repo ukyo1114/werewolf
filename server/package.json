@@ -7,7 +7,7 @@
     "start": "cross-env NODE_ENV=development nodemon app.js",
     "start:dev": "cross-env NODE_ENV=development nodemon app.js",
     "start:staging": "cross-env NODE_ENV=staging nodemon app.js",
-    "start:prod": "cross-env NODE_ENV=production nodemon app.js",
+    "start:production": "cross-env NODE_ENV=production nodemon app.js",
     "test": "jest"
   },
   "keywords": [],
