@@ -17,5 +17,9 @@ export default defineConfig(({ mode }) => {
         },
       },
     } : {},
+    build: {
+      outDir: '../server/public/build',
+      emptyOutDir: true,
+    },
   };
 });
