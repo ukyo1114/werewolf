@@ -37,10 +37,7 @@ jobs:
           known_hosts: ${{ secrets.SSH_KNOWN_HOSTS_STAGING }}
 
       - name: サーバーにデプロイ
-        run: |
-          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./client/dist/ ec2-user@3.112.223.140:./werewolf/client/dist
-          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./server/ ec2-user@3.112.223.140:./werewolf/server
-
+        run: rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./server/ ec2-user@57.180.133.33:./werewolf/server
       - name: Set permissions for node_modules binaries
-        run: ssh -o StrictHostKeyChecking=no ec2-user@3.112.223.140 "chmod -R u+x /home/ec2-user/werewolf/server/node_modules/.bin"
+        run: ssh -o StrictHostKeyChecking=no ec2-user@57.180.133.33 "chmod -R u+x /home/ec2-user/werewolf/server/node_modules/.bin"
 

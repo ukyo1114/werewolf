@@ -1,6 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
-const generateToken = require("../config/generateToken");
+const generateToken = require("../utils/generateToken");
 const { GameState } = require("../classes/GameState");
 const { errors } = require("../messages");
 const CustomError = require("../classes/CustomError");
