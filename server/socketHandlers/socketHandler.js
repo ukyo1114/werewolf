@@ -6,7 +6,7 @@ const gameNameSpaseHandler = require("./gameNameSpace");
 function socketHandler(server) {
   const io = socketIo(server, {
     pingTimeout: 60000,
-    cors: process.env.NODE_ENV === 'development' ? {
+    cors: process.env.NODE_ENV === "development" ? {
       origin: "http://localhost:5173",
     } : undefined,
   });
