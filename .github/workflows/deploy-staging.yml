@@ -33,7 +33,7 @@ jobs:
       - name: デプロイ用SSHキーを設定
         uses: shimataro/ssh-key-action@v2
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY_STAGING }}
+          key: ${{ secrets.SSH_PRIVATE_KEY_STAGING }}
           known_hosts: ${{ secrets.SSH_KNOWN_HOSTS_STAGING }}
 
       - name: Test SSH connection
