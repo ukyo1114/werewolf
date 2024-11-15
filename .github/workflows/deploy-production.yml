@@ -36,6 +36,9 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY_PRODUCTION }}
           known_hosts: ${{ secrets.SSH_KNOWN_HOSTS_PRODUCTION }}
 
+      - name: Test SSH connection
+        run: ssh ec2-user@57.180.133.33 "echo 'SSH connection successful'"
+
       - name: サーバーにデプロイ
         run: rsync -avz ./server/ ec2-user@54.238.237.94:./werewolf/server
 
