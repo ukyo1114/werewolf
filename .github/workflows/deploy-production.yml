@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-and-deploy-production:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       - name: コードをチェックアウト
@@ -31,7 +31,7 @@ jobs:
           npm run build
 
       - name: デプロイ用SSHキーを設定
-        uses: shimataro/ssh-key-action@v2
+        uses: webfactory/ssh-agent@v0.5.3
         with:
           key: ${{ secrets.SSH_PRIVATE_KEY_PRODUCTION }}
           known_hosts: ${{ secrets.SSH_KNOWN_HOSTS_PRODUCTION }}
