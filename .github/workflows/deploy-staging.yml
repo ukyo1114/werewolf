@@ -28,7 +28,7 @@ jobs:
       - name: アプリをビルド
         run: |
           cd client
-          npm run build
+          npm run build:staging
 
       - name: デプロイ用SSHキーを設定
         uses: shimataro/ssh-key-action@v2

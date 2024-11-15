@@ -29,6 +29,7 @@
   "scripts": {
     "start": "vite",
     "build": "vite build",
+    "build:staging": "env-cmd -f .env.staging react-scripts build",
     "serve": "vite preview",
     "test": "jest"
   },
@@ -52,6 +53,7 @@
   },
   "devDependencies": {
     "dotenv": "^16.4.5",
+    "env-cmd": "^10.1.0",
     "eslint-config-react-app": "^7.0.1"
   }
 }

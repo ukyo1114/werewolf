@@ -12,8 +12,10 @@ export default defineConfig(({ mode }) => {
     server: mode === "development" ? {
       proxy: {
         "/api": {
-          target: process.env.VITE_PROXY,
+          target: process.env.VITE_SERVER_URL,
           changeOrigin: true,
+          ws: true,
+          secure: false,
         },
       },
     } : {},
