@@ -29,7 +29,7 @@
   "scripts": {
     "start": "vite",
     "build": "vite build",
-    "build:staging": "env-cmd -f .env.staging react-scripts build",
+    "build:staging": "env-cmd -f .env.staging vite build",
     "serve": "vite preview",
     "test": "jest"
   },
