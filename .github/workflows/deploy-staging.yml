@@ -31,7 +31,7 @@ jobs:
           npm run build:staging
 
       - name: デプロイ用SSHキーを設定
-        uses: uses: shimataro/ssh-key-action@v2
+        uses: shimataro/ssh-key-action@v2
         with:
           key: ${{ secrets.SSH_PRIVATE_KEY_STAGING }}
           known_hosts: ${{ secrets.SSH_KNOWN_HOSTS_STAGING }}
