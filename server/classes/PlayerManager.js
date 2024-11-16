@@ -94,5 +94,3 @@ class PlayerManager {
 }
 
 module.exports = PlayerManager;
-
-// テスト済み

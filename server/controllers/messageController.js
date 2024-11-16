@@ -45,5 +45,3 @@ module.exports = {
   sendMessage,
   getMessages,
 };
-
-// テスト済み
