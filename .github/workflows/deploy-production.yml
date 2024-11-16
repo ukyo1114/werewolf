@@ -46,5 +46,5 @@ jobs:
         run: ssh ec2-user@54.238.237.94 "chmod -R u+x /home/ec2-user/werewolf/server/node_modules/.bin"
 
       - name: サーバーをPM2でリモート起動
-        run: ssh ec2-user@54.238.237.94 "cd /home/ec2-user/werewolf/server && npm install && pm2 start app.js --name server --env production"
+        run: ssh ec2-user@54.238.237.94 "cd /home/ec2-user/werewolf/server && npm install && pm2 start npm --name 'server' -- run start:production"
 
