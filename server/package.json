@@ -4,10 +4,10 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=development nodemon app.js",
+    "start": "cross-env NODE_ENV=development node app.js",
     "start:dev": "cross-env NODE_ENV=development nodemon app.js",
-    "start:staging": "cross-env NODE_ENV=staging nodemon app.js",
-    "start:production": "cross-env NODE_ENV=production nodemon app.js",
+    "start:staging": "cross-env NODE_ENV=staging node app.js",
+    "start:production": "cross-env NODE_ENV=production node app.js",
     "test": "jest"
   },
   "keywords": [],
