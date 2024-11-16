@@ -37,5 +37,3 @@ class MediumManager {
 }
 
 module.exports = MediumManager;
-
-// テスト済み

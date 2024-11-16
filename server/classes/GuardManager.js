@@ -61,5 +61,3 @@ class GuardManager {
 }
 
 module.exports = GuardManager;
-
-// テスト済み

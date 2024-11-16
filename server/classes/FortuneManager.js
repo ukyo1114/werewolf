@@ -71,5 +71,3 @@ class FortuneManager {
 }
 
 module.exports = FortuneManager;
-
-// テスト済み

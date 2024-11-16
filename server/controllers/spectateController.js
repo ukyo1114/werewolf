@@ -38,5 +38,3 @@ async function getPlayers(array) {
 }
 
 module.exports = getGameList;
-
-// テスト済み
