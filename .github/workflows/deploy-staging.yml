@@ -55,7 +55,6 @@ jobs:
           ssh ec2-user@57.180.133.33 "echo 'AWS_REGION=${{ secrets.AWS_REGION }}' >> /home/ec2-user/werewolf/server/.env.staging"
           ssh ec2-user@57.180.133.33 "echo 'S3_BUCKET_NAME=${{ secrets.S3_BUCKET_NAME }}' >> /home/ec2-user/werewolf/server/.env.staging"
 
-
       - name: サーバーをPM2でリモート起動
         run: ssh ec2-user@57.180.133.33 "cd /home/ec2-user/werewolf/server && npm install && pm2 start npm --name 'server' -- run start:staging"
 
