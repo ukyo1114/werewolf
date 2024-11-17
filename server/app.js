@@ -1,6 +1,7 @@
 const dotenv = require("dotenv");
-const envFile = `config/.env.${process.env.NODE_ENV || "development"}`;
-dotenv.config({ path: envFile });
+dotenv.config({
+  path: `.env.${process.env.NODE_ENV || "development"}`
+});
 
 const express = require("express");
 const http = require("http");

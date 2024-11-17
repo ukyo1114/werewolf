@@ -9,6 +9,7 @@
 
 # 環境設定ファイル（例：APIキー、DB接続情報など）
 /config/
+.env.development
 
 # OSとエディタ関連のファイル
 .DS_Store
