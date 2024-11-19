@@ -12,7 +12,7 @@ import EntryCounter from "./EntryCounter.jsx";
 import GameTimer from "./GameTimer.jsx";
 import Sidebar from "../miscellaneous/SideBar.jsx";
 import DisplayMessage from "./DisplayMessage.jsx";
-import { gameMaster } from "../../gameMaster";
+import { GAME_MASTER } from "../../constants";
 import { ChannelBox } from "../miscellaneous/CustomComponents.jsx";
 import messagesReducer from "../../reducers/messageReducer";
 
@@ -113,7 +113,7 @@ const Channel = () => {
               onScroll={handleScroll}
             >
               {messages && messages.map((m) => {
-                const chatUser = (m.sender === gameMaster._id) ? gameMaster :
+                const chatUser = (m.sender === GAME_MASTER._id) ? GAME_MASTER :
                   users.find((u) => u._id === m.sender);
                 if (!chatUser) return null;
 

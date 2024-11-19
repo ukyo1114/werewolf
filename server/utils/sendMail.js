@@ -8,17 +8,20 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const createEmail = (email, verificationLink) => ({
-  from: process.env.EMAIL_USER,
-  to: email,
-  subject: "メールアドレスの確認",
-  text: `以下のリンクをクリックしてメールアドレスを確認してください: ${verificationLink}`,
-  html: `<p>以下のリンクをクリックしてメールアドレスを確認してください:</p><a href="${verificationLink}">確認リンク</a>`,
-});
+const createEmail = (email, verificationToken) => {
+  const verificationLink = `${process.env.SERVER_URL}/verify?token=${verificationToken}`;
+
+  return {
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: "メールアドレスの確認",
+    text: `以下のリンクをクリックしてメールアドレスを確認してください: ${verificationLink}`,
+    html: `<p>以下のリンクをクリックしてメールアドレスを確認してください:</p><a href="${verificationLink}">確認リンク</a>`,
+  }
+};
 
 const sendMail = async(email, verificationToken) => {
-  const verificationLink = `${process.env.SERVER_URL}/verify?token=${verificationToken}`
-  const mailOptions = createEmail(email, verificationLink);
+  const mailOptions = createEmail(email, verificationToken);
 
   try {
     const info = await transporter.sendMail(mailOptions);
