@@ -54,6 +54,8 @@ jobs:
           ssh ec2-user@54.238.237.94 "echo 'AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}' >> /home/ec2-user/werewolf/server/.env.staging"
           ssh ec2-user@54.238.237.94 "echo 'AWS_REGION=${{ secrets.AWS_REGION }}' >> /home/ec2-user/werewolf/server/.env.staging"
           ssh ec2-user@54.238.237.94 "echo 'S3_BUCKET_NAME=${{ secrets.S3_BUCKET_NAME }}' >> /home/ec2-user/werewolf/server/.env.staging"
+          ssh ec2-user@54.238.237.94 "echo 'EMAIL_USER=${{ secrets.EMAIL_USER }}' >> /home/ec2-user/werewolf/server/.env.staging"
+          ssh ec2-user@54.238.237.94 "echo 'EMAIL_PASS=${{ secrets.EMAIL_PASS }}' >> /home/ec2-user/werewolf/server/.env.staging"
 
 
       - name: サーバーをPM2でリモート起動

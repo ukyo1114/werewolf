@@ -22,6 +22,8 @@ const userSchema = mongoose.Schema(
       maxlength: 20,
     },
     pic: { type: String },
+    isVerified: { type: Boolean, default: false },
+    verificationToken: String,
   },
   { timestamps: true },
 );

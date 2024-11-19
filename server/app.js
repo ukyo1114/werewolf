@@ -14,6 +14,7 @@ const messageRoutes = require("./routes/messageRoutes");
 const spectateRoutes = require("./routes/spectateRoutes");
 const blockRoutes = require("./routes/blockRoutes");
 const gameRoutes = require("./routes/gameRoutes");
+const verifyRoutes = require("./routes/verifyRoutes");
 const socketHandler = require("./socketHandlers/socketHandler");
 const errorHandler = require("./middleware/errorHandler");
 
@@ -32,6 +33,7 @@ app.use("/api/message", messageRoutes);
 app.use("/api/spectate", spectateRoutes);
 app.use("/api/block", blockRoutes);
 app.use("/api/game", gameRoutes);
+app.use("/verify", verifyRoutes);
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "public/build", "index.html"));

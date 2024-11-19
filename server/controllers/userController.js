@@ -1,6 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
-const generateToken = require("../utils/generateToken");
+const { generateToken, genVerificationToken } = require("../utils/generateToken");
 const { GameState } = require("../classes/GameState");
 const { errors } = require("../messages");
 const CustomError = require("../classes/CustomError");
@@ -9,20 +9,25 @@ const {
   matchPassword,
   uploadPicture,
 } = require("../utils/userUtils");
+const { sendMail } = require("../utils/sendMail");
 
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password, pic } = req.body;
   const userExists = await User.findOne({ email });
   if (userExists) throw new CustomError(400, errors.EMAIL_ALREADY_REGISTERED);
 
-  const user = await User.create({ name, email, password, pic: null });
+  const verificationToken = genVerificationToken(email);
+  const user = await User.create({
+    name, email, password, pic: null, verificationToken
+  });
   if (!user) throw new CustomError(400, errors.USER_CREATION_FAILED);
+
+  await sendMail(email, verificationToken);
 
   const userId = user._id.toString();
   const filePath = await uploadPicture(userId, pic);
 
   const userWithoutPass = await getUserById(user._id, false);
-
   userWithoutPass.pic = filePath;
 
   await userWithoutPass.save();
