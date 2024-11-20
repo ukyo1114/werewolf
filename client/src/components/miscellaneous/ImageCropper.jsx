@@ -35,7 +35,7 @@ const ImageCropper = ({ imgSrc, setPic, onClose }) => {
     <>
       <ModalBody>
         {imgSrc && (
-          <Box position="relative" width="100%" height="400px">
+          <Box mb={3} position="relative" width="100%" height="400px">
             <Cropper
               image={imgSrc}
               crop={crop}
@@ -51,24 +51,22 @@ const ImageCropper = ({ imgSrc, setPic, onClose }) => {
             />
           </Box>
         )}
-        <Box mt={4}>
-          <Slider
-            aria-label="zoom-slider"
-            value={zoom}
-            min={1}
-            max={5}
-            step={0.1}
-            onChange={(value) => setZoom(value)}
-          >
-            <SliderTrack>
-              <SliderFilledTrack />
-            </SliderTrack>
-            <SliderThumb />
-          </Slider>
-        </Box>
+        <Slider
+          aria-label="zoom-slider"
+          value={zoom}
+          min={1}
+          max={5}
+          step={0.1}
+          onChange={(value) => setZoom(value)}
+        >
+          <SliderTrack>
+            <SliderFilledTrack />
+          </SliderTrack>
+          <SliderThumb />
+        </Slider>
       </ModalBody>
       
-      <ModalFooter justifyContent="center">
+      <ModalFooter>
         <Button
           colorScheme="teal" 
           onClick={cropImage}
@@ -78,7 +76,6 @@ const ImageCropper = ({ imgSrc, setPic, onClose }) => {
         </Button>
       </ModalFooter>
     </>
-
   );
 };
 

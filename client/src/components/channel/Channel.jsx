@@ -18,7 +18,7 @@ import messagesReducer from "../../reducers/messageReducer";
 
 const Channel = () => {
   const [messages, mDispatch] = useReducer(messagesReducer, []);
-  const { user, currentChannel, cDispatch } = useUserState();
+  const { user, currentChannel, cDispatch, isMobile } = useUserState();
   const scrollRef = useRef(null);
   const isScrollRef = useRef(null);
   const messagesCompletedRef = useRef(null);
@@ -81,7 +81,9 @@ const Channel = () => {
 
   return (
     <>
-      <Sidebar Component={isGame ? GameSidebar : ChannelSidebar} />
+      <Sidebar>
+        {isGame ? <GameSidebar /> : <ChannelSidebar />}
+      </Sidebar>
       <ChannelBox>
         {isGame ? <GameTimer /> : <EntryCounter/>}
         <Divider borderWidth={2} borderColor="#E17875" opacity={1} />
@@ -137,7 +139,6 @@ const Channel = () => {
                     {({ field }) => (
                       <Textarea
                         {...field}
-                        className="custom-scrollbar"
                         variant="filled"
                         placeholder="Enter a message..."
                         resize="none"

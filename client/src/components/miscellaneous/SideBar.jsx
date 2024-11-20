@@ -2,7 +2,7 @@ import React from "react";
 import { Box } from "@chakra-ui/react";
 import ProfileMenu from "../profile/ProfileMenu.jsx";
 
-const Sidebar = ({ Component }) => {
+const SideBar = ({ children }) => {
   return (
     <Box
       display="flex"
@@ -11,10 +11,9 @@ const Sidebar = ({ Component }) => {
       alignItems="center"
       overflowY="auto"
       justifyContent="space-between"
-      width={{ lg: "300px" }}
+      h="100%"
     >
-      {Component && <Component />}
-      
+      {children}
       <Box
         mt="auto"
         display="flex"
@@ -28,4 +27,4 @@ const Sidebar = ({ Component }) => {
   );
 };
 
-export default Sidebar;
+export default SideBar;

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Container } from "@chakra-ui/react";
+import { Container, Box, Image } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import Auth from "../components/home/Auth.jsx";
 
@@ -7,21 +7,20 @@ const Home = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const userInfo = localStorage.getItem("userInfo");
-    if (!userInfo) return;
-    
-    try {
-      const user = JSON.parse(userInfo);
-      if (!user) return;
-      navigate("/chats");
-    } catch (error) {
-      console.error("Error parsing userInfo from localStorage:", error);
-    }
+    if (localStorage.getItem("userInfo")) navigate("/chats");
   }, [navigate]);
 
   return (
-    <Container maxW="xl" mt={7} centerContent className="homePage">
-      <Auth />
+    <Container
+      gap={8}
+      display="flex"
+      centerContent
+      maxW="xl"
+    >
+      <Image mt={8} src="/public/TITLE.png" alt="10人で人狼" maxW="50%" />
+      <Box w="100%">
+        <Auth />
+      </Box>
     </Container>
   );
 };

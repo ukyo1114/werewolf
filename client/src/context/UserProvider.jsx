@@ -1,4 +1,5 @@
 import { createContext, useReducer, useEffect, useContext } from "react";
+import { useMediaQuery } from "react-responsive";
 import { useNavigate } from "react-router-dom";
 import { userReducer, initialUserState } from "../reducers/userReducer";
 import { channelReducer, initialChannelState } from "../reducers/channelReducer";
@@ -7,8 +8,10 @@ const UserContext = createContext();
 
 const UserProvider = ({ children }) => {
   const [user, uDispatch] = useReducer(userReducer, initialUserState);
-  const [currentChannel, cDispatch] =
-    useReducer(channelReducer, initialChannelState);
+  const [currentChannel, cDispatch] = useReducer(
+    channelReducer, initialChannelState
+  );
+  const isMobile = useMediaQuery({ maxWidth: 767 });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,7 +29,7 @@ const UserProvider = ({ children }) => {
 
   return (
     <UserContext.Provider
-      value={{ user, uDispatch, currentChannel, cDispatch }}
+      value={{ user, uDispatch, currentChannel, cDispatch, isMobile }}
     >
       {children}
     </UserContext.Provider>

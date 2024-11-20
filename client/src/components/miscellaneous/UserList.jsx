@@ -1,6 +1,5 @@
 import React from "react";
 import { Box, Text, ModalBody } from "@chakra-ui/react";
-import "../styles.css";
 import DisplayUser from "./DisplayUser.jsx";
 import { StyledBox, StyledText } from "./CustomComponents.jsx";
 import { USER_STATUS } from "../../constants";

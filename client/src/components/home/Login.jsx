@@ -57,19 +57,16 @@ const Login = () => {
     >
       {(formik) => (
         <Form>
-          <VStack align="stretch">
-            <FormControl id="loginEmail" isRequired mb={2}>
-              <FormLabel><strong>メールアドレス：</strong></FormLabel>
+          <VStack>
+            <FormControl id="loginEmail" isRequired mb={3}>
+              <FormLabel>メールアドレス</FormLabel>
               <Field name="email">
                 {({ field }) => (
                   <Input
                     {...field}
                     type="email"
-                    placeholder="メールアドレスを入力してください"
+                    placeholder="メールアドレス"
                     autoComplete="email"
-                    bg="#3B2C2F"
-                    borderColor="#E17875"
-                    _placeholder={{ color: "gray.200" }}
                   />
                 )}
               </Field>
@@ -80,18 +77,16 @@ const Login = () => {
               />
             </FormControl>
 
-            <FormControl id="loginPassword" isRequired mb={2}>
-              <FormLabel><strong>パスワード：</strong></FormLabel>
+            <FormControl id="loginPassword" isRequired mb={3}>
+              <FormLabel>パスワード</FormLabel>
               <InputGroup>
                 <Field name="password">
                   {({ field }) => (
                     <Input
                       {...field}
                       type={pshow ? "text" : "password"}
-                      placeholder="パスワードを入力してください"
-                      bg="#3B2C2F"
-                      borderColor="#E17875"
-                      _placeholder={{ color: "gray.200" }}
+                      placeholder="パスワード"
+                      pr="4.5rem"
                     />
                   )}
                 </Field>
@@ -103,10 +98,7 @@ const Login = () => {
                     variant="ghost"
                     aria-label={pshow ? "パスワードを隠す" : "パスワードを表示"}
                   >
-                    <FontAwesomeIcon
-                      icon={pshow ? faEyeSlash : faEye}
-                      style={{ color: "#E17875" }}
-                    />
+                    <FontAwesomeIcon icon={pshow ? faEyeSlash : faEye} />
                   </Button>
                 </InputRightElement>
               </InputGroup>
@@ -118,9 +110,9 @@ const Login = () => {
             </FormControl>
             
             <Button
+              mt={8}
               colorScheme="teal"
               width="100%"
-              mt={4}
               type="submit"
               isLoading={formik.isSubmitting}
             >

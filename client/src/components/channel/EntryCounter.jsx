@@ -3,7 +3,6 @@ import {
   Box, Text, Button, useDisclosure,
 } from "@chakra-ui/react";
 import { useUserState } from "../../context/UserProvider.jsx";
-import "../styles.css";
 import io from "socket.io-client";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import UserList from "../miscellaneous/UserList.jsx";

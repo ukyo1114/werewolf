@@ -6,7 +6,6 @@ import {
   Flex,
   Avatar,
   Stack,
-  Text,
   useDisclosure,
 } from "@chakra-ui/react";
 import { FaEllipsisH } from "react-icons/fa";
@@ -19,10 +18,10 @@ import ChannelInfo from "./ChannelInfo.jsx";
 import useNotification from "../../hooks/useNotification";
 import { errors } from "../../messages";
 import ModalTemplete from "../miscellaneous/ModalTemplete.jsx";
-import { ChannelBox } from "../miscellaneous/CustomComponents.jsx";
+import { ChannelBox, EllipsisText } from "../miscellaneous/CustomComponents.jsx";
 
 const ChannelList = () => {
-  const { user } = useUserState();
+  const { user, isMobile } = useUserState();
   const [selectedChannel, setSelectedChannel] = useState(null);
   const [showJoinedCh, setShowJoinedCh] = useState(null);
   const [channelList, setChannelList] = useState(null);
@@ -58,15 +57,16 @@ const ChannelList = () => {
 
   return (
     <>
-      <Sidebar Component={ChannelListSidebar} />
+      {!isMobile &&
+        <Sidebar><ChannelListSidebar /></Sidebar>
+      }
       <ChannelBox>
         <ChannelListHeader
           showJoinedCh={showJoinedCh}
           setShowJoinedCh={setShowJoinedCh}
         />
-        <Divider borderWidth={2} borderColor="#E17875" opacity={1} />
         {channelList ? (
-          <Stack overflowY="auto" width="100%" p={3} gap={4}>
+          <Stack overflowY="auto" width="100%" p={4} gap={4}>
             {filteredChannelList.map((channel) => {
               if (!channel.channelAdmin) return null;
 
@@ -75,17 +75,16 @@ const ChannelList = () => {
                   data-key={channel._id} // テスト用
                   onClick={() => handleChannelSelect(channel)}
                   cursor="pointer"
-                  bg={channel.users.includes(user._id) ? "#E17875" : "#2B2024"}
+                  bg={channel.users.includes(user._id) ? "green.100" : "white"}
                   px={3}
                   py={2}
                   width="100%"
                   borderRadius="lg"
-                  borderWidth={2}
-                  borderColor={channel.users.includes(user._id) ? "white" : "#E17875"}
                   key={channel._id}
                   _hover={{
-                    bg: channel.users.includes(user._id) ? "#FF6F61" : "#3B2C2F",
+                    bg: channel.users.includes(user._id) ? "green.200" : "gray.200",
                   }}
+                  boxShadow="uniform"
                 >
                   <Flex justify="space-between" align="center" width="100%" gap={4}>
                     <Avatar
@@ -94,16 +93,12 @@ const ChannelList = () => {
                       src={channel.channelAdmin.pic}
                       borderRadius="md"
                     />
-                    <Box ml={3} textAlign="left" w="100%">
-                      <Text mb={1}>タイトル: {channel.channelName}</Text>
-                      <Divider
-                        borderWidth={1}
-                        borderColor={channel.users.includes(user._id) ? "white" : "#E17875"}
-                        mb={1}
-                      />
-                      <Text>作成者: {channel.channelAdmin.name}</Text>
+                    <Box ml={3} textAlign="left" w="100%" overflow="hidden">
+                      <EllipsisText mb={1}>タイトル： {channel.channelName}</EllipsisText>
+                      <Divider borderWidth={1} borderColor="gray.700" mb={1} />
+                      <EllipsisText>作成者： {channel.channelAdmin.name}</EllipsisText>
                     </Box>
-                    <FaEllipsisH color={channel.users.includes(user._id) ? "white" : "#E17875"}/>
+                    <Box color="gray.700"><FaEllipsisH /></Box>
                   </Flex>
                 </Box>
               );

@@ -34,42 +34,12 @@ const ProfileMenu = () => {
 
   return (
     <Menu>
-      <MenuButton
-        px={4}
-        py={2}
-        borderRadius="lg"
-        _hover={{ bg: "#3B2C2F" }}
-        width="90%"
-      >
-        <Box display="flex" alignItems="center" justifyContent="center">
-          <Avatar
-            size="md"
-            cursor="pointer"
-            name={user.name}
-            src={user.pic}
-            borderRadius="md"
-          />
-          <Box
-            display={{ base: "none", lg: "flex" }}
-            alignItems="center"
-            justifyContent="space-between"
-            ml={3}
-            width="100%"
-          >
-            <Text><strong>{user.name}</strong></Text>
-            <FaEllipsisH color="#E17875" />
-          </Box>
-        </Box>
+      <MenuButton px={4} py={2} borderRadius="lg" _hover={{ bg: "gray.200" }}>
+        <Avatar size="lg" name={user.name} src={user.pic} borderRadius="md" />
       </MenuButton>
-      <MenuList
-        bg="#2B2024"
-        borderWidth={2}
-        borderColor="#E17875"
-        boxShadow="0px 0px 15px 5px rgba(255, 255, 255, 0.1)"
-      >
+      <MenuList boxShadow="uniform">
         <MenuItem
-          bg="#2B2024"
-          _hover={{ bg: "#3B2C2F" }}
+          _hover={{ bg: "gray.200" }}
           onClick={pModal.onOpen}
         >
           プロフィール
@@ -83,11 +53,10 @@ const ProfileMenu = () => {
           <ProfileModal />
         </ModalTemplete>
 
-        <MenuDivider borderColor="#E17875" />
+        <MenuDivider borderColor="gray.700" />
 
         <MenuItem
-          bg="#2B2024"
-          _hover={{ bg: "#3B2C2F" }}
+          _hover={{ bg: "gray.200" }}
           onClick={psModal.onOpen}
         >
           プロフィール設定
@@ -101,11 +70,10 @@ const ProfileMenu = () => {
           <ProfileSettingsModal onClose={psModal.onClose} />
         </ModalTemplete>
 
-        <MenuDivider borderColor="#E17875" />
+        <MenuDivider borderColor="gray.700" />
 
         <MenuItem
-          bg="#2B2024"
-          _hover={{ bg: "#3B2C2F" }}
+          _hover={{ bg: "gray.200" }}
           onClick={usModal.onOpen}
         >
           Eメール・パスワード設定
@@ -119,11 +87,10 @@ const ProfileMenu = () => {
           <UserSettingsModal />
         </ModalTemplete>
 
-        <MenuDivider borderColor="#E17875" />
+        <MenuDivider borderColor="gray.700" />
 
         <MenuItem
-          bg="#2B2024"
-          _hover={{ bg: "#3B2C2F" }}
+          _hover={{ bg: "gray.200" }}
           onClick={logoutHandler}
         >
           ログアウト

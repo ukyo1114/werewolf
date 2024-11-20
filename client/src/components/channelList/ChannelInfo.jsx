@@ -10,7 +10,6 @@ import {
   Flex,
   Text,
 } from "@chakra-ui/react";
-import "../styles.css";
 import { useUserState } from "../../context/UserProvider.jsx";
 import { useJoinChannel } from "../../hooks/useJoinChannel";
 
@@ -33,7 +32,7 @@ const ChannelInfo = ({ selectedChannel }) => {
             チャンネル名： {selectedChannel.channelName}
           </Text>
           <Divider borderWidth={1} borderColor="#E17875" mb={2} />
-          <Box mb={3} maxH="600px" overflowY="auto" className="custom-scrollbar">
+          <Box mb={3} maxH="600px" overflowY="auto">
             <Text mb={2} whiteSpace="pre-wrap">
               {selectedChannel.description}
             </Text>

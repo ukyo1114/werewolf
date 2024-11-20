@@ -9,7 +9,6 @@ import {
   TabPanel,
   Text,
 } from "@chakra-ui/react";
-import "../../styles.css";
 import { useUserState } from "../../../context/UserProvider.jsx";
 import axios from "axios";
 import DisplayUser from "../../miscellaneous/DisplayUser.jsx";

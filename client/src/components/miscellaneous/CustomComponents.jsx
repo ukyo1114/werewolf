@@ -1,4 +1,9 @@
-import { Box, Text, Divider, Button, Tooltip } from "@chakra-ui/react";
+import {
+  Box, Text, Divider, Button, Tooltip,
+  Drawer, DrawerOverlay, DrawerContent,
+} from "@chakra-ui/react";
+import { FaBars } from "react-icons/fa";
+import { useUserState } from "../../context/UserProvider";
 
 export const DisplayDay = ({ day }) => (
   <Text textAlign="center" fontWeight="bold" fontSize="lg" mb={1}>
@@ -66,42 +71,58 @@ export const DisplayPhase = ({ children, ...props }) => (
 export const ChannelHeader = ({ children, ...props }) => (
   <Box
     display="flex"
-    justifyContent="space-between"
-    alignItems="center"
     w="100%"
-    px={4}
-    py={3}
+    p={3}
     {...props}
   >
     {children}
   </Box>
 );
 
-export const SidebarBox = ({ children}) => (
+export const HeaderContents = ({ children }) => (
   <Box
     display="flex"
-    flexDirection="column"
-    alignItems={{ base: "center", lg: "flex-start" }}
-    width="100%"
+    justifyContent="space-between"
+    alignItems="center"
+    w="100%"
   >
     {children}
   </Box>
-);
+)
 
-export const SidebarButton = ({ label, children, ...props }) => (
-  <Tooltip label={label} placement="bottom-end">
-    <Button
-      variant="ghost"
-      my={2}
-      {...props}
+export const SidebarBox = ({ children }) => {
+  const { isMobile } = useUserState();
+
+  return (
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems={isMobile ? "flex-start" : "center"}
+      width="100%"
     >
       {children}
-      <Text fontSize="lg" display={{ base: "none", lg: "flex" }} ml={3}>
-        {label}
-      </Text>
-    </Button>
-  </Tooltip>
-);
+    </Box>
+  );
+};
+
+export const SidebarButton = ({ label, children, ...props }) => {
+  const { isMobile } = useUserState();
+
+  return (
+    <Tooltip label={label} placement="bottom-end">
+      <Button variant="ghost" my={2} {...props}>
+        {children}
+        <Text
+          color="gray.700"
+          display={isMobile ? "flex" : "none"}
+          ml={3}
+        >
+          {label}
+        </Text>
+      </Button>
+    </Tooltip>
+  );
+};
 
 export const ChannelBox = ({ children }) => (
   <Box
@@ -110,9 +131,7 @@ export const ChannelBox = ({ children }) => (
     flexDir="column"
     maxWidth="600px"
     width="100%"
-    borderRightWidth={4}
-    borderLeftWidth={4}
-    borderColor="#E17875"
+    height="100vh"
   >
     {children}
   </Box>
@@ -157,7 +176,22 @@ export const ModalButton = ({ children, disableCondition, ...props }) => {
   )
 };
 
+export const BarsButton = ({ ...props }) => (
+  <Button size="sm" variant="ghost" {...props}>
+    <Box color="gray.700"><FaBars /></Box>
+  </Button>
+);
+
+export const SideMenu = ({ children, isOpen, onClose }) => (
+  <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
+    <DrawerOverlay />
+    <DrawerContent>
+      {children}
+    </DrawerContent>
+  </Drawer>
+);
+
 export const iconProps = {
   size: "30px",
-  color: "#E17875"
+  color: "#4A5568"
 };

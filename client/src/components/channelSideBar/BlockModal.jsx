@@ -8,7 +8,6 @@ import {
   TabPanels,
   TabPanel,
 } from "@chakra-ui/react";
-import "../styles.css";
 import { useUserState } from "../../context/UserProvider.jsx";
 import axios from "axios";
 import useNotification from "../../hooks/useNotification";

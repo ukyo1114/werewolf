@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Box, ModalBody } from "@chakra-ui/react";
-import "../styles.css";
 import { useUserState } from "../../context/UserProvider.jsx";
 import axios from "axios";
 import useNotification from "../../hooks/useNotification";

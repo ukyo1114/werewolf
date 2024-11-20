@@ -33,9 +33,7 @@ const Signup = () => {
   const imageCropper = useDisclosure();
   
   const postDetails = usePostDetails({
-    setImgSrc,
-    onOpen: imageCropper.onOpen,
-    inputRef,
+    setImgSrc, onOpen: imageCropper.onOpen, inputRef
   });
 
   const handleSignUp = async (values, actions) => {
@@ -77,18 +75,15 @@ const Signup = () => {
     >
       {(formik) => (
         <Form>
-          <VStack align="stretch">
-            <FormControl id="name" isRequired mb={2}>
-              <FormLabel><strong>ユーザー名：</strong></FormLabel>
+          <VStack>
+            <FormControl id="name" isRequired mb={3}>
+              <FormLabel>ユーザー名</FormLabel>
               <Field name="name">
                 {({ field }) => (
                   <Input
                     {...field}
-                    placeholder="ユーザー名を入力してください"
+                    placeholder="ユーザー名"
                     autoComplete="off"
-                    bg="#3B2C2F"
-                    borderColor="#E17875"
-                    _placeholder={{ color: "gray.200" }}
                   />
                 )}
               </Field>
@@ -99,18 +94,15 @@ const Signup = () => {
               />
             </FormControl>
 
-            <FormControl id="signupEmail" isRequired mb={2}>
-            <FormLabel><strong>メールアドレス：</strong></FormLabel>
+            <FormControl id="signupEmail" isRequired mb={3}>
+            <FormLabel>メールアドレス</FormLabel>
               <Field name="email">
                 {({ field }) => (
                   <Input
                     {...field}
                     type="email"
-                    placeholder="メールアドレスを入力してください"
+                    placeholder="メールアドレス"
                     autoComplete="email"
-                    bg="#3B2C2F"
-                    borderColor="#E17875"
-                    _placeholder={{ color: "gray.200" }}
                   />
                 )}
               </Field>
@@ -121,18 +113,16 @@ const Signup = () => {
               />
             </FormControl>
 
-            <FormControl id="signupPassword" isRequired mb={2}>
-            <FormLabel><strong>パスワード：</strong></FormLabel>
+            <FormControl id="signupPassword" isRequired mb={3}>
+            <FormLabel>パスワード</FormLabel>
               <InputGroup>
                 <Field name="password">
                   {({ field }) => (
                     <Input
                       {...field}
                       type={pshow ? "text" : "password"}
-                      placeholder="パスワードを入力してください"
-                      bg="#3B2C2F"
-                      borderColor="#E17875"
-                      _placeholder={{ color: "gray.200" }}
+                      placeholder="パスワード"
+                      pr="4.5rem"
                     />
                   )}
                 </Field>
@@ -145,10 +135,7 @@ const Signup = () => {
                     variant="ghost"
                     aria-label={pshow ? "パスワードを隠す" : "パスワードを表示"}
                   >
-                    <FontAwesomeIcon
-                      icon={pshow ? faEyeSlash : faEye}
-                      style={{ color: "#E17875" }}
-                    />
+                    <FontAwesomeIcon icon={pshow ? faEyeSlash : faEye} />
                   </Button>
                 </InputRightElement>
               </InputGroup>
@@ -159,18 +146,16 @@ const Signup = () => {
               />
             </FormControl>
 
-            <FormControl id="confirmPassword" isRequired mb={2}>
-            <FormLabel><strong>パスワード確認：</strong></FormLabel>
+            <FormControl id="confirmPassword" isRequired mb={3}>
+            <FormLabel>パスワード(確認)</FormLabel>
               <InputGroup>
                 <Field name="confirmPassword">
                   {({ field }) => (
                     <Input
                       {...field}
-                      type={pshow ? "text" : "password"}
-                      placeholder="パスワード確認"
-                      bg="#3B2C2F"
-                      borderColor="#E17875"
-                      _placeholder={{ color: "gray.200" }}
+                      type={cshow ? "text" : "password"}
+                      placeholder="パスワード(確認)"
+                      pr="4.5rem"
                     />
                   )}
                 </Field>
@@ -183,10 +168,7 @@ const Signup = () => {
                     variant="ghost"
                     aria-label={cshow ? "パスワードを隠す" : "パスワードを表示"}
                   >
-                    <FontAwesomeIcon
-                      icon={cshow ? faEyeSlash : faEye}
-                      style={{ color: "#E17875" }}
-                    />
+                    <FontAwesomeIcon icon={cshow ? faEyeSlash : faEye} />
                   </Button>
                 </InputRightElement>
               </InputGroup>
@@ -202,13 +184,12 @@ const Signup = () => {
               display="flex"
               flexDirection="column"
               alignItems="center"
+              mb={3}
+              isRequired
             >
-              <FormLabel alignSelf="flex-start">
-                <strong>プロフィール画像</strong>
-              </FormLabel>
+              <FormLabel alignSelf="flex-start">プロフィール画像</FormLabel>
               {pic ? (
                 <Image
-                  mt={4}
                   src={pic}
                   boxSize="120px"
                   borderRadius="lg"
@@ -219,17 +200,14 @@ const Signup = () => {
                 />
               ) : (
                 <Button
-                  mt={4}
                   width="120px"
                   height="120px"
                   borderRadius="lg"
                   onClick={() => inputRef.current.click()}
                   cursor="pointer"
-                  color="white"
-                  bg="#E17875"
-                  _hover={{ bg: "#FF6F61" }}
+                  colorScheme="gray"
                 >
-                  ファイルを選択
+                  画像を選択
                 </Button>
               )}
 
@@ -257,11 +235,11 @@ const Signup = () => {
             <Button
               colorScheme="teal"
               width="100%"
-              mt={4}
+              mt={8}
               type="submit"
               isLoading={formik.isSubmitting}
             >
-              登録
+              ユーザー登録
             </Button>
           </VStack>
         </Form>
