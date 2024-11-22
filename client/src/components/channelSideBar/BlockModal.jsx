@@ -13,6 +13,7 @@ import axios from "axios";
 import useNotification from "../../hooks/useNotification";
 import DisplayUser from "../miscellaneous/DisplayUser.jsx";
 import ModalButton from "../miscellaneous/ModalButton.jsx";
+import { StyledText } from "../miscellaneous/CustomComponents.jsx";
 
 const BlockModal = () => {
   const { user, currentChannel } = useUserState();
@@ -44,49 +45,31 @@ const BlockModal = () => {
   }, [fetchBlockUserList]);
 
   return (
-        <ModalBody>
-          <Tabs variant="soft-rounded" mb={4}>
-            <TabList>
-              <Tab
-                w="50%"
-                color="white"
-                _selected={{ bg: "#E17875" }}
-                _hover={{
-                  ":not([aria-selected='true'])": { bg: "#3B2C2F" },
-                }}
-              >
-                ブロック
-              </Tab>
-              <Tab
-                w="50%"
-                color="white"
-                _selected={{ bg: "#E17875" }}
-                _hover={{
-                  ":not([aria-selected='true'])": { bg: "#3B2C2F" },
-                }}
-              >
-                取消
-              </Tab>
-            </TabList>
-            <TabPanels>
-              <TabPanel>
-                <UserListTab
-                  selectedUser={selectedUser}
-                  setSelectedUser={setSelectedUser}
-                  setBlockUserList={setBlockUserList}
-                />
-              </TabPanel>
-              <TabPanel>
-                <BlockedUserListTab
-                  selectedBlockUser={selectedBlockUser}
-                  setSelectedBlockUser={setSelectedBlockUser}
-                  blockUserList={blockUserList}
-                  setBlockUserList={setBlockUserList}
-                />
-              </TabPanel>
-            </TabPanels>
-          </Tabs>
-        </ModalBody>
+    <ModalBody>
+      <Tabs>
+        <TabList>
+          <Tab w="50%">ブロック</Tab>
+          <Tab w="50%">解除</Tab>
+        </TabList>
+        <TabPanels>
+          <TabPanel key="block">
+            <UserListTab
+              selectedUser={selectedUser}
+              setSelectedUser={setSelectedUser}
+              setBlockUserList={setBlockUserList}
+            />
+          </TabPanel>
+          <TabPanel key="cancel">
+            <BlockedUserListTab
+              selectedBlockUser={selectedBlockUser}
+              setSelectedBlockUser={setSelectedBlockUser}
+              blockUserList={blockUserList}
+              setBlockUserList={setBlockUserList}
+            />
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
+    </ModalBody>
   );
 };
 
@@ -139,33 +122,31 @@ const UserListTab = ({
   ]);
 
   return (
-    <Box display="flex" flexDir="column">
-      {users.filter((u) => u._id !== user._id).map((u) => (
-        <Box
-          key={u._id}
-          display="flex"
-          alignItems="center"
-          mb={3}
-          p={3}
-          borderRadius="md"
-          borderWidth={2}
-          borderColor={selectedUser === u._id ? "white" : "#E17875"}
-          bg={selectedUser === u._id ? "#E17875" : "#2B2024"}
-          _hover={{
-            bg: selectedUser !== u._id ? "#3B2C2F" : undefined,
-          }}
-          cursor="pointer"
-          onClick={() => setSelectedUser(u._id)}
-        >
-          <DisplayUser user={u} />
-        </Box>
-      ))}
+    <>
+      <Box display="flex" flexDir="column" gap={4} p={4} maxHeight="60vh" overflowY="auto">
+        {users.length > 1 ? (
+          users.filter((u) => u._id !== user._id).map((u) => (
+            <DisplayUser
+              key={u._id}
+              user={u}
+              cursor="pointer"
+              onClick={() => setSelectedUser(u._id)}
+              bg={selectedUser === u._id ? "green.100" : "white"}
+              _hover={{
+                bg: selectedUser !== u._id ? "gray.200" : undefined,
+              }}
+            />
+          ))
+        ) : (
+          <StyledText>ユーザーがいません</StyledText>
+        )}
+      </Box>
       <ModalButton
         innerText={"ブロック"}
         onClick={block}
         disableCondition={!selectedUser}
       />
-    </Box>
+    </>
   );
 };
 
@@ -209,33 +190,32 @@ const BlockedUserListTab = ({
   ]);
 
   return (
-    <Box display="flex" flexDir="column">
-      {blockUserList.map((u) => (
-        <Box
-          key={u._id}
-          display="flex"
-          alignItems="center"
-          mb={3}
-          p={3}
-          borderRadius="md"
-          borderWidth={2}
-          borderColor={selectedBlockUser === u._id ? "white" : "#E17875"}
-          bg={selectedBlockUser === u._id ? "#E17875" : "#2B2024"}
-          _hover={{
-            bg: selectedBlockUser !== u._id ? "#3B2C2F" : undefined,
-          }}
-          cursor="pointer"
-          onClick={() => setSelectedBlockUser(u._id)}
-        >
-          <DisplayUser user={u} />
-        </Box>
-      ))}
+    <>
+      <Box display="flex" flexDir="column" gap={4} p={4} maxHeight="60vh" overflowY="auto">
+        {blockUserList.length > 0 ? (
+          blockUserList.map((u) => (
+            <DisplayUser
+              key={u._id}
+              user={u}
+              cursor="pointer"
+              onClick={() => setSelectedBlockUser(u._id)}
+              bg={selectedBlockUser === u._id ? "green.100" : "white"}
+              _hover={{
+                bg: selectedBlockUser !== u._id ? "gray.200" : undefined,
+              }}
+            />
+          ))
+        ) : (
+          <StyledText>ユーザーがいません</StyledText>
+        )}
+      </Box>
       <ModalButton
-        innerText={"取消"}
+        innerText={"解除"}
         onClick={cancelBlock}
         disableCondition={!selectedBlockUser}
       />
-    </Box>
+    </>
+
   );
 };
 

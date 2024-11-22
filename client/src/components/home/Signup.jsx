@@ -122,7 +122,7 @@ const Signup = () => {
                       {...field}
                       type={pshow ? "text" : "password"}
                       placeholder="パスワード"
-                      pr="4.5rem"
+                      pr="4rem"
                     />
                   )}
                 </Field>
@@ -134,6 +134,7 @@ const Signup = () => {
                     onClick={() => setPShow(!pshow)}
                     variant="ghost"
                     aria-label={pshow ? "パスワードを隠す" : "パスワードを表示"}
+                    color="gray.700"
                   >
                     <FontAwesomeIcon icon={pshow ? faEyeSlash : faEye} />
                   </Button>
@@ -155,7 +156,7 @@ const Signup = () => {
                       {...field}
                       type={cshow ? "text" : "password"}
                       placeholder="パスワード(確認)"
-                      pr="4.5rem"
+                      pr="4rem"
                     />
                   )}
                 </Field>
@@ -167,6 +168,7 @@ const Signup = () => {
                     onClick={() => setCShow(!cshow)}
                     variant="ghost"
                     aria-label={cshow ? "パスワードを隠す" : "パスワードを表示"}
+                    color="gray.700"
                   >
                     <FontAwesomeIcon icon={cshow ? faEyeSlash : faEye} />
                   </Button>
@@ -204,7 +206,6 @@ const Signup = () => {
                   height="120px"
                   borderRadius="lg"
                   onClick={() => inputRef.current.click()}
-                  cursor="pointer"
                   colorScheme="gray"
                 >
                   画像を選択

@@ -12,17 +12,16 @@ export const DisplayDay = ({ day }) => (
 );
 
 export const StyledDivider = () => (
-  <Divider borderWidth={1} borderColor="#E17875" my={2} />
+  <Divider borderWidth={1} borderColor="gray.700" my={2} />
 )
 
 export const StyledBox = ({ children, ...props }) => (
   <Box
     display="flex"
     alignItems="center"
-    mb={3}
-    p={3}
+    p={4}
     borderRadius="lg"
-    bg="#3B2C2F"
+    boxShadow="uniform"
     {...props}
   >
     {children}
@@ -33,8 +32,8 @@ export const StyledText = ({ children, ...props }) => (
   <Text
     fontSize="lg"
     textAlign="center"
-    bg="#3B2C2F"
     borderRadius="lg"
+    bg="gray.200"
     p={3}
     {...props}
   >
@@ -47,7 +46,7 @@ export const DisplayRole = ({ children, status }) => (
     fontSize="md"
     fontWeight="bold"
     textAlign="center"
-    bg={status === "alive" ? "teal" : "#3B2C2F" }
+    bg={status === "alive" ? "green.100" : "purple.100" }
     borderRadius="lg"
     px={3}
     py={1}
@@ -59,7 +58,6 @@ export const DisplayRole = ({ children, status }) => (
 export const DisplayPhase = ({ children, ...props }) => (
   <Text
     fontSize="lg"
-    fontWeight="bold"
     display="flex"
     alignItems="center"
     {...props}
@@ -71,6 +69,7 @@ export const DisplayPhase = ({ children, ...props }) => (
 export const ChannelHeader = ({ children, ...props }) => (
   <Box
     display="flex"
+    alignItems="center"
     w="100%"
     p={3}
     {...props}
@@ -141,11 +140,10 @@ export const SelectableBox = ({ children, ...props }) => (
   <Box
     display="flex"
     alignItems="center"
-    mb={3}
-    p={3}
-    borderRadius="md"
-    borderWidth={2}
+    p={4}
+    borderRadius="lg"
     cursor="pointer"
+    boxShadow="uniform"
     {...props}
   >
     {children}

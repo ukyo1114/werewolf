@@ -1,9 +1,17 @@
-import { Box, Text,  Avatar } from "@chakra-ui/react";
-import { StyledDivider } from "./CustomComponents.jsx";
+import { Box, Avatar } from "@chakra-ui/react";
+import { StyledDivider, EllipsisText } from "./CustomComponents.jsx";
 
-const DisplayUser = ({ children, user }) => {
+const DisplayUser = ({ children, user, ...props }) => {
   return (
-    <Box display="flex" width="100%" alignItems={children ? "flex-start" : "center"}>
+    <Box
+      display="flex"
+      alignItems={children ? "flex-start" : "center"}
+      w="100%"
+      p={4}
+      borderRadius="lg"
+      boxShadow="uniform"
+      {...props}
+    >
       <Avatar
         size="lg"
         name={user.name}
@@ -12,8 +20,8 @@ const DisplayUser = ({ children, user }) => {
         mt={children && 1}
         mr={4}
       />
-      <Box display="flex" flexDir="column" width="100%">
-        <Text fontSize="lg">{user.name}</Text>
+      <Box display="flex" flexDir="column" width="100%" overflowX="hidden">
+        <EllipsisText fontSize="lg">{user.name}</EllipsisText>
         {children && <StyledDivider />}
         {children}
       </Box>

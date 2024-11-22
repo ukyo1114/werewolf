@@ -22,6 +22,7 @@ import {
   userSettingsValidationSchema,
   userSettingsInitialValues,
 } from "./validationSchema";
+import { EllipsisText } from "../miscellaneous/CustomComponents.jsx";
 
 const UserSettingsModal = () => {
   const { user } = useUserState();
@@ -70,14 +71,14 @@ const UserSettingsModal = () => {
         {(formik) => (
           <Form>
             <ModalBody>
-              <FormControl id="isEmailChanged" mb={2}>
+              <FormControl id="isEmailChanged" mb={2} overflow="hidden">
                 <Field name="isEmailChanged">
                   {({ field }) => (
                     <Checkbox
                       {...field}
                       isChecked={field.value}
                     >
-                      <strong>メールアドレスを変更する</strong>
+                      <EllipsisText>メールアドレスを変更する</EllipsisText>
                     </Checkbox>
                   )}
                 </Field>
@@ -89,12 +90,9 @@ const UserSettingsModal = () => {
                     <Input
                       {...field}
                       type="email"
-                      placeholder="メールアドレスを入力してください"
+                      placeholder="メールアドレス"
                       autoComplete="email"
                       isDisabled={!formik.values.isEmailChanged}
-                      bg="#3B2C2F"
-                      borderColor="#E17875"
-                      _placeholder={{ color: "gray.200" }}
                     />
                   )}
                 </Field>
@@ -105,14 +103,14 @@ const UserSettingsModal = () => {
                 />
               </FormControl>
 
-              <FormControl id="isPasswordChanged" mb={2}>
+              <FormControl id="isPasswordChanged" mb={2} overflow="hidden">
                 <Field name="isPasswordChanged">
                   {({ field }) => (
                     <Checkbox
                       {...field}
                       isChecked={field.value}
                     >
-                      <strong>パスワードを変更する</strong>
+                      <EllipsisText>パスワードを変更する</EllipsisText>
                     </Checkbox>
                   )}
                 </Field>
@@ -128,9 +126,7 @@ const UserSettingsModal = () => {
                         placeholder="新しいパスワード"
                         isDisabled={!formik.values.isPasswordChanged}
                         autoComplete="off"
-                        bg="#3B2C2F"
-                        borderColor="#E17875"
-                        _placeholder={{ color: "gray.200" }}
+                        pr="4rem"
                       />
                     )}
                   </Field>
@@ -141,11 +137,9 @@ const UserSettingsModal = () => {
                       onClick={() => setNewPassShow(!newPassShow)}
                       variant="ghost"
                       aria-label={newPassShow ? "パスワードを隠す" : "パスワードを表示"}
+                      color="gray.700"
                     >
-                      <FontAwesomeIcon
-                        icon={newPassShow ? faEyeSlash : faEye} 
-                        style={{ color: "#E17875" }}
-                      />
+                      <FontAwesomeIcon icon={newPassShow ? faEyeSlash : faEye} />
                     </Button>
                   </InputRightElement>
                 </InputGroup>
@@ -163,12 +157,10 @@ const UserSettingsModal = () => {
                       <Input
                         {...field}
                         type={confirmNewPassShow ? "text" : "password"}
-                        placeholder="新しいパスワード確認"
+                        placeholder="新しいパスワード(確認)"
                         isDisabled={!formik.values.isPasswordChanged}
                         autoComplete="off"
-                        bg="#3B2C2F"
-                        borderColor="#E17875"
-                        _placeholder={{ color: "gray.200" }}
+                        pr="4rem"
                       />
                     )}
                   </Field>
@@ -179,11 +171,9 @@ const UserSettingsModal = () => {
                       onClick={() => setConfirmNewPassShow(!confirmNewPassShow)}
                       variant="ghost"
                       aria-label={confirmNewPassShow ? "パスワードを隠す" : "パスワードを表示"}
+                      color="gray.700"
                     >
-                      <FontAwesomeIcon
-                        icon={confirmNewPassShow ? faEyeSlash : faEye}
-                        style={{ color: "#E17875" }}
-                        />
+                      <FontAwesomeIcon icon={confirmNewPassShow ? faEyeSlash : faEye} />
                     </Button>
                   </InputRightElement>
                 </InputGroup>
@@ -194,8 +184,8 @@ const UserSettingsModal = () => {
                 />
               </FormControl>
 
-              <FormControl id="currentPassword" isRequired>
-                <FormLabel><strong>現在のパスワード：</strong></FormLabel>
+              <FormControl id="currentPassword">
+                <FormLabel><EllipsisText>現在のパスワード</EllipsisText></FormLabel>
                 <InputGroup>
                   <Field name="currentPassword">
                     {({ field }) => (
@@ -207,9 +197,7 @@ const UserSettingsModal = () => {
                           !formik.values.isEmailChanged && !formik.values.isPasswordChanged
                         }
                         autoComplete="off"
-                        bg="#3B2C2F"
-                        borderColor="#E17875"
-                        _placeholder={{ color: "gray.200" }}
+                        pr="4rem"
                       />
                     )}
                   </Field>
@@ -220,11 +208,9 @@ const UserSettingsModal = () => {
                       onClick={() => setCurrentPassShow(!currentPassShow)}
                       variant="ghost"
                       aria-label={currentPassShow ? "パスワードを隠す" : "パスワードを表示"}
+                      color="gray.700"
                     >
-                      <FontAwesomeIcon
-                        icon={currentPassShow ? faEyeSlash : faEye}
-                        style={{ color: "#E17875" }}
-                      />
+                      <FontAwesomeIcon icon={currentPassShow ? faEyeSlash : faEye} />
                     </Button>
                   </InputRightElement>
                 </InputGroup>
@@ -236,7 +222,6 @@ const UserSettingsModal = () => {
               </FormControl>
             </ModalBody>
             <ModalFooter>
-              <Flex width="100%" justifyContent="space-evenly">
                 <Button
                   colorScheme="teal"
                   width="100%"
@@ -245,7 +230,6 @@ const UserSettingsModal = () => {
                 >
                   送信
                 </Button>
-              </Flex>
             </ModalFooter>
           </Form>
         )}

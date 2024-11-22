@@ -34,32 +34,25 @@ const VoteModal = ({ mode, onClose }) => {
 
   return (
     <ModalBody>
-      <Box display="flex" flexDir="column" p={3} maxH="800px" overflowY="auto">
+      <Box display="flex" flexDir="column" gap={4} p={3} maxH="60vh" overflowY="auto">
         {users.map((u) => {
-          if (!u.status) return null;
+          const hidden =
+            u._id === user._id ||
+            u.status !== "alive" ||
+            (phase.currentPhase === "night" && u._id === user.partnerId);
+          if (hidden) return null;
           
           return (
-            <SelectableBox
+            <DisplayUser
               key={u._id}
-              borderColor={selectedUser === u._id ? "white" : "#E17875"}
-              bg={selectedUser === u._id ? "#E17875" : "#2B2024"}
-              _hover={{
-                bg: selectedUser !== u._id ? "#3B2C2F" : undefined,
-              }}
+              user={u}
+              cursor="pointer"
               onClick={() => setSelectedUser(u._id)}
-              pointerEvents={
-                u._id !== user._id && u.status === "alive" &&
-                (phase.currentPhase !== "night" || u._id !== user.partnerId)
-                  ? "auto" : "none"
-              }
-              opacity={
-                u._id !== user._id && u.status === "alive" &&
-                (phase.currentPhase !== "night" || u._id !== user.partnerId)
-                  ? "1" : "0.6"
-              }
-            >
-              <DisplayUser user={u} />
-            </SelectableBox>
+              bg={selectedUser === u._id ? "green.100" : "white"}
+              _hover={{
+                bg: selectedUser !== u._id ? "gray.200" : undefined,
+              }}
+            />
           )
         })}
       </Box>

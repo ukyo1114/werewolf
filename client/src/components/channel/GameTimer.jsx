@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef } from "react";
-import { Box } from "@chakra-ui/react";
+import { Box, useDisclosure } from "@chakra-ui/react";
 import Countdown from "react-countdown";
 import { useUserState } from "../../context/UserProvider.jsx";
 import axios from "axios";
@@ -9,14 +9,23 @@ import { useJoinChannel } from "../../hooks/useJoinChannel";
 import { errors } from "../../messages";
 import { PHASE_MAP, ROLE_MAP, PHASE_DURATIONS } from "../../constants";
 import {
-  DisplayRole, DisplayPhase, ChannelHeader,
+  DisplayRole,
+  DisplayPhase,
+  ChannelHeader,
+  HeaderContents,
+  BarsButton,
+  SideMenu,
+  EllipsisText,
 } from "../miscellaneous/CustomComponents";
+import GameSidebar from "../gameSidebar/GameSidebar.jsx";
+import SideBar from "../miscellaneous/SideBar.jsx";
 
 const GameTimer = () => {
-  const { user, uDispatch, currentChannel, cDispatch } = useUserState();
+  const { user, uDispatch, currentChannel, cDispatch, isMobile } = useUserState();
   const { _id: channelId, channel, phase } = currentChannel;
   const { currentDay, currentPhase, changedAt } = phase;
   const showToast = useNotification();
+  const sideMenu = useDisclosure();
   const gameSocketRef = useRef(null);
   const joinChannel = useJoinChannel();
 
@@ -105,24 +114,35 @@ const GameTimer = () => {
 
   return (
     <ChannelHeader>
-      <Box display="flex">
-        <DisplayPhase mr={2}>
-          {currentDay}日目
-        </DisplayPhase>
-        <DisplayPhase>
-          {PHASE_MAP[currentPhase || "pre"]}
-        </DisplayPhase>
-      </Box>
-
-      {currentPhase && changedAt &&
-        <Countdown
-          date={calcTimer()}
-          renderer={({ minutes, seconds }) => (minutes * 60 + seconds)} 
-        />
+      {isMobile &&
+        <>
+          <BarsButton onClick={sideMenu.onOpen} />
+          <SideMenu isOpen={sideMenu.isOpen} onClose={sideMenu.onClose}>
+            <SideBar><GameSidebar /></SideBar>
+          </SideMenu>
+        </>
       }
-      <DisplayRole status={user.status}>
-        {ROLE_MAP[user.role || "spectator"]}
-      </DisplayRole>
+      <HeaderContents>
+        <Box display="flex">
+          <DisplayPhase mr={2}>
+            {currentDay}日目
+          </DisplayPhase>
+          <DisplayPhase>
+            {PHASE_MAP[currentPhase || "pre"]}
+          </DisplayPhase>
+        </Box>
+
+        {currentPhase && changedAt &&
+          <Countdown
+            date={calcTimer()}
+            renderer={({ minutes, seconds }) => (minutes * 60 + seconds)} 
+          />
+        }
+        <DisplayRole status={user.status}>
+          {ROLE_MAP[user.role || "spectator"]}
+        </DisplayRole>
+      </HeaderContents>
+
     </ChannelHeader>
   );
 };

@@ -1,5 +1,8 @@
 import React, { useEffect, useReducer, useCallback, useRef } from "react";
-import { Box, Divider, FormControl, Spinner, Textarea } from "@chakra-ui/react";
+import {
+  Box, FormControl, Spinner, Textarea, IconButton
+} from "@chakra-ui/react";
+import { BiSend } from "react-icons/bi";
 import { useUserState } from "../../context/UserProvider.jsx";
 import ChannelSidebar from "../channelSideBar/ChannelSidebar.jsx";
 import GameSidebar from "../gameSidebar/GameSidebar.jsx";
@@ -81,12 +84,13 @@ const Channel = () => {
 
   return (
     <>
-      <Sidebar>
-        {isGame ? <GameSidebar /> : <ChannelSidebar />}
-      </Sidebar>
+      {!isMobile &&
+        <Sidebar>
+          {isGame ? <GameSidebar /> : <ChannelSidebar />}
+        </Sidebar>
+      }
       <ChannelBox>
         {isGame ? <GameTimer /> : <EntryCounter/>}
-        <Divider borderWidth={2} borderColor="#E17875" opacity={1} />
         <Box
           display="flex"
           flexDir="column"
@@ -94,7 +98,6 @@ const Channel = () => {
           p={4}
           w="100%"
           h="100%"
-          borderRadius="lg"
           overflowY="auto"
         >
           
@@ -113,6 +116,7 @@ const Channel = () => {
               flexDir="column-reverse"
               ref={scrollRef}
               onScroll={handleScroll}
+              p={2}
             >
               {messages && messages.map((m) => {
                 const chatUser = (m.sender === GAME_MASTER._id) ? GAME_MASTER :
@@ -137,25 +141,30 @@ const Channel = () => {
                 <FormControl my={3} isRequired>
                   <Field name="newMessage">
                     {({ field }) => (
-                      <Textarea
-                        {...field}
-                        variant="filled"
-                        placeholder="Enter a message..."
-                        resize="none"
-                        overflowY="auto"
-                        minHeight="42px"
-                        maxHeight="400px"
-                        color="black"
-                        bg="#E0E0E0"
-                        _focus={{ bg: "white" }} 
-                        as={TextareaAutosize}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter" && !e.shiftKey) {
-                            e.preventDefault();
-                            formik.handleSubmit();
-                          }
-                        }}
-                      />
+                      <Box position="relative" width="100%">
+                        <Textarea
+                          {...field}
+                          variant="filled"
+                          placeholder="Enter a message..."
+                          resize="none"
+                          pr="3rem"
+                          overflowY="auto"
+                          minHeight="42px"
+                          maxHeight="300px"
+                          as={TextareaAutosize}
+                        />
+                        <IconButton
+                          aria-label="メッセージを送信"
+                          icon={<BiSend />}
+                          onClick={formik.handleSubmit}
+                          position="absolute"
+                          bottom={1}
+                          right={2}
+                          size="sm"
+                          colorScheme="blue"
+                          borderRadius="full"
+                        />
+                      </Box>
                     )}
                   </Field>
                   <ErrorMessage

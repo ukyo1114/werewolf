@@ -18,6 +18,7 @@ import {
   createChValidationSchema,
   createChInitialValues,
 } from "./validationSchema";
+import { EllipsisText } from "../miscellaneous/CustomComponents.jsx";
 import TextareaAutosize from "react-textarea-autosize";
 
 const CreateChannel = () => {
@@ -62,18 +63,15 @@ const CreateChannel = () => {
       {(formik) => (
         <Form>
           <ModalBody>
-            <FormControl id="channelName" mb={2}>
-              <FormLabel><strong>チャンネル名：</strong></FormLabel>
+            <FormControl id="channelName" mb={3}>
+              <FormLabel><EllipsisText>チャンネル名</EllipsisText></FormLabel>
               <Field name="channelName">
                 {({ field }) => (
                   <Input
                     {...field}
                     type="text"
-                    placeholder="チャンネル名を入力してください"
+                    placeholder="チャンネル名"
                     autoComplete="off"
-                    bg="#3B2C2F"
-                    borderColor="#E17875"
-                    _placeholder={{ color: "gray.200" }}
                   />
                 )}
               </Field>
@@ -84,21 +82,18 @@ const CreateChannel = () => {
               />
             </FormControl>
 
-            <FormControl id="description" mb={2}>
-              <FormLabel><strong>チャンネル説明：</strong></FormLabel>
+            <FormControl id="description" mb={3}>
+              <FormLabel><EllipsisText>説明文</EllipsisText></FormLabel>
               <Field name="description">
                 {({ field }) => (
                   <Textarea
                     {...field}
-                    placeholder="チャンネル説明を入力してください"
+                    placeholder="説明文"
                     minHeight="100px"
                     maxHeight="600px"
                     autoComplete="off"
                     resize="none"
                     as={TextareaAutosize}
-                    bg="#3B2C2F"
-                    borderColor="#E17875"
-                    _placeholder={{ color: "gray.200" }}
                   />
                 )}
               </Field>
@@ -109,14 +104,14 @@ const CreateChannel = () => {
               />
             </FormControl>
 
-            <FormControl id="isPasswordEnabled" mb={2}>
+            <FormControl id="isPasswordEnabled" mb={3} overflow="hidden">
               <Field name="isPasswordEnabled">
                 {({ field }) => (
                   <Checkbox
                     {...field}
                     isChecked={field.value}
                   >
-                    <strong>パスワード設定</strong>
+                    <EllipsisText>パスワードを設定する</EllipsisText>
                   </Checkbox>
                 )}
               </Field>
@@ -132,9 +127,6 @@ const CreateChannel = () => {
                       placeholder="パスワード"
                       autoComplete="off"
                       isDisabled={!formik.values.isPasswordEnabled}
-                      bg="#3B2C2F"
-                      borderColor="#E17875"
-                      _placeholder={{ color: "gray.200" }}
                     />
                   )}
                 </Field>
@@ -147,7 +139,7 @@ const CreateChannel = () => {
             }
           </ModalBody>
 
-          <ModalFooter justifyContent="center">
+          <ModalFooter>
             <Button
               colorScheme="teal"
               width="100%"

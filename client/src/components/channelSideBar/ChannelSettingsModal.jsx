@@ -82,13 +82,13 @@ const ChannelSettingsModal = () => {
                     {...field}
                     isChecked={field.value}
                   >
-                    <strong>チャンネル名を変更する</strong>
+                    チャンネル名を変更する
                   </Checkbox>
                 )}
               </Field>
             </FormControl>
 
-            <FormControl id="channelName" mb={2}>
+            <FormControl id="channelName" mb={3}>
               <Field name="channelName">
                 {({ field }) => (
                   <Input
@@ -96,9 +96,6 @@ const ChannelSettingsModal = () => {
                     placeholder="チャンネル名"
                     autoComplete="off"
                     isDisabled={!formik.values.isChannelNameChanged}
-                    bg="#3B2C2F"
-                    borderColor="#E17875"
-                    _placeholder={{ color: "gray.200" }}
                   />
                 )}
               </Field>
@@ -123,7 +120,7 @@ const ChannelSettingsModal = () => {
               </Field>
             </FormControl>
 
-            <FormControl id="description" mb={2}>
+            <FormControl id="description" mb={3}>
               <Field name="description">
                 {({ field }) => (
                   <Textarea
@@ -135,9 +132,6 @@ const ChannelSettingsModal = () => {
                     resize="none"
                     as={TextareaAutosize}
                     isDisabled={!formik.values.isDescriptionChanged}
-                    bg="#3B2C2F"
-                    borderColor="#E17875"
-                    _placeholder={{ color: "gray.200" }}
                   />
                 )}
               </Field>
@@ -162,7 +156,7 @@ const ChannelSettingsModal = () => {
               </Field>
             </FormControl>
 
-            <FormControl id="password" mb={2}>
+            <FormControl id="password" mb={3}>
               <Field name="password">
                 {({ field }) => (
                   <Input
@@ -170,9 +164,6 @@ const ChannelSettingsModal = () => {
                     placeholder="空欄のまま送信すると無効にできます"
                     autoComplete="off"
                     isDisabled={!formik.values.isPasswordChanged}
-                    bg="#3B2C2F"
-                    borderColor="#E17875"
-                    _placeholder={{ color: "gray.200" }}
                   />
                 )}
               </Field>

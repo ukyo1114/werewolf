@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Text, ModalBody } from "@chakra-ui/react";
 import DisplayUser from "./DisplayUser.jsx";
-import { StyledBox, StyledText } from "./CustomComponents.jsx";
+import { StyledText } from "./CustomComponents.jsx";
 import { USER_STATUS } from "../../constants";
 import { useUserState } from "../../context/UserProvider.jsx";
 
@@ -13,12 +13,9 @@ const UserList = ({ userList }) => {
       <Box
         display="flex"
         flexDir="column"
-        p={3}
-        w="100%"
-        h="100%"
-        borderRadius="lg"
-        mb={4}
-        maxHeight="800px"
+        gap={4}
+        p={4}
+        maxH="60vh"
         overflowY="auto"
       >
         {userList.length > 0 ? (
@@ -26,16 +23,19 @@ const UserList = ({ userList }) => {
             if (isGame && !u.status) return null;
             
             return (
-              <StyledBox key={u._id}>
-                <DisplayUser user={u}>
-                {u.status &&
-                  <Text>
-                    {USER_STATUS[u.status]}
-                    {u._id === user.partnerId && ` 【${USER_STATUS.partner}】`}
-                  </Text>
-                }
-                </DisplayUser>
-              </StyledBox>
+              <DisplayUser key={u._id} user={u}
+                bg={u.status && (
+                  u.status === "dead" ? "purple.100" :
+                  u._id === user.partnerId ? "pink.100" : "green.100"
+                )}
+              >
+              {u.status &&
+                <Text>
+                  {USER_STATUS[u.status]}
+                  {u._id === user.partnerId && ` 【${USER_STATUS.partner}】`}
+                </Text>
+              }
+              </DisplayUser>
             )
           })
         ) : (

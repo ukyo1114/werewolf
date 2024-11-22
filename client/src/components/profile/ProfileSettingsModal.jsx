@@ -17,6 +17,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { profileSettingsValidationSchema } from "./validationSchema";
 import ImageCropper from "../miscellaneous/ImageCropper";
 import usePostDetails from "../../hooks/usePostDetails";
+import { EllipsisText } from "../miscellaneous/CustomComponents.jsx";
 
 const ProfileSettingsModal = ({ onClose }) => {
   const { user, uDispatch } = useUserState();
@@ -84,14 +85,14 @@ const ProfileSettingsModal = ({ onClose }) => {
           {(formik) => (
             <Form>
               <ModalBody>
-                <FormControl id="isUserNameChanged" mb={2}>
+                <FormControl id="isUserNameChanged" mb={2} overflow="hidden">
                   <Field name="isUserNameChanged">
                     {({ field }) => (
                       <Checkbox
                         {...field}
                         isChecked={field.value}
                       >
-                        <strong>ユーザー名を変更する</strong>
+                        <EllipsisText>ユーザー名を変更する</EllipsisText>
                       </Checkbox>
                     )}
                   </Field>
@@ -105,9 +106,6 @@ const ProfileSettingsModal = ({ onClose }) => {
                         placeholder="ユーザー名"
                         autoComplete="off"
                         isDisabled={!formik.values.isUserNameChanged}
-                        bg="#3B2C2F"
-                        borderColor="#E17875"
-                        _placeholder={{ color: "gray.200" }}
                       />
                     )}
                   </Field>
@@ -117,15 +115,16 @@ const ProfileSettingsModal = ({ onClose }) => {
                     style={{ color: "red", fontSize: "smaller" }}
                   />
                 </FormControl>
-
-                <Checkbox
-                  id="isPictureChanged"
-                  isChecked={isPictureChanged}
-                  onChange={(e) => setIsPictureChanged(e.target.checked)}
-                  mb={2}
-                >
-                  <strong>プロフィール画像を変更する</strong>
-                </Checkbox>
+                
+                <FormControl id="isPictureChanged" mb={2} overflow="hidden">
+                  <Checkbox
+                    id="isPictureChanged"
+                    isChecked={isPictureChanged}
+                    onChange={(e) => setIsPictureChanged(e.target.checked)}
+                  >
+                    <EllipsisText>プロフィール画像を変更する</EllipsisText>
+                  </Checkbox>
+                </FormControl>
 
                 <FormControl
                   id="pic"
@@ -135,7 +134,6 @@ const ProfileSettingsModal = ({ onClose }) => {
                 >
                   {pic ? (
                     <Image
-                      mt={4}
                       src={pic}
                       boxSize="120px"
                       borderRadius="lg"
@@ -147,18 +145,14 @@ const ProfileSettingsModal = ({ onClose }) => {
                     />
                   ) : (
                     <Button
-                      mt={4}
                       isDisabled={!isPictureChanged}
                       width="120px"
                       height="120px"
                       borderRadius="lg"
                       onClick={() => inputRef.current.click()}
-                      cursor="pointer"
-                      color="white"
-                      bg="#E17875"
-                      _hover={{ bg: "#FF6F61" }}
+                      colorScheme="gray"
                     >
-                      ファイルを選択
+                      画像を選択
                     </Button>
                   )}
 
@@ -169,11 +163,10 @@ const ProfileSettingsModal = ({ onClose }) => {
                     onChange={(e) => postDetails(e.target.files[0])}
                     ref={inputRef}
                   />
-
                 </FormControl>
               </ModalBody>
 
-              <ModalFooter justifyContent="center">
+              <ModalFooter>
                   <Button
                     colorScheme="teal"
                     width="100%"

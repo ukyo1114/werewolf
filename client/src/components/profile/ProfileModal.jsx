@@ -8,18 +8,8 @@ const ProfileModal = () => {
   const { user } = useUserState();
 
   return (
-    <ModalBody
-      display="flex"
-      flexDir="column"
-      p={3}
-      w="100%"
-      h="100%"
-      borderRadius="lg"
-      mb={4}
-    >
-      <StyledBox key={user._id}>
-        <DisplayUser user={user} />
-      </StyledBox>
+    <ModalBody>
+      <DisplayUser key={user._id} user={user} />
     </ModalBody>
   );
 };

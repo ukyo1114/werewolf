@@ -20,7 +20,7 @@ const channelNameChain =
   body("channelName")
     .notEmpty()
     .withMessage("チャンネル名は必須です")
-    .isLength({ min: 2, max: 12 })
+    .isLength({ min: 2, max: 20 })
     .withMessage("チャンネル名は2文字以上12文字以内である必要があります");
 
 const channelNameChainOpt =

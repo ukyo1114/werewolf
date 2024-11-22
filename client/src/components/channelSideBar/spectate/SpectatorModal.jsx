@@ -42,7 +42,14 @@ const SpectatorModal = () => {
 
   return (
       <ModalBody>
-        <Box display="flex" flexDir="column" p={3} maxH="800px" overflowY="auto">
+        <Box
+          display="flex"
+          flexDir="column"
+          gap={4}
+          p={3}
+          maxH="60vh"
+          overflowY="auto"
+        >
           {gameList.length > 0 ? (
             gameList.map((game) => {
               const {
@@ -52,10 +59,9 @@ const SpectatorModal = () => {
               return (
               <SelectableBox
                 key={gameId}
-                borderColor={selectedGame === gameId ? "white" : "#E17875"}
-                bg={selectedGame === gameId ? "#E17875" : "#2B2024"}
+                bg={selectedGame === gameId ? "green.100" : "white"}
                 _hover={{
-                  bg: selectedGame !== gameId ? "#3B2C2F" : undefined,
+                  bg: selectedGame !== gameId ? "gray.200" : undefined,
                 }}
                 onClick={() => setSelectedGame(gameId)}
               >
@@ -66,11 +72,7 @@ const SpectatorModal = () => {
                     <EllipsisText mr={3}>{RESULT_MAP[result]}</EllipsisText>
                   </Box>
 
-                  <Divider
-                    borderWidth={1}
-                    borderColor={selectedGame === gameId ? "white" : "#E17875"}
-                    mb={2}
-                  />
+                  <Divider borderWidth={1} borderColor="gray.700" mb={2} />
 
                   <Box
                     display="flex"
@@ -96,6 +98,7 @@ const SpectatorModal = () => {
             <StyledText>{messages.NO_ACTIVE_GAME}</StyledText>
           )}
         </Box>
+        
         <ModalButton
           isDisabled={!selectedGame}
           onClick={() => joinGame(selectedGame)}

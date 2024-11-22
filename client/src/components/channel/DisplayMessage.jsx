@@ -1,9 +1,10 @@
 import { Box, Flex, Text, Avatar } from "@chakra-ui/react";
+import { EllipsisText } from "../miscellaneous/CustomComponents";
 
 const DisplayMessage = ({ message, user }) => {
   const messageBg = {
-    werewolf: "#FFCCCB",
-    spectator: "#DBD0D4",
+    werewolf: "pink.100",
+    spectator: "purple.100",
   };
 
   return (
@@ -16,14 +17,14 @@ const DisplayMessage = ({ message, user }) => {
 
       <Flex direction="column" width="100%">
         <Flex justify="space-between" align="center" width="100%" px={2}>
-          <Text fontWeight="bold">{user.name}</Text>
-            <Text fontWeight="bold">
-              {new Date(message.createdAt).toLocaleString()}
-          </Text>
+          <EllipsisText>{user.name}</EllipsisText>
+            <EllipsisText fontSize="sm">
+            {new Date(message.createdAt).toLocaleString("ja-JP", { month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+          </EllipsisText>
         </Flex>
 
         <Box
-          bg={messageBg[message.messageType] || "white"}
+          bg={messageBg[message.messageType] || "green.100"}
           borderRadius="lg"
           px={4}
           py={2}

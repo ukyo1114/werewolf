@@ -75,7 +75,7 @@ const ChannelSidebar = () => {
         </SidebarButton>
 
         <SidebarButton
-          label="ブロック"
+          label="ブロック/解除"
           onClick={blockModal.onOpen}
           isDisabled={!isAdmin}
         >
@@ -108,7 +108,11 @@ const ChannelSidebar = () => {
       </ModalTemplete>
 
       {isAdmin && (
-        <ModalTemplete isOpen={blockModal.isOpen} onClose={blockModal.onClose}>
+        <ModalTemplete
+          isOpen={blockModal.isOpen}
+          onClose={blockModal.onClose}
+          title={"ブロック/解除"}
+        >
           <BlockModal />
         </ModalTemplete>
       )}

@@ -17,7 +17,6 @@ import { errors } from "../../../messages";
 import {
   DisplayDay,
   StyledDivider,
-  StyledBox,
   StyledText,
 } from "../../miscellaneous/CustomComponents.jsx";
 
@@ -50,26 +49,17 @@ const VoteHistoryTabs = ({ mode }) => {
 
   return (
       <ModalBody>
-        <Tabs variant="soft-rounded" mb={4}>
+        <Tabs>
           <TabList>
             {tabs.map((tabName) => (
-              <Tab
-                key={tabName}
-                w={`${100 / tabs.length}%`}
-                color="white"
-                _selected={{ bg: "#E17875" }}
-                _hover={{
-                  ":not([aria-selected='true'])": { bg: "#3B2C2F" },
-                }}
-                mb={2}
-              >
+              <Tab key={tabName} w={`${100 / tabs.length}%`}>
                 {tabName}
               </Tab>
             ))}
           </TabList>
           <TabPanels>
             {components.map((Component, index) => (
-              <TabPanel key={index} maxHeight="800px" overflowY="auto">{Component}</TabPanel>
+              <TabPanel key={index} maxHeight="60vh" overflowY="auto">{Component}</TabPanel>
             ))}
           </TabPanels>
         </Tabs>
@@ -108,34 +98,31 @@ const VoteHistory = () => {
   }, [fetchVoteHistory]);
 
   return (
-    <Box display="flex" flexDir="column">
+    <Box display="flex" flexDir="column" gap={4}>
       {Object.entries(voteHistory).length > 0 ? (
         Object.entries(voteHistory)
           .reverse()
           .map(([day, vote]) => (
-            <Box key={day} mb={3}>
+            <Box key={day}>
               <DisplayDay day={day} />
               <StyledDivider />
-              <Box display="flex" flexDir="column">
+              <Box display="flex" flexDir="column" gap={4}>
                 {Object.entries(vote).map(([votee, voters]) => {
                   const user = users.find((u) => u._id === votee);
 
                   return user ? (
-                    <StyledBox key={user._id}>
-                      <DisplayUser user={user}>
-                        <Text>投票数：{voters.length}票</Text>
-                        <Text>投票者：
-                          {voters.map((voter) => {
-                            const voteUser = users.find((u) =>
-                              u._id === voter
-                            );
+                    <DisplayUser key={user._id} user={user}>
+                      <Text>投票数：{voters.length}票</Text>
+                      <Text>投票者：
+                        {voters.map((voter) => {
+                          const voteUser = users.find((u) =>
+                            u._id === voter
+                          );
 
-                            return voteUser ? `【${voteUser.name}】` : null;
-                          }).filter(Boolean).join("、")}
-                        </Text>
-                      </DisplayUser>
-                    </StyledBox>
-
+                          return voteUser ? `【${voteUser.name}】` : null;
+                        }).filter(Boolean).join("、")}
+                      </Text>
+                    </DisplayUser>
                   ) : null;
                 })}
               </Box>
@@ -184,21 +171,19 @@ const FortuneResult = () => {
   }, [fetchFortuneResult]);
 
   return (
-    <Box display="flex" flexDir="column">
+    <Box display="flex" flexDir="column" gap={4}>
       {fortuneResult && Object.entries(fortuneResult).length > 0 ? (
         Object.entries(fortuneResult)
           .reverse()
           .map(([day, result]) => {
             const player = users.find((u) => u._id === result.playerId);
             return player ? (
-              <Box key={day} mb={3}>
+              <Box key={day}>
                 <DisplayDay day={day} />
                 <StyledDivider />
-                <StyledBox>
-                  <DisplayUser user={player}>
-                    <Text>占い結果：{teams[result.team]}</Text>
-                  </DisplayUser>
-                </StyledBox>
+                <DisplayUser user={player}>
+                  <Text>占い結果：{teams[result.team]}</Text>
+                </DisplayUser>
                 </Box>
             ) : null;
           })
@@ -245,22 +230,19 @@ const MediumResult = () => {
   }, [fetchMediumResult]);
 
   return (
-    <Box display="flex" flexDir="column">
+    <Box display="flex" flexDir="column" gap={4}>
       {mediumResult && Object.entries(mediumResult).length > 0 ? (
         Object.entries(mediumResult)
           .reverse()
           .map(([day, result]) => {
             const player = users.find((u) => u._id === result.playerId);
             return player ? (
-              <Box key={day} mb={3}>
+              <Box key={day}>
                 <DisplayDay day={day} />
                 <StyledDivider />
-                <StyledBox>
-                  <DisplayUser user={player}>
-                    <Text>霊能結果：{teams[result.team]}</Text>
-                  </DisplayUser>
-                </StyledBox>
-
+                <DisplayUser user={player}>
+                  <Text>霊能結果：{teams[result.team]}</Text>
+                </DisplayUser>
                 </Box>
             ) : null;
           })
@@ -301,7 +283,7 @@ const GuardHistory = () => {
   }, [fetchGuardHistory]);
 
   return (
-    <Box display="flex" flexDir="column">
+    <Box display="flex" flexDir="column" gap={4}>
       {guardHistory && Object.entries(guardHistory).length > 0 ? (
         Object.entries(guardHistory)
           .reverse()
@@ -309,12 +291,10 @@ const GuardHistory = () => {
             const player = users.find((u) => u._id === result.playerId);
 
             return player ? (
-              <Box key={day} mb={3}>
+              <Box key={day}>
                 <DisplayDay day={day} />
                 <StyledDivider />
-                <StyledBox>
-                  <DisplayUser user={player} />
-                </StyledBox>
+                <DisplayUser user={player} />
               </Box>
             ) : null;
           })
@@ -355,7 +335,7 @@ const AttackHistory = () => {
   }, [fetchAttackHistory]);
 
   return (
-    <Box display="flex" flexDir="column">
+    <Box display="flex" flexDir="column" gap={4}>
       {attackHistory && Object.entries(attackHistory).length > 0 ? (
         Object.entries(attackHistory)
           .reverse()
@@ -363,12 +343,10 @@ const AttackHistory = () => {
             const player = users.find((u) => u._id === result.playerId);
 
             return player ? (
-              <Box key={day} mb={3}>
+              <Box key={day}>
                 <DisplayDay day={day} />
                 <StyledDivider />
-                <StyledBox>
-                  <DisplayUser user={player} />
-                </StyledBox>
+                <DisplayUser user={player} />
               </Box>
             ) : null;
           })

@@ -86,7 +86,7 @@ const Login = () => {
                       {...field}
                       type={pshow ? "text" : "password"}
                       placeholder="パスワード"
-                      pr="4.5rem"
+                      pr="4rem"
                     />
                   )}
                 </Field>
@@ -97,6 +97,7 @@ const Login = () => {
                     onClick={() => setPShow(!pshow)}
                     variant="ghost"
                     aria-label={pshow ? "パスワードを隠す" : "パスワードを表示"}
+                    color="gray.700"
                   >
                     <FontAwesomeIcon icon={pshow ? faEyeSlash : faEye} />
                   </Button>

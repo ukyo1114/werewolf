@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { useUserState } from "../../context/UserProvider.jsx";
 import { useJoinChannel } from "../../hooks/useJoinChannel";
+import { EllipsisText } from "../miscellaneous/CustomComponents.jsx";
 
 const ChannelInfo = ({ selectedChannel }) => {
   const { user } = useUserState();
@@ -21,17 +22,11 @@ const ChannelInfo = ({ selectedChannel }) => {
   return (
     <>        
       <ModalBody>
-        <Box
-          p={3}
-          mb={4}
-          w="100%"
-          borderRadius="lg"
-          bg="#3B2C2F"
-        >
-          <Text textAlign="center" fontWeight="bold" fontSize="lg" mb={1}>
+        <Box p={4} w="100%" borderRadius="lg" boxShadow="uniform">
+          <Text textAlign="center" fontSize="lg" mb={1}>
             チャンネル名： {selectedChannel.channelName}
           </Text>
-          <Divider borderWidth={1} borderColor="#E17875" mb={2} />
+          <Divider borderWidth={1} borderColor="gray.700" mb={2} />
           <Box mb={3} maxH="600px" overflowY="auto">
             <Text mb={2} whiteSpace="pre-wrap">
               {selectedChannel.description}
@@ -39,12 +34,12 @@ const ChannelInfo = ({ selectedChannel }) => {
           </Box>
 
           <Flex width="100%" justifyContent="space-between">
-            <Text fontSize="sm" color="#ff94b1">
+            <EllipsisText fontSize="sm" color="red.700">
               <strong>作成者：</strong> {selectedChannel.channelAdmin.name}
-            </Text>
-            <Text fontSize="sm" color="#ff94b1">
+            </EllipsisText>
+            <EllipsisText fontSize="sm" color="red.700">
               <strong>参加者数：</strong> {selectedChannel.users.length}人
-            </Text>
+            </EllipsisText>
           </Flex>
         </Box>
         {selectedChannel.hasPassword &&
@@ -52,18 +47,15 @@ const ChannelInfo = ({ selectedChannel }) => {
             <FormControl id="password">
               <Input
                 placeholder="パスワード"
-                mb={3}
+                mt={8}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                bg="#3B2C2F"
-                borderColor="#E17875"
-                _placeholder={{ color: "gray.200" }}
               />
             </FormControl>
           )}
       </ModalBody>
       
-      <ModalFooter justifyContent="center">
+      <ModalFooter>
           <Button
             data-testid="enter-button" // テスト用
             colorScheme={
