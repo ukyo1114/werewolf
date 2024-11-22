@@ -1,8 +1,6 @@
 import {
-  Box, Text, Divider, Button, Tooltip,
-  Drawer, DrawerOverlay, DrawerContent,
+  Flex, Text, Divider, Button, Tooltip,
 } from "@chakra-ui/react";
-import { FaBars } from "react-icons/fa";
 import { useUserState } from "../../context/UserProvider";
 
 export const DisplayDay = ({ day }) => (
@@ -13,19 +11,6 @@ export const DisplayDay = ({ day }) => (
 
 export const StyledDivider = () => (
   <Divider borderWidth={1} borderColor="gray.700" my={2} />
-)
-
-export const StyledBox = ({ children, ...props }) => (
-  <Box
-    display="flex"
-    alignItems="center"
-    p={4}
-    borderRadius="lg"
-    boxShadow="uniform"
-    {...props}
-  >
-    {children}
-  </Box>
 );
 
 export const StyledText = ({ children, ...props }) => (
@@ -66,41 +51,17 @@ export const DisplayPhase = ({ children, ...props }) => (
   </Text>
 );
 
-export const ChannelHeader = ({ children, ...props }) => (
-  <Box
-    display="flex"
-    alignItems="center"
-    w="100%"
-    p={3}
-    {...props}
-  >
-    {children}
-  </Box>
-);
-
-export const HeaderContents = ({ children }) => (
-  <Box
-    display="flex"
-    justifyContent="space-between"
-    alignItems="center"
-    w="100%"
-  >
-    {children}
-  </Box>
-)
-
 export const SidebarBox = ({ children }) => {
   const { isMobile } = useUserState();
 
   return (
-    <Box
-      display="flex"
+    <Flex
       flexDirection="column"
       alignItems={isMobile ? "flex-start" : "center"}
-      width="100%"
+      w="100%"
     >
       {children}
-    </Box>
+    </Flex>
   );
 };
 
@@ -123,22 +84,8 @@ export const SidebarButton = ({ label, children, ...props }) => {
   );
 };
 
-export const ChannelBox = ({ children }) => (
-  <Box
-    display="flex"
-    alignItems="center"
-    flexDir="column"
-    maxWidth="600px"
-    width="100%"
-    height="100vh"
-  >
-    {children}
-  </Box>
-);
-
 export const SelectableBox = ({ children, ...props }) => (
-  <Box
-    display="flex"
+  <Flex
     alignItems="center"
     p={4}
     borderRadius="lg"
@@ -147,7 +94,7 @@ export const SelectableBox = ({ children, ...props }) => (
     {...props}
   >
     {children}
-  </Box>
+  </Flex>
 );
 
 export const EllipsisText = ({ children, ...props }) => (
@@ -173,21 +120,6 @@ export const ModalButton = ({ children, disableCondition, ...props }) => {
     </Button>
   )
 };
-
-export const BarsButton = ({ ...props }) => (
-  <Button size="sm" variant="ghost" {...props}>
-    <Box color="gray.700"><FaBars /></Box>
-  </Button>
-);
-
-export const SideMenu = ({ children, isOpen, onClose }) => (
-  <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
-    <DrawerOverlay />
-    <DrawerContent>
-      {children}
-    </DrawerContent>
-  </Drawer>
-);
 
 export const iconProps = {
   size: "30px",

@@ -1,32 +1,26 @@
 import React, { useEffect, useReducer, useCallback, useRef } from "react";
 import {
-  Box, FormControl, Spinner, Textarea, IconButton
+  Box, Flex, FormControl, Spinner, Textarea, IconButton
 } from "@chakra-ui/react";
 import { BiSend } from "react-icons/bi";
 import { useUserState } from "../../context/UserProvider.jsx";
-import ChannelSidebar from "../channelSideBar/ChannelSidebar.jsx";
-import GameSidebar from "../gameSidebar/GameSidebar.jsx";
 import useChatMessages from "../../hooks/useChatMessages";
 import useChatSocket from "../../hooks/useChatSocket";
 import TextareaAutosize from "react-textarea-autosize";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { channelValidationSchema } from "../channel/validationSchema";
-import EntryCounter from "./EntryCounter.jsx";
-import GameTimer from "./GameTimer.jsx";
-import Sidebar from "../miscellaneous/SideBar.jsx";
 import DisplayMessage from "./DisplayMessage.jsx";
 import { GAME_MASTER } from "../../constants";
-import { ChannelBox } from "../miscellaneous/CustomComponents.jsx";
 import messagesReducer from "../../reducers/messageReducer";
 
 const Channel = () => {
   const [messages, mDispatch] = useReducer(messagesReducer, []);
-  const { user, currentChannel, cDispatch, isMobile } = useUserState();
+  const { user, currentChannel, cDispatch } = useUserState();
   const scrollRef = useRef(null);
   const isScrollRef = useRef(null);
   const messagesCompletedRef = useRef(null);
 
-  const { users, blockUsers, isGame } = currentChannel;
+  const { users, blockUsers } = currentChannel;
 
   const { loading, fetchMessages, sendMessage } = useChatMessages({
     messages,
@@ -83,102 +77,90 @@ const Channel = () => {
   }, [messages]);
 
   return (
-    <>
-      {!isMobile &&
-        <Sidebar>
-          {isGame ? <GameSidebar /> : <ChannelSidebar />}
-        </Sidebar>
-      }
-      <ChannelBox>
-        {isGame ? <GameTimer /> : <EntryCounter/>}
-        <Box
-          display="flex"
-          flexDir="column"
-          justifyContent="flex-end"
-          p={4}
-          w="100%"
-          h="100%"
+    <Flex
+      flexDir="column"
+      justifyContent="flex-end"
+      p={4}
+      w="100%"
+      h="100%"
+      overflowY="auto"
+    >
+      
+      {loading ? (
+        <Spinner
+          size="xl"
+          w={20}
+          h={20}
+          alignSelf="center"
+          margin="auto"
+        />
+      ) : (
+        <Flex
           overflowY="auto"
+          flexDir="column-reverse"
+          ref={scrollRef}
+          onScroll={handleScroll}
+          p={2}
         >
-          
-          {loading ? (
-            <Spinner
-              size="xl"
-              w={20}
-              h={20}
-              alignSelf="center"
-              margin="auto"
-            />
-          ) : (
-            <Box
-              display="flex"
-              overflowY="auto"
-              flexDir="column-reverse"
-              ref={scrollRef}
-              onScroll={handleScroll}
-              p={2}
-            >
-              {messages && messages.map((m) => {
-                const chatUser = (m.sender === GAME_MASTER._id) ? GAME_MASTER :
-                  users.find((u) => u._id === m.sender);
-                if (!chatUser) return null;
+          {messages && messages.map((m) => {
+            const chatUser = (m.sender === GAME_MASTER._id) ? GAME_MASTER :
+              users.find((u) => u._id === m.sender);
+            if (!chatUser) return null;
 
-                return (
-                  <DisplayMessage key={m._id} message={m} user={chatUser} />
-                );
-              })}
-            </Box>
-          )}
+            return (
+              <DisplayMessage key={m._id} message={m} user={chatUser} />
+            );
+          })}
+        </Flex>
+      )}
 
-          <Formik
-            initialValues={{ newMessage: "" }}
-            validationSchema={channelValidationSchema}
-            onSubmit={handleSendMessage}
-            validateOnBlur={false}
-          >
-            {(formik) => (
-              <Form>
-                <FormControl my={3} isRequired>
-                  <Field name="newMessage">
-                    {({ field }) => (
-                      <Box position="relative" width="100%">
-                        <Textarea
-                          {...field}
-                          variant="filled"
-                          placeholder="Enter a message..."
-                          resize="none"
-                          pr="3rem"
-                          overflowY="auto"
-                          minHeight="42px"
-                          maxHeight="300px"
-                          as={TextareaAutosize}
-                        />
-                        <IconButton
-                          aria-label="メッセージを送信"
-                          icon={<BiSend />}
-                          onClick={formik.handleSubmit}
-                          position="absolute"
-                          bottom={1}
-                          right={2}
-                          size="sm"
-                          colorScheme="blue"
-                          borderRadius="full"
-                        />
-                      </Box>
-                    )}
-                  </Field>
-                  <ErrorMessage
-                    name="newMessage"
-                    component="div"
-                    style={{ color: "red", fontSize: "smaller" }}
-                  />
-                </FormControl>
-              </Form>
-            )}
-          </Formik>
-        </Box>
-      </ChannelBox>
-    </>
+      <Formik
+        initialValues={{ newMessage: "" }}
+        validationSchema={channelValidationSchema}
+        onSubmit={handleSendMessage}
+        validateOnBlur={false}
+      >
+        {(formik) => (
+          <Form>
+            <FormControl my={3} isRequired>
+              <Field name="newMessage">
+                {({ field }) => (
+                  <Box position="relative" width="100%">
+                    <Textarea
+                      {...field}
+                      variant="filled"
+                      placeholder="Enter a message..."
+                      resize="none"
+                      pr="3rem"
+                      overflowY="auto"
+                      minHeight="42px"
+                      maxHeight="300px"
+                      as={TextareaAutosize}
+                    />
+                    <IconButton
+                      aria-label="メッセージを送信"
+                      icon={<BiSend />}
+                      onClick={formik.handleSubmit}
+                      position="absolute"
+                      bottom={1}
+                      right={2}
+                      size="sm"
+                      colorScheme="blue"
+                      borderRadius="full"
+                    />
+                  </Box>
+                )}
+              </Field>
+              <ErrorMessage
+                name="newMessage"
+                component="div"
+                style={{ color: "red", fontSize: "smaller" }}
+              />
+            </FormControl>
+          </Form>
+        )}
+      </Formik>
+    </Flex>
   );
 };
 

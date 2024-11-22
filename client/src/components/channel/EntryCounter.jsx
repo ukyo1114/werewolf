@@ -1,28 +1,23 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
-  Box, Button, useDisclosure,
+  Flex, Button, useDisclosure,
 } from "@chakra-ui/react";
 import { useUserState } from "../../context/UserProvider.jsx";
 import io from "socket.io-client";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import UserList from "../miscellaneous/UserList.jsx";
 import ModalTemplete from "../miscellaneous/ModalTemplete.jsx";
-import {
-  ChannelHeader, HeaderContents, BarsButton, SideMenu, EllipsisText
-} from "../miscellaneous/CustomComponents.jsx";
+import { EllipsisText } from "../miscellaneous/CustomComponents.jsx";
 import useNotification from "../../hooks/useNotification";
 import useJoinGame from "../../hooks/useJoinGame";
 import { errors, messages } from "../../messages";
-import ChannelSidebar from "../channelSideBar/ChannelSidebar.jsx";
-import SideBar from "../miscellaneous/SideBar.jsx";
 
 const EntryCounter = () => {
-  const { user, currentChannel, isMobile } = useUserState();
+  const { user, currentChannel } = useUserState();
   const [users, setUsers] = useState([]);
   const [entryButtonState, setEntryButtonState] = useState(false);
   const showToast = useNotification();
   const userList = useDisclosure();
-  const sideMenu = useDisclosure();
   const { _id: channelId, channelName } = currentChannel;
   const joinGame = useJoinGame();
 
@@ -83,50 +78,40 @@ const EntryCounter = () => {
   }, [users, user._id, setEntryButtonState]);
 
   return (
-    <ChannelHeader>
-      {isMobile &&
-        <>
-          <BarsButton onClick={sideMenu.onOpen} />
-          <SideMenu isOpen={sideMenu.isOpen} onClose={sideMenu.onClose}>
-            <SideBar><ChannelSidebar /></SideBar>
-          </SideMenu>
-        </>
-      }
-      <HeaderContents>
-        <EllipsisText fontSize="lg" fontWeight="bold" color="gray.700">
-          {channelName}
+    <>
+      <EllipsisText fontSize="lg" fontWeight="bold" color="gray.700">
+        {channelName}
+      </EllipsisText>
+      
+      <Flex alignItems="center">
+        <EllipsisText
+          fontSize="lg"
+          onClick={userList.onOpen}
+          cursor="pointer"
+          display="flex"
+          alignItems="center"
+          px={2}
+          mr={2}
+          py="5px"
+          borderRadius="md"
+          _hover={{ bg: "gray.200" }}
+        >
+          {users.length}/10人
+          <ChevronDownIcon ml={1} />
         </EllipsisText>
-        
-        <Box display="flex" alignItems="center">
-          <EllipsisText
-            fontSize="lg"
-            onClick={userList.onOpen}
-            cursor="pointer"
-            display="flex"
-            alignItems="center"
-            px={2}
-            mr={2}
-            py="5px"
-            borderRadius="md"
-            _hover={{ bg: "gray.200" }}
-          >
-            {users.length}/10人
-            <ChevronDownIcon ml={1} />
-          </EllipsisText>
 
-          <Button
-            data-testid="entry-button" // テスト用
-            colorScheme={entryButtonState ? "pink" : "teal"}
-            onClick={() =>
-              entryButtonState
-                ? entrySocketRef.current.emit("cancelEntry")
-                : entrySocketRef.current.emit("registerEntry")
-            }
-          >
-            {entryButtonState ? "取消" : "参加"}
-          </Button>
-        </Box>
-      </HeaderContents>
+        <Button
+          data-testid="entry-button" // テスト用
+          colorScheme={entryButtonState ? "pink" : "teal"}
+          onClick={() =>
+            entryButtonState
+              ? entrySocketRef.current.emit("cancelEntry")
+              : entrySocketRef.current.emit("registerEntry")
+          }
+        >
+          {entryButtonState ? "取消" : "参加"}
+        </Button>
+      </Flex>
 
       {users && currentChannel.users && (
         <ModalTemplete
@@ -140,7 +125,7 @@ const EntryCounter = () => {
           />
         </ModalTemplete>
       )}
-    </ChannelHeader>
+    </>
   );
 };
 

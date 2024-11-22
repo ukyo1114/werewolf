@@ -5,7 +5,6 @@ import axios from "axios";
 import useNotification from "../../hooks/useNotification";
 import DisplayUser from "../miscellaneous/DisplayUser.jsx";
 import ModalButton from "../miscellaneous/ModalButton.jsx";
-import { SelectableBox } from "../miscellaneous/CustomComponents.jsx";
 
 const VoteModal = ({ mode, onClose }) => {
   const { user, currentChannel } = useUserState();
