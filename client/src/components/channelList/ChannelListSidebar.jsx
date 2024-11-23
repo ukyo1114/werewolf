@@ -4,16 +4,16 @@ import { FaPlus } from "react-icons/fa";
 import CreateChannel from "./CreateChannel.jsx";
 import ModalTemplete from "../miscellaneous/ModalTemplete.jsx";
 import {
-  SidebarBox,
   SidebarButton,
   iconProps,
 } from "../miscellaneous/CustomComponents.jsx";
+import { SideBar } from "../miscellaneous/SideBar.jsx";
 
 const ChannelListSidebar = () => {
   const createChannel = useDisclosure();
 
   return (
-    <SidebarBox>
+    <SideBar>
       <SidebarButton label="チャンネル作成" onClick={createChannel.onOpen}>
         <FaPlus {...iconProps} />
       </SidebarButton>
@@ -25,7 +25,7 @@ const ChannelListSidebar = () => {
       >
         <CreateChannel />
       </ModalTemplete>
-    </SidebarBox>
+    </SideBar>
   );
 };
 

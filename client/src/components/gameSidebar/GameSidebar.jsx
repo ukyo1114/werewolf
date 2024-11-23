@@ -8,10 +8,10 @@ import VoteModal from "./VoteModal.jsx";
 import VoteHistoryTabs from "./voteHistory/VoteHistory.jsx";
 import ModalTemplete from "../miscellaneous/ModalTemplete.jsx";
 import {
-  SidebarBox,
   SidebarButton,
   iconProps,
 } from "../miscellaneous/CustomComponents.jsx";
+import { SideBar } from "../miscellaneous/SideBar.jsx";
 import { TITLE_MAP, MODE_MAP } from "../../constants";
 import { useJoinChannel } from "../../hooks/useJoinChannel";
 
@@ -34,75 +34,73 @@ const GameSidebar = () => {
   }, [channel, joinChannel]);
 
   return (
-    <>
-      <SidebarBox>
-        <SidebarButton label="ユーザーリスト" onClick={userList.onOpen}>
-          <FaUsers {...iconProps} />
-        </SidebarButton>
+    <SideBar>
+      <SidebarButton label="ユーザーリスト" onClick={userList.onOpen}>
+        <FaUsers {...iconProps} />
+      </SidebarButton>
 
-        <SidebarButton
-          label="投票"
-          onClick={() => handleVoteModalOpen("vote")}
-          isDisabled={
-            phase.currentPhase !== "day" ||
-            user.status !== "alive"
-          }
-        >
-          <FaVoteYea {...iconProps} />
-        </SidebarButton>
+      <SidebarButton
+        label="投票"
+        onClick={() => handleVoteModalOpen("vote")}
+        isDisabled={
+          phase.currentPhase !== "day" ||
+          user.status !== "alive"
+        }
+      >
+        <FaVoteYea {...iconProps} />
+      </SidebarButton>
 
-        <SidebarButton
-          label="占い"
-          onClick={() => handleVoteModalOpen("fortune")}
-          isDisabled={
-            phase.currentPhase !== "night" ||
-            user.status !== "alive" || user.role !== "seer"
-          }
-        >
-          <GiCrystalBall {...iconProps} />
-        </SidebarButton>
+      <SidebarButton
+        label="占い"
+        onClick={() => handleVoteModalOpen("fortune")}
+        isDisabled={
+          phase.currentPhase !== "night" ||
+          user.status !== "alive" || user.role !== "seer"
+        }
+      >
+        <GiCrystalBall {...iconProps} />
+      </SidebarButton>
 
-        <SidebarButton
-          label="護衛"
-          onClick={() => handleVoteModalOpen("guard")}
-          isDisabled={
-            phase.currentPhase !== "night" ||
-            user.status !== "alive" || user.role !== "hunter"
-          }
-        >
-          <FaShieldAlt {...iconProps} />
-        </SidebarButton>
+      <SidebarButton
+        label="護衛"
+        onClick={() => handleVoteModalOpen("guard")}
+        isDisabled={
+          phase.currentPhase !== "night" ||
+          user.status !== "alive" || user.role !== "hunter"
+        }
+      >
+        <FaShieldAlt {...iconProps} />
+      </SidebarButton>
 
-        <SidebarButton
-          label="襲撃"
-          onClick={() => handleVoteModalOpen("attack")}
-          isDisabled={
-            phase.currentPhase !== "night" ||
-            user.status !== "alive" || user.role !== "werewolf"
-          }
-        >
-          <GiWolfHowl {...iconProps} />
-        </SidebarButton>
-        
-        <SidebarButton
-          label="投票履歴"
-          onClick={vHistoryModal.onOpen}
-          isDisabled={phase.currentPhase === "pre"}
-        >
-          <FaFileAlt {...iconProps} />
-        </SidebarButton>
+      <SidebarButton
+        label="襲撃"
+        onClick={() => handleVoteModalOpen("attack")}
+        isDisabled={
+          phase.currentPhase !== "night" ||
+          user.status !== "alive" || user.role !== "werewolf"
+        }
+      >
+        <GiWolfHowl {...iconProps} />
+      </SidebarButton>
+      
+      <SidebarButton
+        label="投票履歴"
+        onClick={vHistoryModal.onOpen}
+        isDisabled={phase.currentPhase === "pre"}
+      >
+        <FaFileAlt {...iconProps} />
+      </SidebarButton>
 
-        <SidebarButton
-          label="チャンネルへ戻る"
-          onClick={backToChannel}
-          isDisabled={
-            phase.currentPhase !== "finished" &&
-            user.status === "alive"
-          }
-        >
-          <FaArrowLeft {...iconProps} />
-        </SidebarButton>
-      </SidebarBox>
+      <SidebarButton
+        label="チャンネルへ戻る"
+        onClick={backToChannel}
+        isDisabled={
+          phase.currentPhase !== "finished" &&
+          user.status === "alive"
+        }
+      >
+        <FaArrowLeft {...iconProps} />
+      </SidebarButton>
 
       <ModalTemplete
         isOpen={userList.isOpen}
@@ -126,7 +124,7 @@ const GameSidebar = () => {
       >
         <VoteModal mode={mode} onClose={voteModal.onClose} />
       </ModalTemplete>
-    </>
+    </SideBar>
   );
 };
 

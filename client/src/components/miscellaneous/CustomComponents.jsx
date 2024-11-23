@@ -51,20 +51,6 @@ export const DisplayPhase = ({ children, ...props }) => (
   </Text>
 );
 
-export const SidebarBox = ({ children }) => {
-  const { isMobile } = useUserState();
-
-  return (
-    <Flex
-      flexDirection="column"
-      alignItems={isMobile ? "flex-start" : "center"}
-      w="100%"
-    >
-      {children}
-    </Flex>
-  );
-};
-
 export const SidebarButton = ({ label, children, ...props }) => {
   const { isMobile } = useUserState();
 
@@ -74,7 +60,7 @@ export const SidebarButton = ({ label, children, ...props }) => {
         {children}
         <Text
           color="gray.700"
-          display={isMobile ? "flex" : "none"}
+          display={isMobile ? "flex" : { base: "none", lg: "flex" }}
           ml={3}
         >
           {label}

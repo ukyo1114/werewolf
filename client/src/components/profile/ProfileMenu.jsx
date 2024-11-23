@@ -4,6 +4,7 @@ import {
   Menu,
   MenuButton,
   Box,
+  Center,
   Avatar,
   Text,
   MenuList,
@@ -17,6 +18,7 @@ import ProfileModal from "./ProfileModal";
 import ProfileSettingsModal from "./ProfileSettingsModal";
 import UserSettingsModal from "./UserSettingsModal";
 import ModalTemplete from "../miscellaneous/ModalTemplete";
+import { EllipsisText } from "../miscellaneous/CustomComponents.jsx";
 
 const ProfileMenu = () => {
   const pModal = useDisclosure();
@@ -24,7 +26,7 @@ const ProfileMenu = () => {
   const usModal = useDisclosure();
 
   const navigate = useNavigate();
-  const { user, uDispatch } = useUserState();
+  const { user, uDispatch, isMobile } = useUserState();
 
   const logoutHandler = () => {
     localStorage.removeItem("userInfo");
@@ -34,8 +36,25 @@ const ProfileMenu = () => {
 
   return (
     <Menu>
-      <MenuButton px={4} py={2} borderRadius="lg" _hover={{ bg: "gray.200" }}>
-        <Avatar size="lg" name={user.name} src={user.pic} borderRadius="md" />
+      <MenuButton
+        borderRadius="lg"
+        boxShadow="uniform"
+        _hover={{ bg: "gray.200" }}
+        overflow="hidden"
+      >
+        <Center px={2} py={1}>
+          <Avatar size="md" name={user.name} src={user.pic} borderRadius="md" />
+          <Box
+            display={isMobile ? "flex" : { base: "none", lg: "flex" }}
+            alignItems="center"
+            justifyContent="space-between"
+            ml={1}
+            minW="0"
+          >
+            <EllipsisText pr={1} fontSize="sm">{user.name}</EllipsisText>
+            <Box color="gray.700"><FaEllipsisH /></Box>
+          </Box>
+        </Center>
       </MenuButton>
       <MenuList boxShadow="uniform">
         <MenuItem

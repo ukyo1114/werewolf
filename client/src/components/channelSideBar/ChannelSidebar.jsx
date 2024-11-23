@@ -16,10 +16,10 @@ import axios from "axios";
 import useNotification from "../../hooks/useNotification";
 import ModalTemplete from "../miscellaneous/ModalTemplete.jsx";
 import {
-  SidebarBox,
   SidebarButton,
   iconProps,
 } from "../miscellaneous/CustomComponents.jsx";
+import { SideBar } from "../miscellaneous/SideBar.jsx";
 import SpectatorModal from "./spectate/SpectatorModal.jsx";
 
 const ChannelSidebar = () => {
@@ -49,47 +49,45 @@ const ChannelSidebar = () => {
   };
 
   return (
-    <>
-      <SidebarBox>
-        <SidebarButton label="ユーザーリスト" onClick={userListModal.onOpen}>
-          <FaUsers {...iconProps} />
-        </SidebarButton>
+    <SideBar>
+      <SidebarButton label="ユーザーリスト" onClick={userListModal.onOpen}>
+        <FaUsers {...iconProps} />
+      </SidebarButton>
 
-        <SidebarButton label="観戦" onClick={spectator.onOpen}>
-          <FaBinoculars {...iconProps} />
-        </SidebarButton>
+      <SidebarButton label="観戦" onClick={spectator.onOpen}>
+        <FaBinoculars {...iconProps} />
+      </SidebarButton>
 
-        <SidebarButton
-          label="チャンネル一覧"
-          onClick={() => cDispatch({ type: "LEAVE_CHANNEL"})}
-        >
-          <FaArrowLeft {...iconProps} />
-        </SidebarButton>
+      <SidebarButton
+        label="チャンネル一覧"
+        onClick={() => cDispatch({ type: "LEAVE_CHANNEL"})}
+      >
+        <FaArrowLeft {...iconProps} />
+      </SidebarButton>
 
-        <SidebarButton
-          label="チャンネルを抜ける"
-          onClick={() => leaveChannel()}
-          isDisabled={isAdmin}
-        >
-          <FaSignOutAlt {...iconProps} />
-        </SidebarButton>
+      <SidebarButton
+        label="チャンネルを抜ける"
+        onClick={() => leaveChannel()}
+        isDisabled={isAdmin}
+      >
+        <FaSignOutAlt {...iconProps} />
+      </SidebarButton>
 
-        <SidebarButton
-          label="ブロック/解除"
-          onClick={blockModal.onOpen}
-          isDisabled={!isAdmin}
-        >
-          <FaUserSlash {...iconProps} />
-        </SidebarButton>
+      <SidebarButton
+        label="ブロック/解除"
+        onClick={blockModal.onOpen}
+        isDisabled={!isAdmin}
+      >
+        <FaUserSlash {...iconProps} />
+      </SidebarButton>
 
-        <SidebarButton
-          label="チャンネル設定"
-          onClick={chSettingsModal.onOpen}
-          isDisabled={!isAdmin}
+      <SidebarButton
+        label="チャンネル設定"
+        onClick={chSettingsModal.onOpen}
+        isDisabled={!isAdmin}
         >
           <FaCog {...iconProps} />
         </SidebarButton>
-      </SidebarBox>
       
       <ModalTemplete
         isOpen={userListModal.isOpen}
@@ -126,7 +124,7 @@ const ChannelSidebar = () => {
           <ChannelSettingsModal />
         </ModalTemplete>
       )}
-    </>
+    </SideBar>
   );
 };
 
