@@ -34,11 +34,19 @@ const Login = () => {
         { email, password },
         config,
       );
+      console.log("data:", data)
       showToast(messages.USER_LOGIN, "success");
       localStorage.setItem("userInfo", JSON.stringify(data));
       actions.setSubmitting(false);
       navigate("/chats");
     } catch (error) {
+      const resendToken = error.response?.data;
+      if (error.response?.status === 403 && resendToken) {
+        localStorage.setItem("resend", JSON.stringify(resendToken));
+        actions.setSubmitting(false);
+        return navigate("/verification");
+      };
+
       handleError(error);
       actions.setSubmitting(false);
     }

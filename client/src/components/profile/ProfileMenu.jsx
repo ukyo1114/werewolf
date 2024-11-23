@@ -31,18 +31,17 @@ const ProfileMenu = () => {
   const logoutHandler = () => {
     localStorage.removeItem("userInfo");
     uDispatch({ type: "LOGOUT" });
-    navigate("/");
+    navigate("/home");
   };
 
   return (
     <Menu>
       <MenuButton
         borderRadius="lg"
-        boxShadow="uniform"
         _hover={{ bg: "gray.200" }}
         overflow="hidden"
       >
-        <Center px={2} py={1}>
+        <Center px={3} py={2}>
           <Avatar size="md" name={user.name} src={user.pic} borderRadius="md" />
           <Box
             display={isMobile ? "flex" : { base: "none", lg: "flex" }}

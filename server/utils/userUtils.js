@@ -47,7 +47,7 @@ const getUserById = async (userId, password = true) => {
 
 const matchPassword = async (userId, password) => {
   const user = await User.findById(userId).select("password");
-  if (!user)  throw new CustomError(404, errors.USER_NOT_FOUND);
+  if (!user) throw new CustomError(404, errors.USER_NOT_FOUND);
 
   const isMatch = await user.matchPassword(password);
   if (!isMatch) throw new CustomError(401, errors.INVALID_PASSWORD);

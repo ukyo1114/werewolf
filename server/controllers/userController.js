@@ -13,7 +13,7 @@ const { sendMail } = require("../utils/sendMail");
 
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password, pic } = req.body;
-  const userExists = await User.findOne({ email });
+  const userExists = await User.exists({ email });
   if (userExists) throw new CustomError(400, errors.EMAIL_ALREADY_REGISTERED);
 
   const verificationToken = genVerificationToken(email);
@@ -32,13 +32,8 @@ const registerUser = asyncHandler(async (req, res) => {
 
   await userWithoutPass.save();
 
-  res.status(201).json({
-    _id: userId,
-    name,
-    email,
-    pic: filePath,
-    token: generateToken(user._id),
-  });
+  const token = genVerificationToken(email);
+  res.status(201).json({ token });
 });
 
 const authUser = asyncHandler(async (req, res) => {
@@ -46,6 +41,11 @@ const authUser = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
   if (!user || !(await user.matchPassword(password))) {
     throw new CustomError(401, errors.INVALID_EMAIL_OR_PASSWORD);
+  }
+
+  if (!user.isVerified) {
+    const token = genVerificationToken(email);
+    return res.status(403).json({ token });
   }
 
   res.json({

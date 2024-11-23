@@ -15,16 +15,14 @@ const UserProvider = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const userInfo = localStorage.getItem("userInfo");
-    if (!userInfo) navigate("/");
+    const resend = localStorage.getItem("resend")
+    if (resend) return;
 
-    try {
-      const userIn = JSON.parse(userInfo);
-      uDispatch({ type: "LOGIN", payload: userIn });
-    } catch (error) {
-      console.error("Error parsing userInfo from localStorage:", error);
-      navigate("/");
-    }
+    const userInfo = localStorage.getItem("userInfo");
+    if (!userInfo) navigate("/home");
+    
+    const userIn = JSON.parse(userInfo);
+    uDispatch({ type: "LOGIN", payload: userIn });
   }, [navigate]);
 
   return (

@@ -13,7 +13,7 @@ export const SideBar = ({ children }) => {
       overflowY="auto"
       justifyContent="space-between"
       h="100vh"
-      maxW="3000px"
+      maxW="300px"
     >
       <Stack
         alignItems={isMobile ? "flex-start" : { base: "center", lg: "flex-start"}}

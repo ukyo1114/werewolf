@@ -53,9 +53,9 @@ const Signup = () => {
       );
       
       showToast(messages.USER_REGISTERED, "success");
-      localStorage.setItem("userInfo", JSON.stringify(data));
+      localStorage.setItem("resend", JSON.stringify(data));
       actions.setSubmitting(false);
-      navigate("/chats");
+      navigate("/verification");
     } catch (error) {
       handleError(error);
       actions.setSubmitting(false);
@@ -187,7 +187,6 @@ const Signup = () => {
               flexDirection="column"
               alignItems="center"
               mb={3}
-              isRequired
             >
               <FormLabel alignSelf="flex-start">プロフィール画像</FormLabel>
               {pic ? (
