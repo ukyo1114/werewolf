@@ -14,4 +14,12 @@ const genVerificationToken = (email) => {
   return token;
 };
 
-module.exports = { generateToken, genVerificationToken };
+const genEmailChangeToken = (userId, email) => {
+  const payload = { userId, email };
+  const token = jwt.sign(
+    payload, process.env.JWT_SECRET, { expiresIn: "1d" }
+  );
+  return token;
+};
+
+module.exports = { generateToken, genVerificationToken, genEmailChangeToken };

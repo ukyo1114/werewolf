@@ -34,7 +34,10 @@ export const messages = {
   CHANNEL_SETTINGS_CHANGED: "チャンネル設定が変更されました",
   PROFILE_SETTINGS_CHANGED: "プロフィールが変更されました",
   
-  USER_SETTINGS_UPDATED: "ユーザー情報が更新されました",
+  USER_SETTINGS: {
+    email: "変更後のメールアドレス宛に確認メールを送信しました。メール内のリンクをクリックして、認証を完了してください。",
+    password: "パスワードが変更されました",
+  },
   NAVIGATE_GAME: "参加中のゲームに移動しました",
   NO_ACTIVE_GAME: "進行中のゲームがありません",
 };

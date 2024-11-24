@@ -56,7 +56,8 @@ const UserSettingsModal = () => {
         config,
       );
 
-      showToast(messages.USER_SETTINGS_UPDATED, "success");
+      if (payload.email) showToast(messages.USER_SETTINGS.email);
+      if (payload.newPassword) showToast(messages.USER_SETTINGS.password, "success");
     } catch (error) {
       showToast(error?.response?.data?.error || errors.USER_SETTINGS_FAILED, "error");
     }

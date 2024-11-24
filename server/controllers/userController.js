@@ -10,6 +10,7 @@ const {
   uploadPicture,
 } = require("../utils/userUtils");
 const { sendMail } = require("../utils/sendMail");
+const { genEmailChangeToken } = require("../utils/generateToken");
 
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password, pic } = req.body;
@@ -78,13 +79,19 @@ const updateUserSettings = asyncHandler(async (req, res) => {
   const { email, currentPassword, newPassword } = req.body;
 
   await matchPassword(userId, currentPassword);
-  
-  const user = await getUserById(userId, !!newPassword);
-  if (email) user.email = email;
-  if (newPassword) user.password = newPassword;
 
-  await user.save();
-  res.status(200).json({ email: user.email });
+  if (email) {
+    const verificationToken = genEmailChangeToken(userId, email);
+    await sendMail(email, verificationToken);
+  };
+  
+  if (newPassword) {
+    const user = await getUserById(userId, !!newPassword);
+    user.password = newPassword;
+    await user.save();
+  };
+  
+  res.status(200).send();
 });
  
 module.exports = {

@@ -5,18 +5,20 @@ const User = require("../models/userModel");
 const { errors } = require("../messages");
 const { genVerificationToken } = require("../utils/generateToken");
 const { sendMail } = require("../utils/sendMail");
+const { changeEmail, completeVerification } = require("../utils/verifyUtils");
 
 const verifyEmail = asyncHandler(async (req, res) => {
   const { token } = req.query;
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  const userId = decoded.userId;
   const email = decoded.email;
-  const user = await User.findOneAndUpdate(
-    { email, verificationToken: token },
-    { isVerified: true, verificationToken: null },
-    { new: true }
-  ).lean();
-  if (!user) throw new CustomError(400, errors.INVALID_TOKEN);
-  
+
+  if (userId) {
+    await changeEmail(userId, email);
+    return res.status(200).send("メールアドレスの変更が完了しました");
+  }
+
+  await completeVerification(email, token);
   res.status(200).send("メールアドレスの確認が完了しました");
 });
 
