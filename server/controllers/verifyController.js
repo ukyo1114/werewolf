@@ -9,9 +9,11 @@ const { changeEmail, completeVerification } = require("../utils/verifyUtils");
 
 const verifyEmail = asyncHandler(async (req, res) => {
   const { token } = req.query;
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  const userId = decoded.userId;
-  const email = decoded.email;
+  const { userId, email, action } = jwt.verify(token, process.env.JWT_SECRET);
+
+  if (action !== "verifyEmail") {
+    throw new CustomError(400, errors.INVALID_TOKEN);
+  }
 
   if (userId) {
     await changeEmail(userId, email);
@@ -24,8 +26,11 @@ const verifyEmail = asyncHandler(async (req, res) => {
 
 const resend = asyncHandler(async (req, res) => {
   const { token } = req.body;
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  const email = decoded.email;
+  const { email, action } = jwt.verify(token, process.env.JWT_SECRET);
+
+  if (action !== "verifyEmail") {
+    throw new CustomError(400, errors.INVALID_TOKEN);
+  }
 
   const user = await User.findOne({ email }).select("isVerified").lean();
   if (!user) throw new CustomError(404, errors.USER_NOT_FOUND);
@@ -38,4 +43,11 @@ const resend = asyncHandler(async (req, res) => {
   res.status(202).send("確認メールを再送信しました");
 });
 
-module.exports = { verifyEmail, resend };
+const requestPasswordReset = asyncHandler(async () => {
+  const { email } = req.body;
+
+  const exists = await User.exists({ email });
+  if (!exists) throw new CustomError(400, errors.EMAIL_NOT_REGISTERED);
+});
+
+module.exports = { verifyEmail, resend, requestPasswordReset };

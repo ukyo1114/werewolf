@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Container, Stack, Text, UnorderedList, ListItem, Button } from "@chakra-ui/react";
 import useNotification from "../hooks/useNotification";
 
-export const EmailVerification = () => {
+export const ResetPassword = () => {
   const navigate = useNavigate();
   const showToast = useNotification();
 
@@ -13,9 +13,7 @@ export const EmailVerification = () => {
     const token = JSON.parse(resend).token;
 
     try {
-      const config = { headers: { "Content-Type": "application/json" } };
-
-      await axios.post("/api/verify/resend", { token }, config);
+      await axios.post("/api/verify/resend", { token });
       showToast("確認メールを再送信しました", "success");
     } catch (error) {
       const errorMessage = error.response?.data?.error || "再送信に失敗しました"
@@ -37,16 +35,10 @@ export const EmailVerification = () => {
       maxW="xl"
     >
       <Stack>
-        <Text as="h1" fontSize="2xl" fontWeight="bold">メールアドレスの確認が必要です</Text>
+        <Text as="h1" fontSize="2xl" fontWeight="bold">パスワード再設定</Text>
         <Text>
-          アカウントを有効化するために、確認メールを送信しました。
-          メール内のリンクをクリックして、認証を完了してください。
+          登録済みのメールアドレス宛に再設定用リンクを送信します。
         </Text>
-        <UnorderedList>
-          <ListItem>迷惑メールフォルダをご確認ください。</ListItem>
-          <ListItem>入力したメールアドレスが正しいかご確認ください。</ListItem>
-          <ListItem>届かない場合は再送信をお試しください。</ListItem>
-        </UnorderedList>
         <Button
           w="11rem"
           colorScheme="teal"

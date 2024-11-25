@@ -2,11 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import {
   Box,
   ModalBody,
-  Tabs,
-  TabList,
-  Tab,
-  TabPanels,
-  TabPanel,
+  Tabs, TabList, Tab, TabPanels, TabPanel,
 } from "@chakra-ui/react";
 import { useUserState } from "../../context/UserProvider.jsx";
 import axios from "axios";

@@ -52,6 +52,7 @@ const errors = {
   MESSAGE_SENDING_FORBIDDEN: "メッセージの送信が禁止されています",
   CHANNEL_ACCESS_FORBIDDEN: "チャンネルを利用できません",
   IMAGE_MISSING: "画像が提供されていません",
+  EMAIL_NOT_REGISTERED: "メールアドレスが登録されていません",
 };
 
 const gameMaster = {

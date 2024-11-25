@@ -15,7 +15,7 @@ const verificationTokenChainBody =
     .withMessage("認証トークンの形式が無効です");
 
 router.get(
-  "/",
+  "/email",
   [verificationTokenChain],
   validateRequest,
   verifyEmail,

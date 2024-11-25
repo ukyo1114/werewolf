@@ -7,7 +7,6 @@ import {
   InputGroup,
   InputRightElement,
   ModalBody,
-  Flex,
   ModalFooter,
 } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

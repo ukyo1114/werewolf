@@ -7,15 +7,16 @@ const generateToken = (id) => {
   return token;
 };
 
-const genVerificationToken = (email) => {
+const genVerificationToken = (email, action="verifyEmail") => {
+  const payload = { email, action: action };
   const token = jwt.sign(
-    { email }, process.env.JWT_SECRET, { expiresIn: "1d" }
+    payload, process.env.JWT_SECRET, { expiresIn: "1d" }
   );
   return token;
 };
 
 const genEmailChangeToken = (userId, email) => {
-  const payload = { userId, email };
+  const payload = { userId, email, action: "verifyEmail" };
   const token = jwt.sign(
     payload, process.env.JWT_SECRET, { expiresIn: "1d" }
   );
