@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import {
-  Box, ModalBody, Avatar, Divider,
+  Flex, Stack, ModalBody, Avatar, Divider,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useUserState } from "../../../context/UserProvider.jsx";
@@ -42,9 +42,7 @@ const SpectatorModal = () => {
 
   return (
       <ModalBody>
-        <Box
-          display="flex"
-          flexDir="column"
+        <Stack
           gap={4}
           p={3}
           maxH="60vh"
@@ -65,17 +63,16 @@ const SpectatorModal = () => {
                 }}
                 onClick={() => setSelectedGame(gameId)}
               >
-                <Box display="flex" flexDir="column" width="100%" overflow="hidden">
-                  <Box display="flex" px="2px" overflowX="hidden">
+                <Stack width="100%" overflow="hidden">
+                  <Flex px="2px" overflowX="hidden">
                     <EllipsisText mr={3}>{currentDay}日目</EllipsisText>
                     <EllipsisText mr={3}>{PHASE_MAP[currentPhase]}</EllipsisText>
                     <EllipsisText mr={3}>{RESULT_MAP[result]}</EllipsisText>
-                  </Box>
+                  </Flex>
 
                   <Divider borderWidth={1} borderColor="gray.700" mb={2} />
 
-                  <Box
-                    display="flex"
+                  <Flex
                     width="100%"
                     gap="2px"
                     overflowX="auto"
@@ -90,14 +87,14 @@ const SpectatorModal = () => {
                         borderRadius="md"
                       />
                     ))}
-                  </Box>
-                </Box>
+                  </Flex>
+                </Stack>
               </SelectableBox>
             )})
           ) : (
             <StyledText>{messages.NO_ACTIVE_GAME}</StyledText>
           )}
-        </Box>
+        </Stack>
         
         <ModalButton
           isDisabled={!selectedGame}

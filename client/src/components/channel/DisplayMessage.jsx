@@ -8,7 +8,7 @@ const DisplayMessage = ({ message, user }) => {
   };
 
   return (
-    <Box display="flex" my={2} gap={1}>
+    <Flex my={2} gap={1}>
       <Avatar
         size="lg"
         src={user.pic}
@@ -33,7 +33,7 @@ const DisplayMessage = ({ message, user }) => {
           <Text color="black" whiteSpace="pre-wrap">{message.content}</Text>
         </Box>
       </Flex>
-    </Box>
+    </Flex>
   );
 };
 

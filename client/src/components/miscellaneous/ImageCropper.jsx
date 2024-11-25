@@ -1,15 +1,12 @@
 import React, { useState, useCallback } from "react";
-import {
-  ModalBody,
-  Box,
-  Slider,
-  SliderTrack,
-  SliderFilledTrack,
-  SliderThumb,
-  ModalFooter,
-  Button,
-} from "@chakra-ui/react";
 import Cropper from "react-easy-crop";
+
+import {
+  Box,
+  Button,
+  Slider, SliderTrack, SliderFilledTrack, SliderThumb,
+  ModalBody, ModalFooter,
+} from "@chakra-ui/react";
 
 const ImageCropper = ({ imgSrc, setPic, onClose }) => {
   const [crop, setCrop] = useState({ x: 0, y: 0 });

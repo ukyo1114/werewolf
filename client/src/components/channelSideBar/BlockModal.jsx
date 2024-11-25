@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import {
-  Box,
+  Stack,
   ModalBody,
   Tabs, TabList, Tab, TabPanels, TabPanel,
 } from "@chakra-ui/react";
@@ -119,7 +119,7 @@ const UserListTab = ({
 
   return (
     <>
-      <Box display="flex" flexDir="column" gap={4} p={4} maxHeight="60vh" overflowY="auto">
+      <Stack gap={4} p={4} maxHeight="60vh" overflowY="auto">
         {users.length > 1 ? (
           users.filter((u) => u._id !== user._id).map((u) => (
             <DisplayUser
@@ -136,7 +136,7 @@ const UserListTab = ({
         ) : (
           <StyledText>ユーザーがいません</StyledText>
         )}
-      </Box>
+      </Stack>
       <ModalButton
         innerText={"ブロック"}
         onClick={block}
@@ -187,7 +187,7 @@ const BlockedUserListTab = ({
 
   return (
     <>
-      <Box display="flex" flexDir="column" gap={4} p={4} maxHeight="60vh" overflowY="auto">
+      <Stack gap={4} p={4} maxHeight="60vh" overflowY="auto">
         {blockUserList.length > 0 ? (
           blockUserList.map((u) => (
             <DisplayUser
@@ -204,7 +204,7 @@ const BlockedUserListTab = ({
         ) : (
           <StyledText>ユーザーがいません</StyledText>
         )}
-      </Box>
+      </Stack>
       <ModalButton
         innerText={"解除"}
         onClick={cancelBlock}

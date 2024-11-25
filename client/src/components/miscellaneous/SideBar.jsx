@@ -16,13 +16,15 @@ export const SideBar = ({ children }) => {
       maxW="300px"
     >
       <Stack
-        alignItems={isMobile ? "flex-start" : { base: "center", lg: "flex-start"}}
+        alignItems={
+          isMobile ? "flex-start" : { base: "center", lg: "flex-start"}
+        }
         w="100%"
       >
         {children}
       </Stack>
       
-      <Center mt="auto" mb={4} w="90%">
+      <Center mt="auto" mb={4} w="100%">
         <ProfileMenu />
       </Center>
     </Stack>

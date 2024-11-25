@@ -1,13 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
 import {
   Box,
+  Stack,
   ModalBody,
-  Tabs,
-  TabList,
-  Tab,
-  TabPanels,
-  TabPanel,
-  Text,
+  Tabs, TabList, Tab, TabPanels, TabPanel, Text,
 } from "@chakra-ui/react";
 import { useUserState } from "../../../context/UserProvider.jsx";
 import axios from "axios";
@@ -98,7 +94,7 @@ const VoteHistory = () => {
   }, [fetchVoteHistory]);
 
   return (
-    <Box display="flex" flexDir="column" gap={4}>
+    <Stack gap={4}>
       {Object.entries(voteHistory).length > 0 ? (
         Object.entries(voteHistory)
           .reverse()
@@ -106,7 +102,7 @@ const VoteHistory = () => {
             <Box key={day}>
               <DisplayDay day={day} />
               <StyledDivider />
-              <Box display="flex" flexDir="column" gap={4}>
+              <Stack gap={4}>
                 {Object.entries(vote).map(([votee, voters]) => {
                   const user = users.find((u) => u._id === votee);
 
@@ -125,13 +121,13 @@ const VoteHistory = () => {
                     </DisplayUser>
                   ) : null;
                 })}
-              </Box>
+              </Stack>
             </Box>
           ))
       ) : (
         <StyledText>投票履歴がありません</StyledText>
       )}
-    </Box>
+    </Stack>
   );
 };
 
@@ -171,7 +167,7 @@ const FortuneResult = () => {
   }, [fetchFortuneResult]);
 
   return (
-    <Box display="flex" flexDir="column" gap={4}>
+    <Stack gap={4}>
       {fortuneResult && Object.entries(fortuneResult).length > 0 ? (
         Object.entries(fortuneResult)
           .reverse()
@@ -190,7 +186,7 @@ const FortuneResult = () => {
       ) : (
         <StyledText>占い結果がありません</StyledText>
       )}
-    </Box>
+    </Stack>
   );
 };
 
@@ -230,7 +226,7 @@ const MediumResult = () => {
   }, [fetchMediumResult]);
 
   return (
-    <Box display="flex" flexDir="column" gap={4}>
+    <Stack gap={4}>
       {mediumResult && Object.entries(mediumResult).length > 0 ? (
         Object.entries(mediumResult)
           .reverse()
@@ -249,7 +245,7 @@ const MediumResult = () => {
       ) : (
         <StyledText>霊能結果がありません</StyledText>
       )}
-    </Box>
+    </Stack>
   );
 };
 
@@ -283,7 +279,7 @@ const GuardHistory = () => {
   }, [fetchGuardHistory]);
 
   return (
-    <Box display="flex" flexDir="column" gap={4}>
+    <Stack gap={4}>
       {guardHistory && Object.entries(guardHistory).length > 0 ? (
         Object.entries(guardHistory)
           .reverse()
@@ -301,7 +297,7 @@ const GuardHistory = () => {
       ) : (
         <StyledText>護衛履歴がありません</StyledText>
       )}
-    </Box>
+    </Stack>
   );
 };
 
@@ -335,7 +331,7 @@ const AttackHistory = () => {
   }, [fetchAttackHistory]);
 
   return (
-    <Box display="flex" flexDir="column" gap={4}>
+    <Stack gap={4}>
       {attackHistory && Object.entries(attackHistory).length > 0 ? (
         Object.entries(attackHistory)
           .reverse()
@@ -353,7 +349,7 @@ const AttackHistory = () => {
       ) : (
         <StyledText>襲撃履歴がありません</StyledText>
       )}
-    </Box>
+    </Stack>
   );
 };
 

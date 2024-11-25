@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Box, ModalBody } from "@chakra-ui/react";
+import { Stack, ModalBody } from "@chakra-ui/react";
 import { useUserState } from "../../context/UserProvider.jsx";
 import axios from "axios";
 import useNotification from "../../hooks/useNotification";
@@ -33,7 +33,7 @@ const VoteModal = ({ mode, onClose }) => {
 
   return (
     <ModalBody>
-      <Box display="flex" flexDir="column" gap={4} p={3} maxH="60vh" overflowY="auto">
+      <Stack gap={4} p={3} maxH="60vh" overflowY="auto">
         {users.map((u) => {
           const hidden =
             u._id === user._id ||
@@ -54,7 +54,7 @@ const VoteModal = ({ mode, onClose }) => {
             />
           )
         })}
-      </Box>
+      </Stack>
 
       {button}
     </ModalBody>

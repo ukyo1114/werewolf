@@ -54,7 +54,6 @@ const Signup = () => {
         { ...values, pic },
         config,
       );
-      console.log("data:", data);
       
       showToast(messages.USER_REGISTERED, "success");
       actions.setSubmitting(false);

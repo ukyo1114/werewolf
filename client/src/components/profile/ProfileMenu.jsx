@@ -1,19 +1,18 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+
 import { useUserState } from "../../context/UserProvider.jsx";
+
 import {
-  Menu,
-  MenuButton,
+  Menu, MenuButton, MenuList, MenuItem, MenuDivider,
   Box,
   Center,
   Avatar,
-  Text,
-  MenuList,
-  MenuItem,
-  MenuDivider,
   useDisclosure,
 } from "@chakra-ui/react";
+
 import { FaEllipsisH } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+
 import ProfileModal from "./ProfileModal";
 import ProfileSettingsModal from "./ProfileSettingsModal";
 import UserSettingsModal from "./UserSettingsModal";
@@ -40,14 +39,16 @@ const ProfileMenu = () => {
         borderRadius="lg"
         _hover={{ bg: "gray.200" }}
         overflow="hidden"
+        w="100%"
       >
-        <Center px={3} py={2}>
+        <Center px={3} py={2} w="100%">
           <Avatar size="md" name={user.name} src={user.pic} borderRadius="md" />
           <Box
             display={isMobile ? "flex" : { base: "none", lg: "flex" }}
             alignItems="center"
             justifyContent="space-between"
-            ml={1}
+            ml={2}
+            w="100%"
             minW="0"
           >
             <EllipsisText pr={1} fontSize="sm">{user.name}</EllipsisText>

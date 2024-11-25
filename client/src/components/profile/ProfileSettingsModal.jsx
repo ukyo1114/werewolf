@@ -73,7 +73,7 @@ const ProfileSettingsModal = ({ onClose }) => {
 
   return (
     <>
-      <Box  display={cropImage && "none"}>
+      <Box display={cropImage && "none"}>
         <Formik
           initialValues={{
             isUserNameChanged: false,

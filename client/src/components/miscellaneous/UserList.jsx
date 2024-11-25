@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Text, ModalBody } from "@chakra-ui/react";
+import { Stack, Text, ModalBody } from "@chakra-ui/react";
 import DisplayUser from "./DisplayUser.jsx";
 import { StyledText } from "./CustomComponents.jsx";
 import { USER_STATUS } from "../../constants";
@@ -10,9 +10,7 @@ const UserList = ({ userList }) => {
   const { isGame } = currentChannel;
   return (
     <ModalBody>
-      <Box
-        display="flex"
-        flexDir="column"
+      <Stack
         gap={4}
         p={4}
         maxH="60vh"
@@ -41,7 +39,7 @@ const UserList = ({ userList }) => {
         ) : (
           <StyledText>ユーザーがいません</StyledText>
         )}
-      </Box>
+      </Stack>
     </ModalBody>
   );
 };
