@@ -30,7 +30,7 @@ const messageIdChain =
     .isMongoId()
     .withMessage("メッセージIDが無効です");
 
-router.use(protect);
+router.use(protect());
 
 router.post(
   "/",

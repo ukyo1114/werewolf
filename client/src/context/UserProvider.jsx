@@ -1,6 +1,7 @@
 import { createContext, useReducer, useEffect, useContext } from "react";
 import { useMediaQuery } from "react-responsive";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+
 import { userReducer, initialUserState } from "../reducers/userReducer";
 import { channelReducer, initialChannelState } from "../reducers/channelReducer";
 
@@ -13,10 +14,10 @@ const UserProvider = ({ children }) => {
   );
   const isMobile = useMediaQuery({ maxWidth: 767 });
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    const resend = localStorage.getItem("resend")
-    if (resend) return;
+    if (location.pathname !== "/chats") return;
 
     const userInfo = localStorage.getItem("userInfo");
     if (!userInfo) navigate("/home");

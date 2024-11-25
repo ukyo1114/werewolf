@@ -1,6 +1,8 @@
 const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
-const { generateToken, genVerificationToken } = require("../utils/generateToken");
+const {
+  generateToken, genVerificationToken, genEmailChangeToken
+} = require("../utils/generateToken");
 const { GameState } = require("../classes/GameState");
 const { errors } = require("../messages");
 const CustomError = require("../classes/CustomError");
@@ -10,7 +12,6 @@ const {
   uploadPicture,
 } = require("../utils/userUtils");
 const { sendMail } = require("../utils/sendMail");
-const { genEmailChangeToken } = require("../utils/generateToken");
 
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password, pic } = req.body;
@@ -59,8 +60,7 @@ const authUser = asyncHandler(async (req, res) => {
 
 // プロフィールの変更を通知する処理を追加してね
 const updateProfile = asyncHandler(async (req, res) => {
-  const userId = req.userId;
-  const { userName, pic } = req.body;
+  const { userId, body: { userName, pic } } = req;
   if (!userName && !pic) throw new CustomError(400, errors.MISSING_DATA);
 
   const isUserInGame = GameState.isUserInGame(userId);
@@ -75,12 +75,14 @@ const updateProfile = asyncHandler(async (req, res) => {
 });
 
 const updateUserSettings = asyncHandler(async (req, res) => {
-  const userId = req.userId;
-  const { email, currentPassword, newPassword } = req.body;
+  const { userId, body: { email, currentPassword, newPassword } } = req;
 
   await matchPassword(userId, currentPassword);
 
   if (email) {
+    const userExists = await User.exists({ email });
+    if (userExists) throw new CustomError(400, errors.EMAIL_ALREADY_REGISTERED);
+
     const verificationToken = genEmailChangeToken(userId, email);
     await sendMail(email, verificationToken);
   };

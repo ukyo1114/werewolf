@@ -1,23 +1,24 @@
 import React, { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
 import {
   Button,
   VStack,
-  FormControl,
-  FormLabel,
-  Input,
-  InputGroup,
-  InputRightElement,
+  FormControl, FormLabel,
+  Input, InputGroup, InputRightElement,
   useDisclosure,
   Image,
 } from "@chakra-ui/react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
+
+
 import ImageCropper from "../miscellaneous/ImageCropper.jsx";
 import useNotification from "../../hooks/useNotification";
 import { errors, messages } from "../../messages";
-import { Formik, Form, Field, ErrorMessage } from "formik";
 import { signupValidationSchema, signupInitialValues } from "./validationSchema";
 import ModalTemplete from "../miscellaneous/ModalTemplete.jsx";
 import usePostDetails from "../../hooks/usePostDetails";
@@ -27,7 +28,9 @@ const Signup = () => {
   const [cshow, setCShow] = useState(false);
   const [pic, setPic] = useState(null);
   const [imgSrc, setImgSrc] = useState(null);
+
   const showToast = useNotification();
+
   const inputRef = useRef();
   const navigate = useNavigate();
   const imageCropper = useDisclosure();
@@ -51,11 +54,11 @@ const Signup = () => {
         { ...values, pic },
         config,
       );
+      console.log("data:", data);
       
       showToast(messages.USER_REGISTERED, "success");
-      localStorage.setItem("resend", JSON.stringify(data));
       actions.setSubmitting(false);
-      navigate("/verification");
+      navigate(`/verification/${data.token}`);
     } catch (error) {
       handleError(error);
       actions.setSubmitting(false);

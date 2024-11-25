@@ -1,4 +1,7 @@
 import { useCallback } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
 import {
   Button,
   Input,
@@ -6,12 +9,13 @@ import {
   ModalBody, ModalFooter,
 } from "@chakra-ui/react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import axios from "axios";
+
 import useNotification from "../../hooks/useNotification.js";
 import { reqPasswordResetSchema } from "./validationSchema";
 import { messages } from "../../messages.js";
 
-export const RequestPasswordReset = () => {
+export const RequestPResetModal = () => {
+  const navigate = useNavigate();
   const showToast = useNotification();
 
   const handleSubmit = useCallback(async (values, actions) => {
@@ -21,11 +25,18 @@ export const RequestPasswordReset = () => {
     try {
       const config = { headers: { "Content-Type": "application/json" } };
 
-      await axios.post("/api/verify/reset-pass", { email }, config);
+      await axios.post("/api/verify/request-password-reset", { email }, config);
       
       showToast(messages.PASSWORD_RESET.email(email), "success");
       actions.setSubmitting(false);
     } catch (error) {
+      const resendToken = error.response?.data;
+      if (error.response?.status === 403 && resendToken) {
+        localStorage.setItem("resend", JSON.stringify(resendToken));
+        actions.setSubmitting(false);
+        return navigate("/verification");
+      };
+      
       const errorMessage = error.response?.data?.error || "送信に失敗しました"
       showToast(errorMessage, "error");
     }

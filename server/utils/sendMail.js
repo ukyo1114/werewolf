@@ -19,7 +19,7 @@ const modeCon = {
     };
   },
   resetPassword: (verificationToken) => {
-    const link = `${process.env.SERVER_URL}/api/verify/reset-password?token=${verificationToken}`;
+    const link = `${process.env.SERVER_URL}/reset-password/${verificationToken}`;
 
     return {
       subject: "パスワード再設定",

@@ -25,6 +25,7 @@ export const errors = {
 
   FETCH_GUARD_HISTORY_FAILED: "護衛履歴の取得に失敗しました",
   FETCH_ATTACK_HISTORY_FAILED: "襲撃履歴の取得に失敗しました",
+  PASSWORD_RESET_FAILED: "パスワードの再設定に失敗しました",
 };
 
 export const messages = {

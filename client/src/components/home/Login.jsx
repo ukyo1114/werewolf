@@ -15,8 +15,8 @@ import useNotification from "../../hooks/useNotification";
 import { errors, messages } from "../../messages";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { loginValidationSchema } from "./validationSchema";
-import ModalTemplete from "../miscellaneous/ModalTemplete";
-import { RequestPasswordReset } from "./RequestPasswordReset";
+import ModalTemplete from "../miscellaneous/ModalTemplete.jsx";
+import { RequestPResetModal } from "./RequestPResetModal.jsx";
 
 const Login = () => {
   const [pshow, setPShow] = useState(false);
@@ -41,11 +41,10 @@ const Login = () => {
       actions.setSubmitting(false);
       navigate("/chats");
     } catch (error) {
-      const resendToken = error.response?.data;
-      if (error.response?.status === 403 && resendToken) {
-        localStorage.setItem("resend", JSON.stringify(resendToken));
+      const { token } = error.response?.data;
+      if (error.response?.status === 403 && token) {
         actions.setSubmitting(false);
-        return navigate("/verification");
+        return navigate(`/verification/${token}`);
       };
 
       handleError(error);
@@ -148,7 +147,7 @@ const Login = () => {
         isOpen={resetPass.isOpen} onClose={resetPass.onClose}
         title="パスワード再設定"
       >
-        <RequestPasswordReset />
+        <RequestPResetModal />
       </ModalTemplete>
     </>
   );

@@ -1,17 +1,16 @@
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+
 import { Container, Stack, Text, UnorderedList, ListItem, Button } from "@chakra-ui/react";
+
 import useNotification from "../hooks/useNotification";
 
 export const EmailVerification = () => {
-  const navigate = useNavigate();
+  const { token } = useParams();
   const showToast = useNotification();
 
   const handleResend = useCallback(async () => {
-    const resend = localStorage.getItem("resend");
-    const token = JSON.parse(resend).token;
-
     try {
       const config = { headers: { "Content-Type": "application/json" } };
 
@@ -23,21 +22,16 @@ export const EmailVerification = () => {
     }
   }, [showToast]);
 
-  useEffect(() => {
-    const resendToken = localStorage.getItem("resend");
-    if (!resendToken) navigate("/home");
-
-    return () => localStorage.removeItem("resend");
-  }, [navigate]);
-
   return (
     <Container
       display="flex"
       centerContent
       maxW="xl"
     >
-      <Stack>
-        <Text as="h1" fontSize="2xl" fontWeight="bold">メールアドレスの確認が必要です</Text>
+      <Stack w="100%" p={4}>
+        <Text as="h1" fontSize="2xl" fontWeight="bold" color="gray.700">
+          メールアドレスの確認が必要です
+        </Text>
         <Text>
           アカウントを有効化するために、確認メールを送信しました。
           メール内のリンクをクリックして、認証を完了してください。

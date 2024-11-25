@@ -76,7 +76,7 @@ router.put(
   [
     nameChainOpt,
   ],
-  protect,
+  protect(),
   validateRequest,
   updateProfile
 );
@@ -88,7 +88,7 @@ router.put(
     createPasswordChain("currentPassword"),
     passwordChainOpt,
   ],
-  protect,
+  protect(),
   validateRequest,
   updateUserSettings
 );

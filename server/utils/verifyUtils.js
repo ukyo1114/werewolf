@@ -16,8 +16,4 @@ const completeVerification = async (email, token) => {
   if (!user) throw new CustomError(400, errors.INVALID_TOKEN);
 };
 
-const sendResetPasswordMail = async () => {
-
-};
-
 module.exports = { changeEmail, completeVerification };

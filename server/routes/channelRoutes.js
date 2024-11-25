@@ -47,7 +47,7 @@ const passwordChain =
     .isLength({ max: 20 })
     .withMessage("パスワードは20文字以内である必要があります");
 
-router.use(protect);
+router.use(protect());
 
 router.get("/list", fetchChannelList);
 

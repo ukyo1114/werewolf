@@ -43,11 +43,30 @@ const resend = asyncHandler(async (req, res) => {
   res.status(202).send("確認メールを再送信しました");
 });
 
-const requestPasswordReset = asyncHandler(async () => {
+const requestPasswordReset = asyncHandler(async (req, res) => {
   const { email } = req.body;
 
-  const exists = await User.exists({ email });
-  if (!exists) throw new CustomError(400, errors.EMAIL_NOT_REGISTERED);
+  const user = await User.findOne({ email }).select("isVerified").lean();
+  if (!user) throw new CustomError(400, errors.EMAIL_NOT_REGISTERED);
+  if (!user.isVerified) {
+    const token = genVerificationToken(email);
+    return res.status(403).json({ token });
+  }
+
+  const verificationToken = genVerificationToken(email, action="resetPassword");
+  await sendMail(email, verificationToken, "resetPassword");
+
+  res.status(202).send();
 });
 
-module.exports = { verifyEmail, resend, requestPasswordReset };
+const resetPassword = asyncHandler(async (req, res) => {
+  const { userId, body: { password } } = req;
+
+  const user = await User.findById(userId).select("password");
+  user.password = password;
+  await user.save();
+
+  res.status(204).send();
+});
+
+module.exports = { verifyEmail, resend, requestPasswordReset, resetPassword };

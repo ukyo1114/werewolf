@@ -10,7 +10,7 @@ const channelIdChain =
     .isMongoId()
     .withMessage("チャンネルIDが無効です");
 
-router.use(protect);
+router.use(protect());
 
 router.get(
   "/game-list/:channelId",

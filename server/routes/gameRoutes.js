@@ -52,7 +52,7 @@ const definePostRoute = (route, controllers) => {
   );
 };
 
-router.use(protect);
+router.use(protect());
 
 defineGetRoute("/join/:gameId", [getGame, joinGame]);
 defineGetRoute("/player-state/:gameId", [getGame, getPlayerState]);

@@ -25,7 +25,7 @@ const createSelectedUserChain = (selectedUser) => (
     .withMessage("選択されたユーザーが無効です")
 );
 
-router.use(protect);
+router.use(protect());
 
 router.get(
   "/user-list/:channelId",
