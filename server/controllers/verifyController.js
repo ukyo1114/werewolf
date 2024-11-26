@@ -1,15 +1,17 @@
 const asyncHandler = require("express-async-handler");
-const jwt = require("jsonwebtoken");
+
 const CustomError = require("../classes/CustomError");
 const User = require("../models/userModel");
 const { errors } = require("../messages");
+
 const { genVerificationToken } = require("../utils/generateToken");
 const { sendMail } = require("../utils/sendMail");
 const { changeEmail, completeVerification } = require("../utils/verifyUtils");
+const { decodeToken } = require("../utils/decodeToken");
 
 const verifyEmail = asyncHandler(async (req, res) => {
   const { token } = req.query;
-  const { userId, email, action } = jwt.verify(token, process.env.JWT_SECRET);
+  const { userId, email, action } = decodeToken(token);
 
   if (action !== "verifyEmail") {
     throw new CustomError(400, errors.INVALID_TOKEN);
@@ -26,7 +28,7 @@ const verifyEmail = asyncHandler(async (req, res) => {
 
 const resend = asyncHandler(async (req, res) => {
   const { token } = req.body;
-  const { email, action } = jwt.verify(token, process.env.JWT_SECRET);
+  const { email, action } = decodeToken(token);
 
   if (action !== "verifyEmail") {
     throw new CustomError(400, errors.INVALID_TOKEN);

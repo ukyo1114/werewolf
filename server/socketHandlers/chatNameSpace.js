@@ -1,7 +1,10 @@
+const EventEmitter = require("events");
 const jwt = require("jsonwebtoken");
+
 const User = require("../models/userModel");
 const { errors } = require("../messages");
-const EventEmitter = require("events");
+
+
 const channelEvents = new EventEmitter();
 
 function chatNameSpaseHandler(io) {
