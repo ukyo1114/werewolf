@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
-import { Container, Box, Image } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
+
+import { Container, Box, Image } from "@chakra-ui/react";
+
 import Auth from "../components/home/Auth.jsx";
 
 const Home = () => {
@@ -17,7 +19,7 @@ const Home = () => {
       centerContent
       maxW="xl"
     >
-      <Image mt={8} src="/public/TITLE.png" alt="10人で人狼" maxW="50%" />
+      <Image mt={8} src="/TITLE.png" alt="10人で人狼" maxW="50%" />
       <Box w="100%">
         <Auth />
       </Box>

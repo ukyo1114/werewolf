@@ -30,7 +30,7 @@ const ProfileMenu = () => {
   const logoutHandler = () => {
     localStorage.removeItem("userInfo");
     uDispatch({ type: "LOGOUT" });
-    navigate("/home");
+    navigate("/");
   };
 
   return (

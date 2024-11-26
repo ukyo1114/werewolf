@@ -20,7 +20,7 @@ const UserProvider = ({ children }) => {
     if (location.pathname !== "/chats") return;
 
     const userInfo = localStorage.getItem("userInfo");
-    if (!userInfo) navigate("/home");
+    if (!userInfo) navigate("/");
     
     const userIn = JSON.parse(userInfo);
     uDispatch({ type: "LOGIN", payload: userIn });

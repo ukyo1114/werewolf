@@ -38,7 +38,7 @@ export const ResetPassword = () => {
       await axios.post("/api/verify/reset-password", { password }, config);
 
       showToast(messages.USER_SETTINGS.password, "success");
-      navigate("/home");
+      navigate("/");
     } catch (error) {
       showToast(error?.response?.data?.error || errors.PASSWORD_RESET_FAILED, "error");
     }
