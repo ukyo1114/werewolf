@@ -50,6 +50,7 @@ jobs:
           ssh ec2-user@54.238.237.94 "echo 'NODE_ENV=production' > /home/ec2-user/werewolf/server/.env.production"
           ssh ec2-user@54.238.237.94 "echo 'MONGO_URI=${{ secrets.MONGO_URI_PRODUCTION }}' >> /home/ec2-user/werewolf/server/.env.production"
           ssh ec2-user@54.238.237.94 "echo 'JWT_SECRET=${{ secrets.JWT_SECRET_PRODUCTION }}' >> /home/ec2-user/werewolf/server/.env.production"
+          ssh ec2-user@54.238.237.94 "echo 'SERVER_URL=${{ secrets.SERVER_URL_PRODUCTION }}' >> /home/ec2-user/werewolf/server/.env.production"          
           ssh ec2-user@54.238.237.94 "echo 'AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}' >> /home/ec2-user/werewolf/server/.env.production"
           ssh ec2-user@54.238.237.94 "echo 'AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}' >> /home/ec2-user/werewolf/server/.env.production"
           ssh ec2-user@54.238.237.94 "echo 'AWS_REGION=${{ secrets.AWS_REGION }}' >> /home/ec2-user/werewolf/server/.env.production"
