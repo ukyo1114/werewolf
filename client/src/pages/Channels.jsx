@@ -43,7 +43,7 @@ const Channels = () => {
         flexDir="column"
         maxW="600px"
         overflow="hidden"
-        w="100%" h="100%"
+        w="100%"
       >
         <ChannelHeader
           mode={mode}
