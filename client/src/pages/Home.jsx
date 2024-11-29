@@ -1,9 +1,9 @@
-import { useEffect } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Container, Box, Image } from "@chakra-ui/react";
 
-import Auth from "../components/home/Auth.jsx";
+const Auth = lazy(() => import("../components/home/Auth.jsx"));
 
 const Home = () => {
   const navigate = useNavigate();
@@ -21,7 +21,9 @@ const Home = () => {
     >
       <Image mt={8} w="300px" h="63px" src="/TITLE.webp" alt="10人で人狼" />
       <Box w="100%">
-        <Auth />
+        <Suspense fallback={<div>Loading...</div>}>
+          <Auth />
+        </Suspense>
       </Box>
     </Container>
   );
