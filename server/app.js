@@ -4,9 +4,11 @@ dotenv.config({
 });
 
 const express = require("express");
+const compression = require('compression');
 const http = require("http");
 const createError = require("http-errors");
 const path = require('path');
+
 const connectDB = require("./utils/connectDB");
 const userRoutes = require("./routes/userRoutes");
 const channelRoutes = require("./routes/channelRoutes");
@@ -22,6 +24,7 @@ const app = express();
 connectDB();
 
 // ミドルウェアの設定
+app.use(compression());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public/build")));
