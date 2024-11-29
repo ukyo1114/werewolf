@@ -24,7 +24,7 @@ const UserProvider = ({ children }) => {
     
     const userIn = JSON.parse(userInfo);
     uDispatch({ type: "LOGIN", payload: userIn });
-  }, [navigate]);
+  }, [location.pathname, navigate]);
 
   return (
     <UserContext.Provider

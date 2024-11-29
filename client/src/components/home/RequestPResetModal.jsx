@@ -40,7 +40,7 @@ export const RequestPResetModal = () => {
       const errorMessage = error.response?.data?.error || "送信に失敗しました"
       showToast(errorMessage, "error");
     }
-  }, [showToast]);
+  }, [navigate, showToast]);
 
   return (
     <Stack w="100%" overflow="hidden">

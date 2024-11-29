@@ -31,7 +31,7 @@ const Channels = () => {
       isGame ? "game" : "channel"
     ) : "channelList";
     setMode(currentMode);
-  }, [setMode, channelId]);
+  }, [isGame, setMode, channelId]);
 
   if (!user.token) return null;
 

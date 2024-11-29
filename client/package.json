@@ -55,6 +55,7 @@
   },
   "devDependencies": {
     "dotenv": "^16.4.5",
-    "eslint-config-react-app": "^7.0.1"
+    "eslint-config-react-app": "^7.0.1",
+    "vite-plugin-eslint": "^1.8.1"
   }
 }

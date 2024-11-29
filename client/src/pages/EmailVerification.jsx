@@ -20,7 +20,7 @@ export const EmailVerification = () => {
       const errorMessage = error.response?.data?.error || "再送信に失敗しました"
       showToast(errorMessage, "error");
     }
-  }, [showToast]);
+  }, [token, showToast]);
 
   return (
     <Container
