@@ -2,7 +2,7 @@ import React, { useEffect, useReducer, useCallback, useRef } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 
 import {
-  Box, Flex, FormControl, Spinner, Textarea, IconButton
+  Box, Flex, Stack, FormControl, Spinner, Textarea, IconButton
 } from "@chakra-ui/react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 
@@ -80,14 +80,7 @@ const Channel = () => {
   }, [messages]);
 
   return (
-    <Flex
-      flexDir="column"
-      justifyContent="flex-end"
-      w="100%"
-      h="100%"
-      overflowY="auto"
-    >
-      
+    <Stack justifyContent="flex-end" w="100%" h="100%" overflow="auto">
       {loading ? (
         <Spinner
           size="xl"
@@ -164,7 +157,7 @@ const Channel = () => {
           </Form>
         )}
       </Formik>
-    </Flex>
+    </Stack>
   );
 };
 

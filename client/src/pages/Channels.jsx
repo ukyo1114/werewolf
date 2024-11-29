@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
+
+import { Flex, Stack } from "@chakra-ui/react";
+
 import { useUserState } from "../context/UserProvider.jsx";
-import { Flex } from "@chakra-ui/react";
 import ChannelList from "../components/channelList/ChannelList.jsx";
 import Channel from "../components/channel/Channel.jsx";
-
 import { ChannelHeader } from "../components/channels/ChannelHeader.jsx";
-
 import ChannelListSidebar from "../components/channelList/ChannelListSidebar.jsx";
 import ChannelSidebar from "../components/channelSideBar/ChannelSidebar.jsx";
 import GameSidebar from "../components/gameSidebar/GameSidebar.jsx";
@@ -38,9 +38,8 @@ const Channels = () => {
   return (
     <Flex justifyContent="center" w="100%" h="100dvh" overflow="hidden">
       {!isMobile && modeConfig[mode]}
-      <Flex
+      <Stack
         alignItems="center"
-        flexDir="column"
         maxW="600px"
         overflow="hidden"
         w="100%"
@@ -54,7 +53,7 @@ const Channels = () => {
           <Channel key={channelId} /> :
           <ChannelList showJoinedCh={showJoinedCh} />
         }
-      </Flex>
+      </Stack>
     </Flex>
   )
 };
