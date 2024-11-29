@@ -36,7 +36,7 @@ const Channels = () => {
   if (!user.token) return null;
 
   return (
-    <Flex justifyContent="center" w="100%" h="100vh">
+    <Flex justifyContent="center" w="100%" h="100vh" overflow="hidden">
       {!isMobile && modeConfig[mode]}
       <Flex
         alignItems="center"
