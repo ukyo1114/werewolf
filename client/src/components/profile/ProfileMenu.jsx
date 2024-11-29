@@ -1,7 +1,4 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
-
-import { useUserState } from "../../context/UserProvider.jsx";
 
 import {
   Menu, MenuButton, MenuList, MenuItem, MenuDivider,
@@ -18,6 +15,7 @@ import ProfileSettingsModal from "./ProfileSettingsModal";
 import UserSettingsModal from "./UserSettingsModal";
 import ModalTemplete from "../miscellaneous/ModalTemplete";
 import { EllipsisText } from "../miscellaneous/CustomComponents.jsx";
+import { useUserState } from "../../context/UserProvider.jsx";
 
 const ProfileMenu = () => {
   const pModal = useDisclosure();

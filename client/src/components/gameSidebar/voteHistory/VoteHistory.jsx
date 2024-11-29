@@ -1,18 +1,18 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
+import axios from "axios";
+
 import {
   Box,
   Stack,
   Tabs, TabList, Tab, TabPanels, TabPanel, Text,
 } from "@chakra-ui/react";
+
 import { useUserState } from "../../../context/UserProvider.jsx";
-import axios from "axios";
 import DisplayUser from "../../miscellaneous/DisplayUser.jsx";
 import useNotification from "../../../hooks/useNotification";
 import { errors } from "../../../messages";
 import {
-  DisplayDay,
-  StyledDivider,
-  StyledText,
+  DisplayDay, StyledDivider, StyledText,
 } from "../../miscellaneous/CustomComponents.jsx";
 
 

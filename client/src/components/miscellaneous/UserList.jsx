@@ -1,5 +1,5 @@
-import React from "react";
 import { Stack, Text } from "@chakra-ui/react";
+
 import DisplayUser from "./DisplayUser.jsx";
 import { StyledText } from "./CustomComponents.jsx";
 import { USER_STATUS } from "../../constants";

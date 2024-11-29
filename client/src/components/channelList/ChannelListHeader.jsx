@@ -1,4 +1,3 @@
-import React from "react";
 import { Checkbox } from "@chakra-ui/react";
 import { EllipsisText } from "../miscellaneous/CustomComponents.jsx";
 

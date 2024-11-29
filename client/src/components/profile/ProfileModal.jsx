@@ -1,4 +1,3 @@
-import React from "react";
 import { Stack } from "@chakra-ui/react";
 import { useUserState } from "../../context/UserProvider.jsx";
 import DisplayUser from "../miscellaneous/DisplayUser.jsx";

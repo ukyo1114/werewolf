@@ -1,11 +1,11 @@
-import React from "react";
 import { useDisclosure } from "@chakra-ui/react";
+
 import { FaPlus } from "react-icons/fa";
+
 import CreateChannel from "./CreateChannel.jsx";
 import ModalTemplete from "../miscellaneous/ModalTemplete.jsx";
 import {
-  SidebarButton,
-  iconProps,
+  SidebarButton, iconProps,
 } from "../miscellaneous/CustomComponents.jsx";
 import { SideBar } from "../miscellaneous/SideBar.jsx";
 

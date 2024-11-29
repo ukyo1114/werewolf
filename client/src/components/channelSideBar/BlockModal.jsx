@@ -1,10 +1,12 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
+import axios from "axios";
+
 import {
   Stack,
   Tabs, TabList, Tab, TabPanels, TabPanel,
 } from "@chakra-ui/react";
+
 import { useUserState } from "../../context/UserProvider.jsx";
-import axios from "axios";
 import useNotification from "../../hooks/useNotification";
 import DisplayUser from "../miscellaneous/DisplayUser.jsx";
 import ModalButton from "../miscellaneous/ModalButton.jsx";

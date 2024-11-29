@@ -1,12 +1,14 @@
+import { useCallback } from "react";
+import axios from "axios";
+
 import {
   Stack, FormControl, Checkbox, Input, Textarea,
 } from "@chakra-ui/react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+
 import { useUserState } from "../../context/UserProvider.jsx";
-import React, { useCallback } from "react";
-import axios from "axios";
 import useNotification from "../../hooks/useNotification";
 import { errors, messages } from "../../messages";
-import { Formik, Form, Field, ErrorMessage } from "formik";
 import { chSettingsValidationSchema } from "./validationSchema";
 import TextareaAutosize from "react-textarea-autosize";
 import ModalButton from "../miscellaneous/ModalButton.jsx";

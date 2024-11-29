@@ -1,4 +1,6 @@
-import React, { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
+import axios from "axios";
+
 import { useUserState } from "../../context/UserProvider.jsx";
 import {
   Box,
@@ -8,8 +10,9 @@ import {
   Stack,
   useDisclosure,
 } from "@chakra-ui/react";
+
 import { FaEllipsisH } from "react-icons/fa";
-import axios from "axios";
+
 import ChatLoading from "../ChatLoading.jsx";
 import ChannelInfo from "./ChannelInfo.jsx";
 import useNotification from "../../hooks/useNotification";

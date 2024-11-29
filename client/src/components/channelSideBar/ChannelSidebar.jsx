@@ -1,5 +1,7 @@
-import React from "react";
+import axios from "axios";
+
 import { useDisclosure } from "@chakra-ui/react";
+
 import {
   FaUsers,
   FaBinoculars,
@@ -8,16 +10,15 @@ import {
   FaCog,
   FaUserSlash,
 } from "react-icons/fa";
+
 import { useUserState } from "../../context/UserProvider.jsx";
 import UserList from "../miscellaneous/UserList.jsx";
 import BlockModal from "./BlockModal.jsx";
 import ChannelSettingsModal from "./ChannelSettingsModal.jsx"
-import axios from "axios";
 import useNotification from "../../hooks/useNotification";
 import ModalTemplete from "../miscellaneous/ModalTemplete.jsx";
 import {
-  SidebarButton,
-  iconProps,
+  SidebarButton, iconProps,
 } from "../miscellaneous/CustomComponents.jsx";
 import { SideBar } from "../miscellaneous/SideBar.jsx";
 import SpectatorModal from "./spectate/SpectatorModal.jsx";

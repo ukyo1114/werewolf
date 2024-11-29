@@ -1,4 +1,3 @@
-import React from "react";
 import { Stack, Center } from "@chakra-ui/react";
 import ProfileMenu from "../profile/ProfileMenu.jsx";
 import { useUserState } from "../../context/UserProvider.jsx";

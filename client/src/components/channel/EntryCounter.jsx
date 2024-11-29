@@ -1,9 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
+import io from "socket.io-client";
+
 import {
   Flex, Button, useDisclosure,
 } from "@chakra-ui/react";
+
 import { useUserState } from "../../context/UserProvider.jsx";
-import io from "socket.io-client";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import UserList from "../miscellaneous/UserList.jsx";
 import ModalTemplete from "../miscellaneous/ModalTemplete.jsx";
