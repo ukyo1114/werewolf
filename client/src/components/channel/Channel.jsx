@@ -1,13 +1,16 @@
 import React, { useEffect, useReducer, useCallback, useRef } from "react";
+import TextareaAutosize from "react-textarea-autosize";
+
 import {
   Box, Flex, FormControl, Spinner, Textarea, IconButton
 } from "@chakra-ui/react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+
 import { BiSend } from "react-icons/bi";
+
 import { useUserState } from "../../context/UserProvider.jsx";
 import useChatMessages from "../../hooks/useChatMessages";
 import useChatSocket from "../../hooks/useChatSocket";
-import TextareaAutosize from "react-textarea-autosize";
-import { Formik, Form, Field, ErrorMessage } from "formik";
 import { channelValidationSchema } from "../channel/validationSchema";
 import DisplayMessage from "./DisplayMessage.jsx";
 import { GAME_MASTER } from "../../constants";

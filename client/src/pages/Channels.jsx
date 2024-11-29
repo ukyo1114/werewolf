@@ -42,6 +42,7 @@ const Channels = () => {
         alignItems="center"
         flexDir="column"
         maxW="600px"
+        overflow="hidden"
         w="100%" h="100%"
       >
         <ChannelHeader
