@@ -1,6 +1,6 @@
 import React from "react";
 import {
-  Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton
+  Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton,
 } from "@chakra-ui/react";
 import { EllipsisText } from "./CustomComponents";
 
@@ -12,18 +12,16 @@ const ModalTemplete = ({ children, isOpen, onClose, title }) => {
       motionPreset="none"
     >
       <ModalOverlay />
-      <ModalContent maxHeight="80vh" overflowY="auto">
-        <ModalHeader
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          fontSize="2xl"
-          color="gray.700"
-        >
-          <EllipsisText>{title && title}</EllipsisText>
+      <ModalContent maxH="80vh">
+        <ModalHeader>
+          <EllipsisText textAlign="center" fontSize="xl" color="gray.700">
+            {title && title}
+          </EllipsisText>
         </ModalHeader>
         <ModalCloseButton />
-        {children}
+        <ModalBody display="flex" flexDir="column" overflow="auto">
+          {children}
+        </ModalBody>
       </ModalContent>
     </Modal>
   );

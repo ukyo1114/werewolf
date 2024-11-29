@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import {
   Stack,
-  ModalBody,
   Tabs, TabList, Tab, TabPanels, TabPanel,
 } from "@chakra-ui/react";
 import { useUserState } from "../../context/UserProvider.jsx";
@@ -41,31 +40,29 @@ const BlockModal = () => {
   }, [fetchBlockUserList]);
 
   return (
-    <ModalBody>
-      <Tabs>
-        <TabList>
-          <Tab w="50%">ブロック</Tab>
-          <Tab w="50%">解除</Tab>
-        </TabList>
-        <TabPanels>
-          <TabPanel key="block">
-            <UserListTab
-              selectedUser={selectedUser}
-              setSelectedUser={setSelectedUser}
-              setBlockUserList={setBlockUserList}
-            />
-          </TabPanel>
-          <TabPanel key="cancel">
-            <BlockedUserListTab
-              selectedBlockUser={selectedBlockUser}
-              setSelectedBlockUser={setSelectedBlockUser}
-              blockUserList={blockUserList}
-              setBlockUserList={setBlockUserList}
-            />
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
-    </ModalBody>
+    <Tabs display="flex" flexDir="column" overflow="hidden">
+      <TabList>
+        <Tab w="50%">ブロック</Tab>
+        <Tab w="50%">解除</Tab>
+      </TabList>
+      <TabPanels display="flex" overflow="hidden">
+        <TabPanel key="block" w="100%" p={0} display="flex" overflow="hidden">
+          <UserListTab
+            selectedUser={selectedUser}
+            setSelectedUser={setSelectedUser}
+            setBlockUserList={setBlockUserList}
+          />
+        </TabPanel>
+        <TabPanel key="cancel" w="100%" p={0} display="flex" overflow="hidden">
+          <BlockedUserListTab
+            selectedBlockUser={selectedBlockUser}
+            setSelectedBlockUser={setSelectedBlockUser}
+            blockUserList={blockUserList}
+            setBlockUserList={setBlockUserList}
+          />
+        </TabPanel>
+      </TabPanels>
+    </Tabs>
   );
 };
 
@@ -93,15 +90,7 @@ const UserListTab = ({
           const blockedUser = users.find((user) => user._id === data);
           return [...prevBlockUserList, blockedUser];
         }
-      } // 既にブロックされているときの処理を追加する
-      );/* 
-      cDispatch((prevCurrentChannel) => {
-        const updatedUsers = prevCurrentChannel.users.filter((user) => user._id !== data);
-        return {
-          ...prevCurrentChannel,
-          users: updatedUsers,
-        };
-      }); */
+      }); // 既にブロックされているときの処理を追加する
       setSelectedUser(null);
     } catch (error) {
       showToast(error?.response?.data?.error || "ブロックに失敗しました", "error");
@@ -118,8 +107,8 @@ const UserListTab = ({
   ]);
 
   return (
-    <>
-      <Stack gap={4} p={4} maxHeight="60vh" overflowY="auto">
+    <Stack w="100%" overflow="hidden">
+      <Stack p={2} gap={4} flex="1" overflow="auto">
         {users.length > 1 ? (
           users.filter((u) => u._id !== user._id).map((u) => (
             <DisplayUser
@@ -137,12 +126,11 @@ const UserListTab = ({
           <StyledText>ユーザーがいません</StyledText>
         )}
       </Stack>
-      <ModalButton
-        innerText={"ブロック"}
-        onClick={block}
-        disableCondition={!selectedUser}
-      />
-    </>
+
+      <ModalButton onClick={block} isDisabled={!selectedUser}>
+        ブロック
+      </ModalButton>
+    </Stack>
   );
 };
 
@@ -186,8 +174,8 @@ const BlockedUserListTab = ({
   ]);
 
   return (
-    <>
-      <Stack gap={4} p={4} maxHeight="60vh" overflowY="auto">
+    <Stack w="100%" overflow="hidden">
+      <Stack p={2} gap={4} flex="1" overflow="auto">
         {blockUserList.length > 0 ? (
           blockUserList.map((u) => (
             <DisplayUser
@@ -205,13 +193,11 @@ const BlockedUserListTab = ({
           <StyledText>ユーザーがいません</StyledText>
         )}
       </Stack>
-      <ModalButton
-        innerText={"解除"}
-        onClick={cancelBlock}
-        disableCondition={!selectedBlockUser}
-      />
-    </>
 
+      <ModalButton onClick={cancelBlock} isDisabled={!selectedBlockUser}>
+        解除
+      </ModalButton>
+    </Stack>
   );
 };
 

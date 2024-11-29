@@ -1,7 +1,9 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { Stack, ModalBody } from "@chakra-ui/react";
-import { useUserState } from "../../context/UserProvider.jsx";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
+
+import { Stack } from "@chakra-ui/react";
+
+import { useUserState } from "../../context/UserProvider.jsx";
 import useNotification from "../../hooks/useNotification";
 import DisplayUser from "../miscellaneous/DisplayUser.jsx";
 import ModalButton from "../miscellaneous/ModalButton.jsx";
@@ -32,8 +34,8 @@ const VoteModal = ({ mode, onClose }) => {
   }, [selectedUser, onClose, phase, setButton, mode]);
 
   return (
-    <ModalBody>
-      <Stack gap={4} p={3} maxH="60vh" overflowY="auto">
+    <Stack w="100%" overflow="hidden">
+      <Stack w="100%" p={2} gap={4} overflow="auto">
         {users.map((u) => {
           const hidden =
             u._id === user._id ||
@@ -54,10 +56,9 @@ const VoteModal = ({ mode, onClose }) => {
             />
           )
         })}
-      </Stack>
-
+      </Stack> 
       {button}
-    </ModalBody>
+    </Stack>
   );
 };
 
@@ -88,11 +89,9 @@ const VoteButton = ({ selectedUser, onClose }) => {
   }, [selectedUser, user.token, channelId, showToast, onClose]);
 
   return (
-    <ModalButton
-      innerText={"投票"}
-      onClick={handleSubmit}
-      disableCondition={!selectedUser}
-    />
+    <ModalButton onClick={handleSubmit} isDisabled={!selectedUser}>
+      投票
+    </ModalButton>
   );
 };
 
@@ -123,11 +122,9 @@ const FortuneButton = ({ selectedUser, onClose }) => {
   }, [selectedUser, user.token, channelId, showToast, onClose]);
 
   return (
-    <ModalButton
-      innerText={"占う"}
-      onClick={handleSubmit}
-      disableCondition={!selectedUser}
-    />
+    <ModalButton onClick={handleSubmit} isDisabled={!selectedUser}>
+      占う
+    </ModalButton>
   );
 };
 
@@ -158,11 +155,9 @@ const GuardButton = ({ selectedUser, onClose }) => {
   }, [selectedUser, user.token, channelId, showToast, onClose]);
 
   return (
-    <ModalButton
-      innerText={"護衛する"}
-      onClick={handleSubmit}
-      disableCondition={!selectedUser}
-    />
+    <ModalButton onClick={handleSubmit} isDisabled={!selectedUser}>
+      護衛する
+    </ModalButton>
   );
 };
 
@@ -193,11 +188,9 @@ const AttackButton = ({ selectedUser, onClose }) => {
   }, [selectedUser, user.token, channelId, showToast, onClose]);
 
   return (
-    <ModalButton
-      innerText={"襲撃する"}
-      onClick={handleSubmit}
-      disableCondition={!selectedUser}
-    />
+    <ModalButton onClick={handleSubmit} isDisabled={!selectedUser}>
+      襲撃する
+    </ModalButton>
   );
 };
 

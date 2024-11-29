@@ -18,7 +18,7 @@ import ModalTemplete from "../miscellaneous/ModalTemplete.jsx";
 import { EllipsisText } from "../miscellaneous/CustomComponents.jsx";
 
 const ChannelList = ({ showJoinedCh }) => {
-  const { user } = useUserState();
+  const { user, isMobile } = useUserState();
   const [selectedChannel, setSelectedChannel] = useState(null);
   const [channelList, setChannelList] = useState(null);
   const channelInfo = useDisclosure();
@@ -63,8 +63,7 @@ const ChannelList = ({ showJoinedCh }) => {
               onClick={() => handleChannelSelect(channel)}
               cursor="pointer"
               bg={channel.users.includes(user._id) ? "green.100" : "white"}
-              px={3}
-              py={2}
+              p={2}
               w="100%"
               borderRadius="lg"
               key={channel._id}
@@ -73,18 +72,20 @@ const ChannelList = ({ showJoinedCh }) => {
               }}
               boxShadow="uniform"
             >
-              <Flex justify="space-between" align="center" width="100%" gap={4}>
+              <Flex justify="space-between" align="center" width="100%" gap={2}>
                 <Avatar
-                  size="lg"
+                  size={isMobile ? "md" : "lg"}
                   name={channel.channelAdmin.name}
                   src={channel.channelAdmin.pic}
-                  borderRadius="md"
+                  borderRadius={isMobile ? "md" : "lg"}
                 />
-                <Box ml={3} textAlign="left" w="100%" overflow="hidden">
+                
+                <Box textAlign="left" w="100%" overflow="hidden">
                   <EllipsisText mb={1}>タイトル： {channel.channelName}</EllipsisText>
                   <Divider borderWidth={1} borderColor="gray.700" mb={1} />
                   <EllipsisText>作成者： {channel.channelAdmin.name}</EllipsisText>
                 </Box>
+                
                 <Box color="gray.700"><FaEllipsisH /></Box>
               </Flex>
             </Box>

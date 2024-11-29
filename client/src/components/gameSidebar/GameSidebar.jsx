@@ -113,6 +113,7 @@ const GameSidebar = () => {
       <ModalTemplete
         isOpen={vHistoryModal.isOpen}
         onClose={vHistoryModal.onClose}
+        title={"投票履歴"}
       >
         <VoteHistoryTabs mode={MODE_MAP[user.role] || "others"} />
       </ModalTemplete>

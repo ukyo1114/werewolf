@@ -1,11 +1,10 @@
 import {
+  Stack,
   Button,
   FormControl,
   Checkbox,
   Input,
   Textarea,
-  ModalBody,
-  ModalFooter,
 } from "@chakra-ui/react";
 import { useUserState } from "../../context/UserProvider.jsx";
 import React, { useCallback } from "react";
@@ -15,6 +14,7 @@ import { errors, messages } from "../../messages";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { chSettingsValidationSchema } from "./validationSchema";
 import TextareaAutosize from "react-textarea-autosize";
+import ModalButton from "../miscellaneous/ModalButton.jsx";
 
 const ChannelSettingsModal = () => {
   const { user, currentChannel, cDispatch } = useUserState();
@@ -60,134 +60,134 @@ const ChannelSettingsModal = () => {
   }, [channelAdmin, channelId, user._id, user.token, cDispatch, showToast]);
 
   return (
-    <Formik
-      initialValues={{
-        isChannelNameChanged: false,
-        isDescriptionChanged: false,
-        isPasswordChanged: false,
-        channelName,
-        description,
-        password: "",
-      }}
-      validationSchema={chSettingsValidationSchema}
-      onSubmit={handleSubmit}
-    >
-      {(formik) => (
-        <Form>
-          <ModalBody>
-            <FormControl id="isChannelNameChanged" mb={2}>
-              <Field name="isChannelNameChanged">
-                {({ field }) => (
-                  <Checkbox
-                    {...field}
-                    isChecked={field.value}
-                  >
-                    チャンネル名を変更する
-                  </Checkbox>
-                )}
-              </Field>
-            </FormControl>
-
-            <FormControl id="channelName" mb={3}>
-              <Field name="channelName">
-                {({ field }) => (
-                  <Input
-                    {...field}
-                    placeholder="チャンネル名"
-                    autoComplete="off"
-                    isDisabled={!formik.values.isChannelNameChanged}
-                  />
-                )}
-              </Field>
-              <ErrorMessage
-                name="channelName"
-                component="div"
-                style={{ color: "red", fontSize: "smaller" }}
-              />
-            </FormControl>
-
-            <FormControl id="isDescriptionChanged" mb={2}>
-              <Field name="isDescriptionChanged">
-                {({ field }) => (
-                  <Checkbox
-                    {...field}
-                    isChecked={field.value}
-                    alignSelf="flex-start"
-                  >
-                    チャンネル説明を変更する
-                  </Checkbox>
-                )}
-              </Field>
-            </FormControl>
-
-            <FormControl id="description" mb={3}>
-              <Field name="description">
-                {({ field }) => (
-                  <Textarea
-                    {...field}
-                    placeholder="チャンネル説明"
-                    minHeight="100px"
-                    maxHeight="600px"
-                    autoComplete="off"
-                    resize="none"
-                    as={TextareaAutosize}
-                    isDisabled={!formik.values.isDescriptionChanged}
-                  />
-                )}
-              </Field>
-              <ErrorMessage
-                name="description"
-                component="div"
-                style={{ color: "red", fontSize: "smaller" }}
-              />
-            </FormControl>
-
-            <FormControl id="isPasswordChanged" mb={2}>
-              <Field name="isPasswordChanged">
-                {({ field }) => (
-                  <Checkbox
-                    {...field}
-                    isChecked={field.value}
-                    alignSelf="flex-start"
-                  >
-                    パスワード設定
-                  </Checkbox>
-                )}
-              </Field>
-            </FormControl>
-
-            <FormControl id="password" mb={3}>
-              <Field name="password">
-                {({ field }) => (
-                  <Input
-                    {...field}
-                    placeholder="空欄のまま送信すると無効にできます"
-                    autoComplete="off"
-                    isDisabled={!formik.values.isPasswordChanged}
-                  />
-                )}
-              </Field>
-              <ErrorMessage
-                name="password"
-                component="div"
-                style={{ color: "red", fontSize: "smaller" }}
-              />
-            </FormControl>
-          </ModalBody>
-
-          <ModalFooter>
-            <Button
-              colorScheme="teal"
-              width="100%"
-              type="submit"
-              isLoading={formik.isSubmitting}
+    <Stack w="100%" overflow="hidden">
+      <Formik
+        initialValues={{
+          isChannelNameChanged: false,
+          isDescriptionChanged: false,
+          isPasswordChanged: false,
+          channelName,
+          description,
+          password: "",
+        }}
+        validationSchema={chSettingsValidationSchema}
+        onSubmit={handleSubmit}
+      >
+        {(formik) => (
+            <Form
+              style={{
+                display: "flex", flexDirection: "column", overflow: "auto"
+              }}
             >
-              送信
-            </Button>
-          </ModalFooter>
-        </Form>
-      )}
-    </Formik>
+              <FormControl id="isChannelNameChanged" mb={2}>
+                <Field name="isChannelNameChanged">
+                  {({ field }) => (
+                    <Checkbox
+                      {...field}
+                      isChecked={field.value}
+                    >
+                      チャンネル名を変更する
+                    </Checkbox>
+                  )}
+                </Field>
+              </FormControl>
+
+              <FormControl id="channelName" mb={3}>
+                <Field name="channelName">
+                  {({ field }) => (
+                    <Input
+                      {...field}
+                      placeholder="チャンネル名"
+                      autoComplete="off"
+                      isDisabled={!formik.values.isChannelNameChanged}
+                    />
+                  )}
+                </Field>
+                <ErrorMessage
+                  name="channelName"
+                  component="div"
+                  style={{ color: "red", fontSize: "smaller" }}
+                />
+              </FormControl>
+
+              <FormControl id="isDescriptionChanged" mb={2}>
+                <Field name="isDescriptionChanged">
+                  {({ field }) => (
+                    <Checkbox
+                      {...field}
+                      isChecked={field.value}
+                      alignSelf="flex-start"
+                    >
+                      チャンネル説明を変更する
+                    </Checkbox>
+                  )}
+                </Field>
+              </FormControl>
+
+              <FormControl
+                id="description"
+                display="flex"
+                flexDir="column"
+                overflow="auto"
+                mb={3}
+              >
+                <Field name="description">
+                  {({ field }) => (
+                    <Textarea
+                      {...field}
+                      placeholder="チャンネル説明"
+                      autoComplete="off"
+                      resize="none"
+                      as={TextareaAutosize}
+                      isDisabled={!formik.values.isDescriptionChanged}
+                    />
+                  )}
+                </Field>
+                <ErrorMessage
+                  name="description"
+                  component="div"
+                  style={{ color: "red", fontSize: "smaller" }}
+                />
+              </FormControl>
+
+              <FormControl id="isPasswordChanged" mb={2}>
+                <Field name="isPasswordChanged">
+                  {({ field }) => (
+                    <Checkbox
+                      {...field}
+                      isChecked={field.value}
+                    >
+                      パスワード設定
+                    </Checkbox>
+                  )}
+                </Field>
+              </FormControl>
+
+              <FormControl id="password" mb={3}>
+                <Field name="password">
+                  {({ field }) => (
+                    <Input
+                      {...field}
+                      placeholder="空欄のまま送信すると無効にできます"
+                      autoComplete="off"
+                      isDisabled={!formik.values.isPasswordChanged}
+                    />
+                  )}
+                </Field>
+                <ErrorMessage
+                  name="password"
+                  component="div"
+                  style={{ color: "red", fontSize: "smaller" }}
+                />
+              </FormControl>
+
+              <ModalButton type="submit" isLoading={formik.isSubmitting}>
+                送信
+              </ModalButton>
+          </Form>
+        )}
+      </Formik>
+    </Stack>
   );
 }
 

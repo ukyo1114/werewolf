@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import {
   Box,
   Stack,
-  ModalBody,
   Tabs, TabList, Tab, TabPanels, TabPanel, Text,
 } from "@chakra-ui/react";
 import { useUserState } from "../../../context/UserProvider.jsx";
@@ -44,22 +43,22 @@ const VoteHistoryTabs = ({ mode }) => {
   const { tabs, components } = modeConfig[mode] || modeConfig["others"];
 
   return (
-      <ModalBody>
-        <Tabs>
-          <TabList>
-            {tabs.map((tabName) => (
-              <Tab key={tabName} w={`${100 / tabs.length}%`}>
-                {tabName}
-              </Tab>
-            ))}
-          </TabList>
-          <TabPanels>
-            {components.map((Component, index) => (
-              <TabPanel key={index} maxHeight="60vh" overflowY="auto">{Component}</TabPanel>
-            ))}
-          </TabPanels>
-        </Tabs>
-      </ModalBody>
+    <Tabs display="flex" flexDir="column" overflow="hidden">
+      <TabList>
+        {tabs.map((tabName) => (
+          <Tab key={tabName} w={`${100 / tabs.length}%`}>
+            {tabName}
+          </Tab>
+        ))}
+      </TabList>
+      <TabPanels display="flex" overflow="hidden">
+        {components.map((Component, index) => (
+          <TabPanel key={index} w="100%" p={0} display="flex" overflow="hidden">
+            {Component}
+          </TabPanel>
+        ))}
+      </TabPanels>
+    </Tabs>
   );
 };
 
@@ -94,7 +93,7 @@ const VoteHistory = () => {
   }, [fetchVoteHistory]);
 
   return (
-    <Stack gap={4}>
+    <Stack p={2} gap={4} flex="1" overflow="auto">
       {Object.entries(voteHistory).length > 0 ? (
         Object.entries(voteHistory)
           .reverse()
@@ -167,7 +166,7 @@ const FortuneResult = () => {
   }, [fetchFortuneResult]);
 
   return (
-    <Stack gap={4}>
+    <Stack p={2} gap={4} flex="1" overflow="auto">
       {fortuneResult && Object.entries(fortuneResult).length > 0 ? (
         Object.entries(fortuneResult)
           .reverse()
@@ -226,7 +225,7 @@ const MediumResult = () => {
   }, [fetchMediumResult]);
 
   return (
-    <Stack gap={4}>
+    <Stack p={2} gap={4} flex="1" overflow="auto">
       {mediumResult && Object.entries(mediumResult).length > 0 ? (
         Object.entries(mediumResult)
           .reverse()
@@ -279,7 +278,7 @@ const GuardHistory = () => {
   }, [fetchGuardHistory]);
 
   return (
-    <Stack gap={4}>
+    <Stack p={2} gap={4} flex="1" overflow="auto">
       {guardHistory && Object.entries(guardHistory).length > 0 ? (
         Object.entries(guardHistory)
           .reverse()
@@ -331,7 +330,7 @@ const AttackHistory = () => {
   }, [fetchAttackHistory]);
 
   return (
-    <Stack gap={4}>
+    <Stack p={2} gap={4} flex="1" overflow="auto">
       {attackHistory && Object.entries(attackHistory).length > 0 ? (
         Object.entries(attackHistory)
           .reverse()

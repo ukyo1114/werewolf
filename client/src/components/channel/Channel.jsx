@@ -80,7 +80,7 @@ const Channel = () => {
     <Flex
       flexDir="column"
       justifyContent="flex-end"
-      p={4}
+      px={2}
       w="100%"
       h="100%"
       overflowY="auto"
@@ -100,7 +100,9 @@ const Channel = () => {
           flexDir="column-reverse"
           ref={scrollRef}
           onScroll={handleScroll}
-          p={2}
+          pr={2}
+          gap={3}
+          w="100%"
         >
           {messages && messages.map((m) => {
             const chatUser = (m.sender === GAME_MASTER._id) ? GAME_MASTER :

@@ -36,27 +36,25 @@ const Channels = () => {
   if (!user.token) return null;
 
   return (
-    <div style={{ width: "100%" }}>
-      <Flex justifyContent="center" w="100%" h="100%">
-        {!isMobile && modeConfig[mode]}
-        <Flex
-          alignItems="center"
-          flexDir="column"
-          maxW="600px"
-          w="100%" h="100vh"
-        >
-          <ChannelHeader
-            mode={mode}
-            showJoinedCh={showJoinedCh}
-            setShowJoinedCh={setShowJoinedCh}
-          />
-          {channelId ?
-            <Channel key={channelId} /> :
-            <ChannelList showJoinedCh={showJoinedCh} />
-          }
-        </Flex>
+    <Flex justifyContent="center" w="100%" h="100vh">
+      {!isMobile && modeConfig[mode]}
+      <Flex
+        alignItems="center"
+        flexDir="column"
+        maxW="600px"
+        w="100%" h="100%"
+      >
+        <ChannelHeader
+          mode={mode}
+          showJoinedCh={showJoinedCh}
+          setShowJoinedCh={setShowJoinedCh}
+        />
+        {channelId ?
+          <Channel key={channelId} /> :
+          <ChannelList showJoinedCh={showJoinedCh} />
+        }
       </Flex>
-    </div>
+    </Flex>
   )
 };
 

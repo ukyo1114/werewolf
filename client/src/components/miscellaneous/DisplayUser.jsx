@@ -1,21 +1,24 @@
 import { Flex, Avatar } from "@chakra-ui/react";
 import { StyledDivider, EllipsisText } from "./CustomComponents.jsx";
+import { useUserState } from "../../context/UserProvider.jsx";
 
 const DisplayUser = ({ children, user, ...props }) => {
+  const { isMobile } = useUserState();
+
   return (
     <Flex
       alignItems={children ? "flex-start" : "center"}
       w="100%"
-      p={4}
+      p={2}
       borderRadius="lg"
       boxShadow="uniform"
       {...props}
     >
       <Avatar
-        size="lg"
+        size={isMobile ? "md" : "lg"}
         name={user.name}
         src={user.pic}
-        borderRadius="lg"
+        borderRadius={isMobile ? "md" : "lg"}
         mt={children && 1}
         mr={4}
       />

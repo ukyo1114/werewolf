@@ -23,7 +23,7 @@ export const ChannelHeader = ({ mode, showJoinedCh, setShowJoinedCh }) => {
   };
   
   return(
-    <Flex alignItems="center" w="100%" p={3}>
+    <Flex alignItems="center" w="100%" p={2}>
       {isMobile &&
         <>
           <IconButton

@@ -3,16 +3,16 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 import {
-  Button,
+  Stack,
   Input,
   FormControl, FormLabel,
-  ModalBody, ModalFooter,
 } from "@chakra-ui/react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 
 import useNotification from "../../hooks/useNotification.js";
 import { reqPasswordResetSchema } from "./validationSchema";
 import { messages } from "../../messages.js";
+import ModalButton from "../miscellaneous/ModalButton.jsx";
 
 export const RequestPResetModal = () => {
   const navigate = useNavigate();
@@ -43,46 +43,43 @@ export const RequestPResetModal = () => {
   }, [showToast]);
 
   return (
+    <Stack w="100%" overflow="hidden">
       <Formik
         initialValues={{ email: "" }}
         validationSchema={reqPasswordResetSchema}
         onSubmit={handleSubmit}
       >
         {(formik) => (
-          <Form>
-            <ModalBody>
-              <FormControl id="Email" isRequired mb={3}>
-                <FormLabel>メールアドレス</FormLabel>
-                <Field name="email">
-                  {({ field }) => (
-                    <Input
-                      {...field}
-                      type="email"
-                      placeholder="メールアドレス"
-                      autoComplete="email"
-                    />
-                  )}
-                </Field>
-                <ErrorMessage
-                  name="email"
-                  component="div"
-                  style={{ color: "red", fontSize: "smaller" }}
-                />
-              </FormControl>
-            </ModalBody>
+          <Form
+            style={{
+              display: "flex", flexDirection: "column", overflow: "auto"
+            }}
+          >
+            <FormControl id="Email" isRequired mb={3}>
+              <FormLabel>メールアドレス</FormLabel>
+              <Field name="email">
+                {({ field }) => (
+                  <Input
+                    {...field}
+                    type="email"
+                    placeholder="メールアドレス"
+                    autoComplete="email"
+                  />
+                )}
+              </Field>
+              <ErrorMessage
+                name="email"
+                component="div"
+                style={{ color: "red", fontSize: "smaller" }}
+              />
+            </FormControl>
 
-            <ModalFooter>
-                <Button
-                  colorScheme="teal"
-                  width="100%"
-                  type="submit"
-                  isLoading={formik.isSubmitting}
-                >
-                  送信
-                </Button>
-            </ModalFooter>
+            <ModalButton type="submit" isLoading={formik.isSubmitting}>
+              送信
+            </ModalButton>
           </Form>
         )}
       </Formik>
+    </Stack>
   );
 };

@@ -1,25 +1,27 @@
+import React, { useCallback } from "react";
+import axios from "axios";
+import TextareaAutosize from "react-textarea-autosize";
+
 import {
-  Button,
+  Flex,
+  Stack,
   FormControl,
   Checkbox,
   Input,
   Textarea,
-  ModalBody,
-  ModalFooter,
   FormLabel,
 } from "@chakra-ui/react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+
 import { useUserState } from "../../context/UserProvider.jsx";
-import React, { useCallback } from "react";
-import axios from "axios";
 import useNotification from "../../hooks/useNotification";
 import { errors, messages } from "../../messages";
-import { Formik, Form, Field, ErrorMessage } from "formik";
 import {
-  createChValidationSchema,
-  createChInitialValues,
+  createChValidationSchema, createChInitialValues,
 } from "./validationSchema";
 import { EllipsisText } from "../miscellaneous/CustomComponents.jsx";
-import TextareaAutosize from "react-textarea-autosize";
+import ModalButton from "../miscellaneous/ModalButton.jsx";
+
 
 const CreateChannel = () => {
   const showToast = useNotification();
@@ -55,14 +57,18 @@ const CreateChannel = () => {
   }, [cDispatch, showToast, user.token]);
 
   return (
-    <Formik
-      initialValues={createChInitialValues}
-      validationSchema={createChValidationSchema}
-      onSubmit={handleSubmit}
-    >
-      {(formik) => (
-        <Form>
-          <ModalBody>
+    <Stack w="100%" overflow="hidden">
+      <Formik
+        initialValues={createChInitialValues}
+        validationSchema={createChValidationSchema}
+        onSubmit={handleSubmit}
+      >
+        {(formik) => (
+          <Form
+            style={{
+              display: "flex", flexDirection: "column", overflow: "auto"
+            }}
+          >
             <FormControl id="channelName" mb={3}>
               <FormLabel><EllipsisText>チャンネル名</EllipsisText></FormLabel>
               <Field name="channelName">
@@ -82,15 +88,19 @@ const CreateChannel = () => {
               />
             </FormControl>
 
-            <FormControl id="description" mb={3}>
+            <FormControl
+              id="description"
+              display="flex"
+              flexDir="column"
+              overflow="auto"
+              mb={3}
+            >
               <FormLabel><EllipsisText>説明文</EllipsisText></FormLabel>
               <Field name="description">
                 {({ field }) => (
                   <Textarea
                     {...field}
                     placeholder="説明文"
-                    minHeight="100px"
-                    maxHeight="600px"
                     autoComplete="off"
                     resize="none"
                     as={TextareaAutosize}
@@ -104,7 +114,7 @@ const CreateChannel = () => {
               />
             </FormControl>
 
-            <FormControl id="isPasswordEnabled" mb={3} overflow="hidden">
+            <FormControl id="isPasswordEnabled" mb={2}>
               <Field name="isPasswordEnabled">
                 {({ field }) => (
                   <Checkbox
@@ -118,7 +128,7 @@ const CreateChannel = () => {
             </FormControl>
             
             {formik.values.isPasswordEnabled &&
-              <FormControl id="password">
+              <FormControl id="password" mb={3}>
                 <Field name="password">
                   {({ field }) => (
                     <Input
@@ -137,21 +147,14 @@ const CreateChannel = () => {
                 />
               </FormControl>
             }
-          </ModalBody>
 
-          <ModalFooter>
-            <Button
-              colorScheme="teal"
-              width="100%"
-              type="submit"
-              isLoading={formik.isSubmitting}
-            >
+            <ModalButton type="submit" isLoading={formik.isSubmitting} >
               作成
-            </Button>
-          </ModalFooter>
-        </Form>
-      )}
-    </Formik>
+            </ModalButton>
+          </Form>
+        )}
+      </Formik>
+    </Stack>
   );
 };
 

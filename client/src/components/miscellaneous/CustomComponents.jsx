@@ -94,19 +94,6 @@ export const EllipsisText = ({ children, ...props }) => (
   </Text>
 );
 
-export const ModalButton = ({ children, disableCondition, ...props }) => {
-  return (
-    <Button
-      mt={4}
-      colorScheme="teal"
-      width="100%"
-      {...props}
-    >
-      {children}
-    </Button>
-  )
-};
-
 export const iconProps = {
   size: "30px",
   color: "#4A5568"

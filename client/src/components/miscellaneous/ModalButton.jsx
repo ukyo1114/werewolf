@@ -1,15 +1,22 @@
 import { Button } from "@chakra-ui/react";
 
-const ModalButton = ({ innerText, onClick, disableCondition }) => {
+const ModalButton = ({ 
+  children,
+  colorScheme="teal",
+  onClick, isDisabled, type, isLoading, ...props
+}) => {
   return (
     <Button
-      mt={4}
-      colorScheme="teal"
+      flex="none"
       width="100%"
+      colorScheme={colorScheme}
       onClick={onClick}
-      isDisabled={disableCondition}
+      isDisabled={isDisabled}
+      type={type}
+      isLoading={isLoading}
+      {...props}
     >
-      {innerText}
+      {children}
     </Button>
   )
 };

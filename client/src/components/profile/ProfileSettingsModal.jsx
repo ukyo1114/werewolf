@@ -1,23 +1,25 @@
+import { useState, useRef, useCallback } from "react";
+import axios from "axios";
+
 import {
+  Stack,
   Button,
   FormControl,
   Checkbox,
   Input,
-  ModalBody,
-  ModalFooter,
   Box,
   Image,
 } from "@chakra-ui/react";
+
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useUserState } from "../../context/UserProvider.jsx";
-import React, { useState, useRef, useCallback } from "react";
-import axios from "axios";
 import useNotification from "../../hooks/useNotification";
 import { errors, messages } from "../../messages";
-import { Formik, Form, Field, ErrorMessage } from "formik";
 import { profileSettingsValidationSchema } from "./validationSchema";
 import ImageCropper from "../miscellaneous/ImageCropper";
 import usePostDetails from "../../hooks/usePostDetails";
 import { EllipsisText } from "../miscellaneous/CustomComponents.jsx";
+import ModalButton from "../miscellaneous/ModalButton.jsx";
 
 const ProfileSettingsModal = ({ onClose }) => {
   const { user, uDispatch } = useUserState();
@@ -72,7 +74,7 @@ const ProfileSettingsModal = ({ onClose }) => {
   }, [isPictureChanged]);
 
   return (
-    <>
+    <Stack w="100%" overflow="auto">
       <Box display={cropImage && "none"}>
         <Formik
           initialValues={{
@@ -83,99 +85,95 @@ const ProfileSettingsModal = ({ onClose }) => {
           onSubmit={handleSubmit}
         >
           {(formik) => (
-            <Form>
-              <ModalBody>
-                <FormControl id="isUserNameChanged" mb={2} overflow="hidden">
-                  <Field name="isUserNameChanged">
-                    {({ field }) => (
-                      <Checkbox
-                        {...field}
-                        isChecked={field.value}
-                      >
-                        <EllipsisText>ユーザー名を変更する</EllipsisText>
-                      </Checkbox>
-                    )}
-                  </Field>
-                </FormControl>
-                
-                <FormControl id="userName" mb={3}>
-                  <Field name="userName">
-                    {({ field }) => (
-                      <Input
-                        {...field}
-                        placeholder="ユーザー名"
-                        autoComplete="off"
-                        isDisabled={!formik.values.isUserNameChanged}
-                      />
-                    )}
-                  </Field>
-                  <ErrorMessage
-                    name="userName"
-                    component="div"
-                    style={{ color: "red", fontSize: "smaller" }}
-                  />
-                </FormControl>
-                
-                <FormControl id="isPictureChanged" mb={2} overflow="hidden">
-                  <Checkbox
-                    id="isPictureChanged"
-                    isChecked={isPictureChanged}
-                    onChange={(e) => setIsPictureChanged(e.target.checked)}
-                  >
-                    <EllipsisText>プロフィール画像を変更する</EllipsisText>
-                  </Checkbox>
-                </FormControl>
-
-                <FormControl
-                  id="pic"
-                  display="flex"
-                  flexDirection="column"
-                  alignItems="center"
-                >
-                  {pic ? (
-                    <Image
-                      src={pic}
-                      boxSize="120px"
-                      borderRadius="lg"
-                      objectFit="cover"
-                      alt="プロフィール画像"
-                      cursor={isPictureChanged ? "pointer" : "not-allowed"}
-                      onClick={handleImageClick}
-                      opacity={isPictureChanged ? 1 : 0.7}
-                    />
-                  ) : (
-                    <Button
-                      isDisabled={!isPictureChanged}
-                      width="120px"
-                      height="120px"
-                      borderRadius="lg"
-                      onClick={() => inputRef.current.click()}
-                      colorScheme="gray"
+            <Form
+              style={{
+                display: "flex", flexDirection: "column", overflow: "hidden"
+              }}
+            >
+              <FormControl id="isUserNameChanged" mb={2}>
+                <Field name="isUserNameChanged">
+                  {({ field }) => (
+                    <Checkbox
+                      {...field}
+                      isChecked={field.value}
                     >
-                      画像を選択
-                    </Button>
+                      <EllipsisText>ユーザー名を変更する</EllipsisText>
+                    </Checkbox>
                   )}
+                </Field>
+              </FormControl>
+              
+              <FormControl id="userName" mb={3}>
+                <Field name="userName">
+                  {({ field }) => (
+                    <Input
+                      {...field}
+                      placeholder="ユーザー名"
+                      autoComplete="off"
+                      isDisabled={!formik.values.isUserNameChanged}
+                    />
+                  )}
+                </Field>
+                <ErrorMessage
+                  name="userName"
+                  component="div"
+                  style={{ color: "red", fontSize: "smaller" }}
+                />
+              </FormControl>
+              
+              <FormControl id="isPictureChanged" mb={2}>
+                <Checkbox
+                  id="isPictureChanged"
+                  isChecked={isPictureChanged}
+                  onChange={(e) => setIsPictureChanged(e.target.checked)}
+                >
+                  <EllipsisText>プロフィール画像を変更する</EllipsisText>
+                </Checkbox>
+              </FormControl>
 
-                  <Input
-                    hidden
-                    type="file"
-                    accept="image/jpeg, image/png"
-                    onChange={(e) => postDetails(e.target.files[0])}
-                    ref={inputRef}
+              <FormControl
+                id="pic"
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                mb={3}
+              >
+                {pic ? (
+                  <Image
+                    src={pic}
+                    boxSize="120px"
+                    borderRadius="lg"
+                    objectFit="cover"
+                    alt="プロフィール画像"
+                    cursor={isPictureChanged ? "pointer" : "not-allowed"}
+                    onClick={handleImageClick}
+                    opacity={isPictureChanged ? 1 : 0.7}
                   />
-                </FormControl>
-              </ModalBody>
-
-              <ModalFooter>
+                ) : (
                   <Button
-                    colorScheme="teal"
-                    width="100%"
-                    type="submit"
-                    isLoading={formik.isSubmitting}
+                    isDisabled={!isPictureChanged}
+                    width="120px"
+                    height="120px"
+                    borderRadius="lg"
+                    onClick={() => inputRef.current.click()}
+                    colorScheme="gray"
                   >
-                    送信
+                    画像を選択
                   </Button>
-              </ModalFooter>
+                )}
+
+                <Input
+                  hidden
+                  type="file"
+                  accept="image/jpeg, image/png"
+                  onChange={(e) => postDetails(e.target.files[0])}
+                  ref={inputRef}
+                />
+              </FormControl>
+
+              <ModalButton type="submit" isLoading={formik.isSubmitting}>
+                送信
+              </ModalButton>
             </Form>
           )}
         </Formik>
@@ -188,7 +186,7 @@ const ProfileSettingsModal = ({ onClose }) => {
           onClose={() => setCropImage(false)}
         />
       }
-    </>
+    </Stack>
   );
 };
 

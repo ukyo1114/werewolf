@@ -12,7 +12,7 @@ export const SideBar = ({ children }) => {
       alignItems="center"
       overflowY="auto"
       justifyContent="space-between"
-      h="100vh"
+      h="100%"
       maxW="300px"
     >
       <Stack

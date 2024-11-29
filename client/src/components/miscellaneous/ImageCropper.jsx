@@ -3,10 +3,11 @@ import Cropper from "react-easy-crop";
 
 import {
   Box,
-  Button,
+  Stack,
   Slider, SliderTrack, SliderFilledTrack, SliderThumb,
-  ModalBody, ModalFooter,
 } from "@chakra-ui/react";
+
+import ModalButton from "./ModalButton";
 
 const ImageCropper = ({ imgSrc, setPic, onClose }) => {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
@@ -29,10 +30,9 @@ const ImageCropper = ({ imgSrc, setPic, onClose }) => {
   };
 
   return (
-    <>
-      <ModalBody>
+    <Stack w="100%" gap={4} overflow="auto">
         {imgSrc && (
-          <Box mb={3} position="relative" width="100%" height="400px">
+          <Box position="relative" width="100%" height="400px">
             <Cropper
               image={imgSrc}
               crop={crop}
@@ -48,6 +48,7 @@ const ImageCropper = ({ imgSrc, setPic, onClose }) => {
             />
           </Box>
         )}
+        
         <Slider
           aria-label="zoom-slider"
           value={zoom}
@@ -61,18 +62,9 @@ const ImageCropper = ({ imgSrc, setPic, onClose }) => {
           </SliderTrack>
           <SliderThumb />
         </Slider>
-      </ModalBody>
       
-      <ModalFooter>
-        <Button
-          colorScheme="teal" 
-          onClick={cropImage}
-          width="100%"
-        >
-          OK
-        </Button>
-      </ModalFooter>
-    </>
+        <ModalButton onClick={cropImage}>OK</ModalButton>
+    </Stack>
   );
 };
 
