@@ -1,8 +1,10 @@
+import { Suspense, lazy } from "react";
 import {
   Tabs, TabList, Tab, TabPanels, TabPanel
 } from "@chakra-ui/react";
-import Login from "./Login.jsx";
-import Signup from "./Signup.jsx";
+
+const Login = lazy(() => import("./Login.jsx"));
+const Signup = lazy(() => import("./Signup.jsx"));
 
 const Auth = () => {
   return (
@@ -14,10 +16,14 @@ const Auth = () => {
 
       <TabPanels>
         <TabPanel>
-          <Login />
+          <Suspense fallback={<div>Loading...</div>}>
+            <Login />
+          </Suspense>
         </TabPanel>
         <TabPanel>
-          <Signup />
+          <Suspense fallback={<div>Loading...</div>}>
+            <Signup />
+          </Suspense>
         </TabPanel>
       </TabPanels>
     </Tabs>
