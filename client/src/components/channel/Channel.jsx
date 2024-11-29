@@ -83,7 +83,6 @@ const Channel = () => {
     <Flex
       flexDir="column"
       justifyContent="flex-end"
-      px={2}
       w="100%"
       h="100%"
       overflowY="auto"
@@ -103,7 +102,7 @@ const Channel = () => {
           flexDir="column-reverse"
           ref={scrollRef}
           onScroll={handleScroll}
-          pr={2}
+          px={2}
           gap={3}
           w="100%"
         >
@@ -127,7 +126,7 @@ const Channel = () => {
       >
         {(formik) => (
           <Form>
-            <FormControl my={3} isRequired>
+            <FormControl p={2} isRequired>
               <Field name="newMessage">
                 {({ field }) => (
                   <Box position="relative" width="100%">

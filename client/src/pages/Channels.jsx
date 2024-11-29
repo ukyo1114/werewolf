@@ -36,14 +36,14 @@ const Channels = () => {
   if (!user.token) return null;
 
   return (
-    <Flex justifyContent="center" w="100%" overflow="hidden">
+    <Flex justifyContent="center" w="100%" h="100vh" overflow="hidden">
       {!isMobile && modeConfig[mode]}
       <Flex
         alignItems="center"
         flexDir="column"
         maxW="600px"
         overflow="hidden"
-        w="100%"
+        w="100%" h="100vh"
       >
         <ChannelHeader
           mode={mode}
