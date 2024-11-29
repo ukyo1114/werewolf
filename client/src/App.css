@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Red+Hat+Display&display=swap");
 
 .App {
-  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   background-size: cover;
   background-position: center;
