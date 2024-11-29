@@ -1,4 +1,4 @@
-import _ from "lodash";
+import { unionBy, reject, union, without } from "lodash";
 
 const initialChannelState = {
   _id: "",
@@ -25,20 +25,20 @@ function channelReducer(state = initialChannelState, action) {
     case "LEAVE_CHANNEL":
       return initialChannelState;
     case "USER_JOINED":{
-      const users = _.unionBy([action.payload], state.users, "_id");
+      const users = unionBy([action.payload], state.users, "_id");
       return { ...state, users };
     }
     case "USER_LEFT": {
-      const users = _.reject(state.users, { _id: action.payload });
+      const users = reject(state.users, { _id: action.payload });
       return { ...state, users };
     }
     case "USER_BLOCKED": {
-      const users = _.reject(state.users, { _id: action.payload });
-      const blockUsers = _.union(state.blockUsers, [action.payload]);
+      const users = reject(state.users, { _id: action.payload });
+      const blockUsers = union(state.blockUsers, [action.payload]);
       return { ...state, users, blockUsers };
     }
     case "CANCEL_BLOCK": {
-      const blockUsers = _.without(state.blockUsers, action.payload);
+      const blockUsers = without(state.blockUsers, action.payload);
       return { ...state, blockUsers };
     }
     case "CHANNEL_SETTINGS": {
