@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Suspense, lazy, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -18,8 +18,9 @@ import useNotification from "../../hooks/useNotification";
 import { errors, messages } from "../../messages";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { loginValidationSchema } from "./validationSchema";
-import ModalTemplete from "../miscellaneous/ModalTemplete.jsx";
-import { RequestPResetModal } from "./RequestPResetModal.jsx";
+
+const ModalTemplete = lazy(() => import("../miscellaneous/ModalTemplete.jsx"));
+const RequestPResetModal = lazy(() => import("./RequestPResetModal.jsx"));
 
 const Login = () => {
   const [pshow, setPShow] = useState(false);
@@ -146,12 +147,14 @@ const Login = () => {
         )}
       </Formik>
 
-      <ModalTemplete
-        isOpen={resetPass.isOpen} onClose={resetPass.onClose}
-        title="パスワード再設定"
-      >
-        <RequestPResetModal />
-      </ModalTemplete>
+      <Suspense fallback={<div>Loading...</div>}>
+        <ModalTemplete
+          isOpen={resetPass.isOpen} onClose={resetPass.onClose}
+          title="パスワード再設定"
+        >
+          <RequestPResetModal />
+        </ModalTemplete>
+      </Suspense>
     </>
   );
 };

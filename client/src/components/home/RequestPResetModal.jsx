@@ -14,7 +14,7 @@ import { reqPasswordResetSchema } from "./validationSchema";
 import { messages } from "../../messages.js";
 import ModalButton from "../miscellaneous/ModalButton.jsx";
 
-export const RequestPResetModal = () => {
+const RequestPResetModal = () => {
   const navigate = useNavigate();
   const showToast = useNotification();
 
@@ -83,3 +83,5 @@ export const RequestPResetModal = () => {
     </Stack>
   );
 };
+
+export default RequestPResetModal;
