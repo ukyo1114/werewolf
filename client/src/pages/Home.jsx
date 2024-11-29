@@ -19,7 +19,7 @@ const Home = () => {
       centerContent
       maxW="xl"
     >
-      <Image mt={8} src="/TITLE.webp" alt="10人で人狼" maxW="50%" />
+      <Image mt={8} w="600px" h="63px" src="/TITLE.webp" alt="10人で人狼" maxW="50%" />
       <Box w="100%">
         <Auth />
       </Box>
