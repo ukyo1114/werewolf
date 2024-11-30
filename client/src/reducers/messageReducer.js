@@ -1,4 +1,4 @@
-import { uniqBy } from "lodash";
+import uniqBy from "lodash-es/uniqBy";
 
 function messagesReducer(state, action) {
   switch (action.type) {

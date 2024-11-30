@@ -1,4 +1,7 @@
-import { unionBy, reject, union, without } from "lodash";
+import unionBy from "lodash-es/unionBy";
+import reject from "lodash-es/reject";
+import union from "lodash-es/union";
+import without from "lodash-es/without";
 
 const initialChannelState = {
   _id: "",
