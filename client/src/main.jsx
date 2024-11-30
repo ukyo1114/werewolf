@@ -3,7 +3,6 @@ import { createRoot } from "react-dom/client";
 
 import { ChakraProvider } from "@chakra-ui/react";
 
-import "./index.css";
 import App from "./App";
 import UserProvider from "./context/UserProvider.jsx";
 import theme from "./theme";
