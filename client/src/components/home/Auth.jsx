@@ -3,7 +3,7 @@ import {
   Tabs, TabList, Tab, TabPanels, TabPanel
 } from "@chakra-ui/react";
 
-const Login = lazy(() => import("./Login.jsx"));
+import Login from "./Login.jsx";
 const Signup = lazy(() => import("./Signup.jsx"));
 
 const Auth = () => {
@@ -16,9 +16,7 @@ const Auth = () => {
 
       <TabPanels>
         <TabPanel>
-          <Suspense fallback={<div>Loading...</div>}>
-            <Login />
-          </Suspense>
+          <Login />
         </TabPanel>
         <TabPanel>
           <Suspense fallback={<div>Loading...</div>}>
