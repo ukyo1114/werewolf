@@ -2,7 +2,8 @@ import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import { Suspense, lazy } from "react";
 
-const Home = lazy(() => import("./pages/Home.jsx"));
+import Home from "./pages/Home.jsx";
+
 const Channels = lazy(() => import("./pages/Channels.jsx"));
 const EmailVerification = lazy(() => import("./pages/EmailVerification.jsx"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword.jsx"));
