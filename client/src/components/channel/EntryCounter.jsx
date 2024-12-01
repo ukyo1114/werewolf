@@ -34,18 +34,23 @@ const EntryCounter = () => {
       auth,
     );
 
-    entrySocketRef.current.on("connect", async () => {
-      try {
-        const response = await entrySocketRef.current.emitWithAck(
-          "joinChannel",
-          channelId,
-        );
-        setUsers(response.users);
-      } catch (error) {
-        showToast(
-          error?.response?.data?.error || errors.CONNECTION_FAILED, "error"
-        );
-        entrySocketRef.current.disconnect();
+    entrySocketRef.current.on("connect_response", async ({ gameId }) => {
+      if (gameId) {
+        showToast(messages.NAVIGATE_GAME, "info");
+        await joinGame(gameId);
+      } else {
+        try {
+          const response = await entrySocketRef.current.emitWithAck(
+            "joinChannel",
+            channelId,
+          );
+          setUsers(response.users);
+        } catch (error) {
+          showToast(
+            error?.response?.data?.error || errors.CONNECTION_FAILED, "error"
+          );
+          entrySocketRef.current.disconnect();
+        }
       }
     });
 
@@ -54,11 +59,6 @@ const EntryCounter = () => {
     });
 
     entrySocketRef.current.on("gameStart", async (gameId) => {
-      await joinGame(gameId);
-    });
-
-    entrySocketRef.current.on("navigateGame", async (gameId) => {
-      showToast(messages.NAVIGATE_GAME, "info");
       await joinGame(gameId);
     });
 

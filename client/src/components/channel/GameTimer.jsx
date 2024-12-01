@@ -70,7 +70,7 @@ const GameTimer = () => {
         uDispatch({ type: "UPDATE_STATUS", payload: gameState });
       } catch (error) {
         showToast(
-          error?.response?.data?.error || errors.CONNECTION_FAILED, "error"
+          error?.response?.data?.message || errors.CONNECTION_FAILED, "error"
         );
         gameSocketRef.current.disconnect();
       }

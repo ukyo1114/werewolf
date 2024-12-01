@@ -26,7 +26,7 @@ function entryNameSpaseHandler(io) {
   entryNameSpace.on("connection", (socket) => {
     const userId = socket.userId;
     const gameId = GameState.isPlayingGame(userId);
-    if (gameId) entryNameSpace.to(socket.id).emit("navigateGame", gameId);
+    socket.emit("connect_response", { gameId });
 
     socket.on("joinChannel", (channelId, callback) => {
       socket.join(channelId);
