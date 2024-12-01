@@ -30,6 +30,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public/build")));
 
 // ルートの設定
+app.use("/robots.txt", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "robots.txt"));
+});
+
 app.use("/api/user", userRoutes);
 app.use("/api/channel", channelRoutes);
 app.use("/api/message", messageRoutes);
