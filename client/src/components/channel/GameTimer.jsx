@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useMemo, useEffect, useRef } from "react";
 import axios from "axios";
 import io from "socket.io-client";
 import Countdown from "react-countdown";
@@ -35,7 +35,7 @@ const GameTimer = () => {
     }
   }, [showToast, user.token, channelId, uDispatch]);
 
-  const calcTimer = useCallback(() =>{
+  const timerEnd = useMemo(() => {
     const duration = PHASE_DURATIONS[currentPhase] * 1000;
     return new Date(changedAt).getTime() + duration;
   }, [currentPhase, changedAt]);
@@ -116,7 +116,8 @@ const GameTimer = () => {
 
       {currentPhase && changedAt &&
         <Countdown
-          date={calcTimer()}
+          key={timerEnd}
+          date={timerEnd}
           renderer={({ minutes, seconds }) => (minutes * 60 + seconds)} 
         />
       }
