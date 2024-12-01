@@ -27,6 +27,10 @@ const useChatSocket = ({ mDispatch }) => {
       mDispatch({ type: "RECEIVE_MESSAGE", payload: newMessageReceived });
     });
 
+    chatSocketRef.current.on("cSettingsChanged", (updatedChannel) => {
+      cDispatch({ type: "CHANNEL_SETTINGS", payload: updatedChannel });
+    });
+
     chatSocketRef.current.on("userJoined", (user) => {
       cDispatch({ type: "USER_JOINED", payload: user });
     });

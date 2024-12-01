@@ -58,9 +58,11 @@ const channelSettings = asyncHandler(async (req, res) => {
   await channel.save();
 
   const updatedChannel = await Channel.findById(channel._id.toString())
-    .select("channelName description");
+    .select("channelName description").lean();
 
-  res.status(200).json(updatedChannel);
+  channelEvents.emit("cSettingsChanged", { channelId, updatedChannel }); 
+
+  res.status(200).send();
 });
 
 const enterToChannel = asyncHandler(async (req, res) => {
@@ -87,7 +89,7 @@ const enterToChannel = asyncHandler(async (req, res) => {
 
   const user = await User.findById(userId).select("_id name pic");
 
-  channelEvents.emit("userJoined", { channelId: channelId, user: user }); 
+  channelEvents.emit("userJoined", { channelId, user }); 
 
   res.json(fullChannel);
 });
@@ -108,10 +110,7 @@ const leaveChannel = asyncHandler(async (req, res) => {
     { new: true },
   );
 
-  channelEvents.emit("userLeft", {
-    channelId: channelId,
-    userId: userId,
-  });
+  channelEvents.emit("userLeft", { channelId, userId });
 
   res.status(200).json({ message: messages.LEFT_CHANNEL });
 });

@@ -14,7 +14,7 @@ import TextareaAutosize from "react-textarea-autosize";
 import ModalButton from "../miscellaneous/ModalButton.jsx";
 
 const ChannelSettingsModal = () => {
-  const { user, currentChannel, cDispatch } = useUserState();
+  const { user, currentChannel } = useUserState();
   const { _id: channelId, channelAdmin, channelName, description } = currentChannel;
   const showToast = useNotification();
 
@@ -38,13 +38,12 @@ const ChannelSettingsModal = () => {
     try {
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
 
-      const { data } = await axios.put(
+      await axios.put(
         "/api/channel/settings",
         payload,
         config,
       );
 
-      cDispatch({ type: "CHANNEL_SETTINGS", payload: data }); // socketを使用して全員に通知
       showToast(messages.CHANNEL_SETTINGS_CHANGED, "success");
     } catch (error) {
       showToast(
@@ -54,7 +53,7 @@ const ChannelSettingsModal = () => {
     } finally {
       actions.setSubmitting(false);
     }
-  }, [channelAdmin, channelId, user._id, user.token, cDispatch, showToast]);
+  }, [channelAdmin, channelId, user._id, user.token, showToast]);
 
   return (
     <Stack w="100%" overflow="hidden">

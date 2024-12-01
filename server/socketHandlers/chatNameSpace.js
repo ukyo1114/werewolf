@@ -55,6 +55,11 @@ function chatNameSpaseHandler(io) {
     }
   });
 
+  channelEvents.on("cSettingsChanged", (data) => {
+    const { channelId, updatedChannel } = data;
+    chatNameSpace.to(channelId).emit("cSettingsChanged", updatedChannel);
+  });
+
   channelEvents.on("userJoined", (data) => {
     const { channelId, user } = data;
     chatNameSpace.to(channelId).emit("userJoined", user);
