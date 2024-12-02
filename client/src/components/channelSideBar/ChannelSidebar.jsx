@@ -9,6 +9,7 @@ import {
   FaSignOutAlt,
   FaCog,
   FaUserSlash,
+  FaInfoCircle,
 } from "react-icons/fa";
 
 import { useUserState } from "../../context/UserProvider.jsx";
@@ -22,6 +23,7 @@ import {
 } from "../miscellaneous/CustomComponents.jsx";
 import { SideBar } from "../miscellaneous/SideBar.jsx";
 import SpectatorModal from "./spectate/SpectatorModal.jsx";
+import { DisplayChDescription } from "../miscellaneous/DisplayChDescription.jsx";
 
 const ChannelSidebar = () => {
   const { user, currentChannel, cDispatch } = useUserState();
@@ -33,6 +35,7 @@ const ChannelSidebar = () => {
   const blockModal = useDisclosure();
   const chSettingsModal = useDisclosure();
   const spectator = useDisclosure();
+  const chDescription = useDisclosure();
 
   const leaveChannel = async () => {
     try {
@@ -51,6 +54,13 @@ const ChannelSidebar = () => {
 
   return (
     <SideBar>
+      <SidebarButton
+        label="チャンネル情報"
+        onClick={chDescription.onOpen}
+      >
+        <FaInfoCircle {...iconProps} />
+      </SidebarButton>
+
       <SidebarButton label="ユーザーリスト" onClick={userListModal.onOpen}>
         <FaUsers {...iconProps} />
       </SidebarButton>
@@ -86,10 +96,18 @@ const ChannelSidebar = () => {
         label="チャンネル設定"
         onClick={chSettingsModal.onOpen}
         isDisabled={!isAdmin}
-        >
-          <FaCog {...iconProps} />
-        </SidebarButton>
-      
+      >
+        <FaCog {...iconProps} />
+      </SidebarButton>
+
+      <ModalTemplete
+        isOpen={chDescription.isOpen}
+        onClose={chDescription.onClose}
+        title={"チャンネル情報"}
+      >
+        <DisplayChDescription />
+      </ModalTemplete>
+    
       <ModalTemplete
         isOpen={userListModal.isOpen}
         onClose={userListModal.onClose}

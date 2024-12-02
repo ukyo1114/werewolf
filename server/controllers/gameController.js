@@ -43,7 +43,14 @@ const joinGame = asyncHandler(async (req, res) => {
     { new: true },
   )
     .select("_id users channel")
-    .populate("users", "_id name pic");
+    .populate("users", "_id name pic")
+    .populate("channel", "channelName description")
+    .lean();
+
+  const { channelName, description } = game.channel;
+  game.channelName = channelName;
+  game.description = description;
+  delete game.channel;
 
   const user = await User.findById(userId).select("_id name pic");
   channelEvents.emit("userJoined", { channelId: gameId, user: user }); 

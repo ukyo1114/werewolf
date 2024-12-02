@@ -2,7 +2,9 @@ import { useState, useCallback } from "react";
 
 import { useDisclosure } from "@chakra-ui/react";
 
-import { FaUsers, FaVoteYea, FaShieldAlt, FaFileAlt, FaArrowLeft } from "react-icons/fa";
+import {
+  FaUsers, FaVoteYea, FaShieldAlt, FaFileAlt, FaArrowLeft, FaInfoCircle,
+} from "react-icons/fa";
 import { GiCrystalBall, GiWolfHowl } from 'react-icons/gi';
 
 import { useUserState } from "../../context/UserProvider.jsx";
@@ -17,13 +19,17 @@ import {
 import { SideBar } from "../miscellaneous/SideBar.jsx";
 import { TITLE_MAP, MODE_MAP } from "../../constants";
 import { useJoinChannel } from "../../hooks/useJoinChannel";
+import { DisplayChDescription } from "../miscellaneous/DisplayChDescription.jsx";
 
 const GameSidebar = () => {
   const { user, currentChannel } = useUserState();
   const { channel, users, phase } = currentChannel;
+
   const userList = useDisclosure();
   const voteModal = useDisclosure();
   const vHistoryModal = useDisclosure();
+  const chDescription = useDisclosure();
+
   const [mode, setMode] = useState("");
   const joinChannel = useJoinChannel();
 
@@ -38,6 +44,13 @@ const GameSidebar = () => {
 
   return (
     <SideBar>
+      <SidebarButton
+        label="チャンネル情報"
+        onClick={chDescription.onOpen}
+      >
+        <FaInfoCircle {...iconProps} />
+      </SidebarButton>
+
       <SidebarButton label="ユーザーリスト" onClick={userList.onOpen}>
         <FaUsers {...iconProps} />
       </SidebarButton>
@@ -104,6 +117,14 @@ const GameSidebar = () => {
       >
         <FaArrowLeft {...iconProps} />
       </SidebarButton>
+
+      <ModalTemplete
+        isOpen={chDescription.isOpen}
+        onClose={chDescription.onClose}
+        title={"チャンネル情報"}
+      >
+        <DisplayChDescription />
+      </ModalTemplete>
 
       <ModalTemplete
         isOpen={userList.isOpen}
