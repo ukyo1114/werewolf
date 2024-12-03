@@ -40,7 +40,7 @@ const ProfileMenu = () => {
         w="100%"
       >
         <Center px={3} py={2} w="100%">
-          <Avatar size="md" name={user.name} src={user.pic} borderRadius="md" />
+          <Avatar size="md" src={user.pic} borderRadius="md" />
           <Box
             display={isMobile ? "flex" : { base: "none", lg: "flex" }}
             alignItems="center"

@@ -78,7 +78,6 @@ const ChannelList = ({ showJoinedCh }) => {
               <Flex justify="space-between" align="center" width="100%" gap={2}>
                 <Avatar
                   size={isMobile ? "md" : "lg"}
-                  name={channel.channelAdmin.name}
                   src={channel.channelAdmin.pic}
                   borderRadius={isMobile ? "md" : "lg"}
                 />

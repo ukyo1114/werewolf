@@ -81,7 +81,6 @@ const SpectatorModal = () => {
                     <Avatar
                       key={pl._id}
                       size="sm"
-                      name={pl.name}
                       src={pl.pic}
                       borderRadius="md"
                     />

@@ -1,14 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense, lazy } from "react";
 
 import { Flex, Stack } from "@chakra-ui/react";
 
 import { useUserState } from "../context/UserProvider.jsx";
 import ChannelList from "../components/channelList/ChannelList.jsx";
-import Channel from "../components/channel/Channel.jsx";
 import { ChannelHeader } from "../components/channels/ChannelHeader.jsx";
 import ChannelListSidebar from "../components/channelList/ChannelListSidebar.jsx";
-import ChannelSidebar from "../components/channelSideBar/ChannelSidebar.jsx";
-import GameSidebar from "../components/gameSidebar/GameSidebar.jsx";
+
+const Channel = lazy(() => import("../components/channel/Channel.jsx"));
+const ChannelSidebar = lazy(() => import("../components/channelSideBar/ChannelSidebar.jsx"));
+const GameSidebar = lazy(() => import("../components/gameSidebar/GameSidebar.jsx"));
 
 const Channels = () => {
   const [mode, setMode] = useState(null);
@@ -37,7 +38,7 @@ const Channels = () => {
 
   return (
     <Flex justifyContent="center" w="100%" h="100dvh" overflow="hidden">
-      {!isMobile && modeConfig[mode]}
+      {!isMobile && <Suspense fallback={<div>Loading...</div>}>{modeConfig[mode]}</Suspense>}
       <Stack
         alignItems="center"
         maxW="600px"
@@ -49,10 +50,12 @@ const Channels = () => {
           showJoinedCh={showJoinedCh}
           setShowJoinedCh={setShowJoinedCh}
         />
-        {channelId ?
-          <Channel key={channelId} /> :
-          <ChannelList showJoinedCh={showJoinedCh} />
-        }
+        <Suspense fallback={<div>Loading...</div>}>
+          {channelId ?
+            <Channel key={channelId} /> :
+            <ChannelList showJoinedCh={showJoinedCh} />
+          }
+        </Suspense>
       </Stack>
     </Flex>
   )

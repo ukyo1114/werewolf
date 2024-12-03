@@ -1,12 +1,14 @@
+import { Suspense, lazy } from "react";
 import { Flex, IconButton, useDisclosure } from "@chakra-ui/react";
-import { useUserState } from "../../context/UserProvider";
+
 import { FaBars } from "react-icons/fa";
 
-import { SideDrawer } from "./SideDrawer";
-
+import { useUserState } from "../../context/UserProvider";
 import ChannelListHeader from "../channelList/ChannelListHeader";
-import EntryCounter from "../channel/EntryCounter";
-import GameTimer from "../channel/GameTimer";
+
+const SideDrawer = lazy(() => import("./SideDrawer"));
+const EntryCounter = lazy(() => import("../channel/EntryCounter"));
+const GameTimer = lazy(() => import("../channel/GameTimer"));
 
 export const ChannelHeader = ({ mode, showJoinedCh, setShowJoinedCh }) => {
   const { isMobile } = useUserState();
@@ -24,8 +26,8 @@ export const ChannelHeader = ({ mode, showJoinedCh, setShowJoinedCh }) => {
   
   return(
     <Flex alignItems="center" w="100%" p={2}>
-      {isMobile &&
-        <>
+      {isMobile && (
+        <Suspense fallback={<div>Loading...</div>}>
           <IconButton
             size="sm"
             bg="white"
@@ -38,10 +40,10 @@ export const ChannelHeader = ({ mode, showJoinedCh, setShowJoinedCh }) => {
             isOpen={sideDrawer.isOpen}
             onClose={sideDrawer.onClose}
           />
-        </>
-      }
+        </Suspense>
+      )}
       <Flex justifyContent="space-between" alignItems="center" w="100%">
-        {modeConfig[mode]}
+        <Suspense fallback={<div>Loading...</div>}>{modeConfig[mode]}</Suspense>
       </Flex>
     </Flex>
   );

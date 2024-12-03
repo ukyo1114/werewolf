@@ -16,7 +16,6 @@ const DisplayUser = ({ children, user, ...props }) => {
     >
       <Avatar
         size={isMobile ? "md" : "lg"}
-        name={user.name}
         src={user.pic}
         borderRadius={isMobile ? "md" : "lg"}
         mt={children && 1}
