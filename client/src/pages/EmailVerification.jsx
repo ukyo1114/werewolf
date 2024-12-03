@@ -6,7 +6,7 @@ import { Container, Stack, Text, UnorderedList, ListItem, Button } from "@chakra
 
 import useNotification from "../hooks/useNotification";
 
-export const EmailVerification = () => {
+const EmailVerification = () => {
   const { token } = useParams();
   const showToast = useNotification();
 
@@ -53,3 +53,5 @@ export const EmailVerification = () => {
     </Container>
   );
 };
+
+export default EmailVerification;

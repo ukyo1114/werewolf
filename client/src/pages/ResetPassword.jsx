@@ -21,7 +21,7 @@ import { pResetInitialValues, pResetSchema } from "./validationSchema";
 import useNotification from "../hooks/useNotification";
 import { errors, messages } from "../messages";
 
-export const ResetPassword = () => {
+const ResetPassword = () => {
   const [pshow, setPShow] = useState(false);
   const [cshow, setCShow] = useState(false);
 
@@ -147,3 +147,5 @@ export const ResetPassword = () => {
     </Container>
   );
 };
+
+export default ResetPassword;

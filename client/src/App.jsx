@@ -10,16 +10,14 @@ const ResetPassword = lazy(() => import("./pages/ResetPassword.jsx"));
 
 function App() {
   return (
-    <div className="App">
-      <Suspense fallback={<div>Loading...</div>}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/chats" element={<Channels />} />
-          <Route path="/verification/:token" element={<EmailVerification />} />
-          <Route path="/reset-password/:token" element={<ResetPassword />} />
-        </Routes>
-      </Suspense>
-    </div>
+    <Suspense fallback={<div>Loading...</div>}>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/chats" element={<Channels />} />
+        <Route path="/verification/:token" element={<EmailVerification />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
+      </Routes>
+    </Suspense>
   );
 }
 
