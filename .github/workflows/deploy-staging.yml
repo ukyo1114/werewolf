@@ -50,6 +50,7 @@ jobs:
           ssh ec2-user@13.112.114.159 "echo 'NODE_ENV=staging' > /home/ec2-user/werewolf/server/.env.staging"
           ssh ec2-user@13.112.114.159 "echo 'MONGO_URI=${{ secrets.MONGO_URI_STAGING }}' >> /home/ec2-user/werewolf/server/.env.staging"
           ssh ec2-user@13.112.114.159 "echo 'JWT_SECRET=${{ secrets.JWT_SECRET_STAGING }}' >> /home/ec2-user/werewolf/server/.env.staging"
+          ssh ec2-user@13.112.114.159 "echo 'SERVER_URL=${{ secrets.SERVER_URL_STAGING }}' >> /home/ec2-user/werewolf/server/.env.staging"
           ssh ec2-user@13.112.114.159 "echo 'AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}' >> /home/ec2-user/werewolf/server/.env.staging"
           ssh ec2-user@13.112.114.159 "echo 'AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}' >> /home/ec2-user/werewolf/server/.env.staging"
           ssh ec2-user@13.112.114.159 "echo 'AWS_REGION=${{ secrets.AWS_REGION }}' >> /home/ec2-user/werewolf/server/.env.staging"
