@@ -37,26 +37,26 @@ jobs:
           known_hosts: ${{ secrets.SSH_KNOWN_HOSTS_STAGING }}
 
       - name: Test SSH connection
-        run: ssh ec2-user@57.180.20.167 "echo 'SSH connection successful'"
+        run: ssh ec2-user@13.112.114.159 "echo 'SSH connection successful'"
 
       - name: サーバーにデプロイ
-        run: rsync -avz ./server/ ec2-user@57.180.20.167:./werewolf/server
+        run: rsync -avz ./server/ ec2-user@13.112.114.159:./werewolf/server
         
       - name: Set permissions for node_modules binaries
-        run: ssh ec2-user@57.180.20.167 "chmod -R u+x /home/ec2-user/werewolf/server/node_modules/.bin"
+        run: ssh ec2-user@13.112.114.159 "chmod -R u+x /home/ec2-user/werewolf/server/node_modules/.bin"
 
       - name: 環境変数をサーバーに転送
         run: |
-          ssh ec2-user@57.180.20.167 "echo 'NODE_ENV=staging' > /home/ec2-user/werewolf/server/.env.staging"
-          ssh ec2-user@57.180.20.167 "echo 'MONGO_URI=${{ secrets.MONGO_URI_STAGING }}' >> /home/ec2-user/werewolf/server/.env.staging"
-          ssh ec2-user@57.180.20.167 "echo 'JWT_SECRET=${{ secrets.JWT_SECRET_STAGING }}' >> /home/ec2-user/werewolf/server/.env.staging"
-          ssh ec2-user@57.180.20.167 "echo 'AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}' >> /home/ec2-user/werewolf/server/.env.staging"
-          ssh ec2-user@57.180.20.167 "echo 'AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}' >> /home/ec2-user/werewolf/server/.env.staging"
-          ssh ec2-user@57.180.20.167 "echo 'AWS_REGION=${{ secrets.AWS_REGION }}' >> /home/ec2-user/werewolf/server/.env.staging"
-          ssh ec2-user@57.180.20.167 "echo 'S3_BUCKET_NAME=${{ secrets.S3_BUCKET_NAME }}' >> /home/ec2-user/werewolf/server/.env.staging"
-          ssh ec2-user@57.180.20.167 "echo 'EMAIL_USER=${{ secrets.EMAIL_USER }}' >> /home/ec2-user/werewolf/server/.env.staging"
-          ssh ec2-user@57.180.20.167 "echo 'EMAIL_PASS=${{ secrets.EMAIL_PASS }}' >> /home/ec2-user/werewolf/server/.env.staging"
+          ssh ec2-user@13.112.114.159 "echo 'NODE_ENV=staging' > /home/ec2-user/werewolf/server/.env.staging"
+          ssh ec2-user@13.112.114.159 "echo 'MONGO_URI=${{ secrets.MONGO_URI_STAGING }}' >> /home/ec2-user/werewolf/server/.env.staging"
+          ssh ec2-user@13.112.114.159 "echo 'JWT_SECRET=${{ secrets.JWT_SECRET_STAGING }}' >> /home/ec2-user/werewolf/server/.env.staging"
+          ssh ec2-user@13.112.114.159 "echo 'AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}' >> /home/ec2-user/werewolf/server/.env.staging"
+          ssh ec2-user@13.112.114.159 "echo 'AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}' >> /home/ec2-user/werewolf/server/.env.staging"
+          ssh ec2-user@13.112.114.159 "echo 'AWS_REGION=${{ secrets.AWS_REGION }}' >> /home/ec2-user/werewolf/server/.env.staging"
+          ssh ec2-user@13.112.114.159 "echo 'S3_BUCKET_NAME=${{ secrets.S3_BUCKET_NAME }}' >> /home/ec2-user/werewolf/server/.env.staging"
+          ssh ec2-user@13.112.114.159 "echo 'EMAIL_USER=${{ secrets.EMAIL_USER }}' >> /home/ec2-user/werewolf/server/.env.staging"
+          ssh ec2-user@13.112.114.159 "echo 'EMAIL_PASS=${{ secrets.EMAIL_PASS }}' >> /home/ec2-user/werewolf/server/.env.staging"
 
       - name: サーバーをPM2でリモート起動
-        run: ssh ec2-user@57.180.20.167 "cd /home/ec2-user/werewolf/server && npm install && pm2 start npm --name 'server' -- run start:staging"
+        run: ssh ec2-user@13.112.114.159 "cd /home/ec2-user/werewolf/server && npm install && pm2 start npm --name 'server' -- run start:staging"
 
