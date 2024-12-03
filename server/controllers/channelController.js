@@ -1,7 +1,8 @@
+const EventEmitter = require("events");
 const asyncHandler = require("express-async-handler");
+
 const Channel = require("../models/channelModel");
 const User = require("../models/userModel");
-const { channelEvents } = require("../socketHandlers/chatNameSpace");
 const { messages, errors } = require("../messages");
 const CustomError = require("../classes/CustomError");
 const {
@@ -9,6 +10,8 @@ const {
   isChannelAdmin,
   isUserBlocked,
 } = require("../utils/channelUtils");
+
+const channelEvents = new EventEmitter();
 
 const fetchChannelList = asyncHandler(async (req, res) => {
   const channels = await Channel.find({}).populate(

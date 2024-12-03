@@ -14,7 +14,7 @@ import { DisplayRole, DisplayPhase } from "../miscellaneous/CustomComponents";
 
 const GameTimer = () => {
   const { user, uDispatch, currentChannel, cDispatch } = useUserState();
-  const { _id: channelId, channel, phase } = currentChannel;
+  const { _id: channelId, channel, isGame, phase } = currentChannel;
   const { currentDay, currentPhase, changedAt } = phase;
   const showToast = useNotification();
   const gameSocketRef = useRef(null);
@@ -41,10 +41,10 @@ const GameTimer = () => {
   }, [currentPhase, changedAt]);
 
   useEffect(() => {
-    fetchUserState();
+    if (isGame) fetchUserState();
     
     return () => uDispatch({ type: "LEAVE_GAME" });
-  }, [fetchUserState, uDispatch]);
+  }, [isGame, fetchUserState, uDispatch]);
 
   useEffect(() => {
     if (gameSocketRef.current) return;
@@ -63,7 +63,7 @@ const GameTimer = () => {
 
         if (!gameState) {
           showToast(errors.GAME_NOT_FOUND, "error");
-          await joinChannel(channel);
+          await joinChannel(channel._id);
         }
         
         cDispatch({ type: "UPDATE_GAME_STATE", payload: gameState });

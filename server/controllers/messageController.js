@@ -6,7 +6,7 @@ const {
   canUserAccessChannel,
   usersCanReceive,
 } = require("../utils/messageUtils");
-const { channelEvents } = require("../socketHandlers/chatNameSpace");
+const { channelEvents } = require("./channelController");
 
 const sendMessage = asyncHandler(async (req, res) => {
   const { content, channelId } = req.body;

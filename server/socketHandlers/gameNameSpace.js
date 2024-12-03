@@ -2,7 +2,8 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 const { errors } = require("../messages");
 
-const { games, gameEvents } = require("../classes/GameState");
+const { gameEvents } = require("../classes/GameState");
+const { games } = require("../controllers/gameController");
 
 function gameNameSpaceHandler(io) {
   const gameNameSpace = io.of("/game");

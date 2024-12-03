@@ -1,10 +1,11 @@
+const _ = require("lodash");
+
 const Message = require("../models/messageModel");
 const Channel = require("../models/channelModel");
 const Game = require("../models/gameModel");
 const CustomError = require("../classes/CustomError");
 const { errors } = require("../messages");
-const { games } = require("../classes/GameState");
-const _ = require("lodash");
+const { games } = require("../controllers/gameController");
 
 const buildMessageQuery = async (channelId, messageId, userId) => {
   const query = { channel: channelId };
@@ -60,6 +61,17 @@ const canUserAccessChannel = async (channelId, userId) => {
   await isUserInChannel(targetChannelId, userId);
 }
 
+async function getIdType(channelId) {
+  const result = { type: "channel", gameExists: false };
+
+  if (await Game.exists({ _id: channelId })) {
+    result.type = "game";
+    result.gameExists = Boolean(games[channelId]);
+  }
+
+  return result;
+};
+
 async function isUserInChannel(channelId, userId) {
   const exists = await Channel.exists({ _id: channelId, users: userId });
 
@@ -95,6 +107,8 @@ module.exports = {
   getReceiveMessageType,
   receiveMessageTypeForPl,
   sendMessageTypeForPl,
+  getIdType,
   isUserInChannel,
+
   getSpectators,
 };

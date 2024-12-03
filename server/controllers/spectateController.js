@@ -1,6 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
-const { games } = require("../classes/GameState");
+const { games } = require("./gameController");
 const _ = require("lodash");
 
 const getGameList = asyncHandler(async (req, res) => {

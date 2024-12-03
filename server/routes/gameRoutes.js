@@ -1,5 +1,6 @@
 const express = require("express");
-const router = express.Router();
+const { body, param } = require("express-validator");
+
 const {
   checkGame,
   getGame,
@@ -16,8 +17,9 @@ const {
   getAttackHistory,
 } = require("../controllers/gameController");
 const { protect } = require("../middleware/authMiddleware");
-const { body, param } = require("express-validator");
 const validateRequest = require("../middleware/validateRequest");
+
+const router = express.Router();
 
 const gameIdChainBody =
   body("gameId")

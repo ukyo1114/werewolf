@@ -10,7 +10,11 @@ const initialChannelState = {
   users: [],
   channelAdmin: "",
   blockUsers: [],
-  channel: "",
+  channel: {
+    _id: "",
+    channelName: "",
+    description: "",
+  },
   isGame: false,
   phase: {
     currentDay: 0,

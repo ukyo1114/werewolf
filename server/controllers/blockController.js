@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
+
 const Channel = require("../models/channelModel");
-const { channelEvents } = require("../socketHandlers/chatNameSpace");
+const { channelEvents } = require("./channelController");
 const { errors } = require("../messages");
 const CustomError = require("../classes/CustomError");
 const {

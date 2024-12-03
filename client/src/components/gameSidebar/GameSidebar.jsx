@@ -39,7 +39,7 @@ const GameSidebar = () => {
   }, [setMode, voteModal]);
 
   const backToChannel = useCallback(async () => {
-    await joinChannel(channel);
+    await joinChannel(channel._id);
   }, [channel, joinChannel]);
 
   return (
@@ -123,7 +123,7 @@ const GameSidebar = () => {
         onClose={chDescription.onClose}
         title={"チャンネル情報"}
       >
-        <DisplayChDescription />
+        <DisplayChDescription mode="game" />
       </ModalTemplete>
 
       <ModalTemplete

@@ -1,7 +1,10 @@
 const Message = require("../models/messageModel");
 const Game = require("../models/gameModel");
-const { channelEvents } = require("../socketHandlers/chatNameSpace");
+
 const { gameMaster } = require("../messages");
+
+const { games } = require("../controllers/gameController");
+const { channelEvents } = require("../controllers/channelController");
 
 const PlayerManager  = require("./PlayerManager");
 const VoteManager    = require("./VoteManager");
@@ -13,7 +16,6 @@ const PhaseManager   = require("./PhaseManager");
 const EventEmitter   = require("events");
 
 const gameEvents = new EventEmitter();
-const games = {};
 
 class GameState {
   constructor(game) {

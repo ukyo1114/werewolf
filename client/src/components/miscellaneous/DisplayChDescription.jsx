@@ -1,9 +1,10 @@
 import { Stack, Divider, Text } from "@chakra-ui/react";
 import { useUserState } from "../../context/UserProvider.jsx";
 
-export const DisplayChDescription = () => {
+export const DisplayChDescription = ({ mode = "channel" }) => {
   const { currentChannel } = useUserState();
-  const { channelName, description } = currentChannel;
+  const { channelName, description } = mode === "channel" ?
+    currentChannel : currentChannel.channel;
 
   return (
     <Stack overflow="hidden">

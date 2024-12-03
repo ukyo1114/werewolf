@@ -1,14 +1,15 @@
 const Game = require("../models/gameModel");
 const User = require("../models/userModel");
 const asyncHandler = require("express-async-handler");
-const { games } = require("../classes/GameState");
 const { messages, errors } = require("../messages");
 const CustomError = require("../classes/CustomError");
 const {
   handleServerError,
   checkErrorMessage,
 } = require("../utils/handleError");
-const { channelEvents } = require("../socketHandlers/chatNameSpace");
+const { channelEvents } = require("./channelController");
+
+const games = {};
 
 const checkGame = (req, res, next) => {
   const playerId = req.userId;
@@ -46,11 +47,6 @@ const joinGame = asyncHandler(async (req, res) => {
     .populate("users", "_id name pic")
     .populate("channel", "channelName description")
     .lean();
-
-  const { channelName, description } = game.channel;
-  game.channelName = channelName;
-  game.description = description;
-  delete game.channel;
 
   const user = await User.findById(userId).select("_id name pic");
   channelEvents.emit("userJoined", { channelId: gameId, user: user }); 
@@ -204,6 +200,7 @@ const getAttackHistory = (req, res) => {
 };
 
 module.exports = {
+  games,
   checkGame,
   getGame,
   joinGame,

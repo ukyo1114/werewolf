@@ -20,7 +20,9 @@ const useChatSocket = ({ mDispatch }) => {
     );
 
     chatSocketRef.current.on("connect", () => {
-      chatSocketRef.current.emit("joinChannel", channelId);
+      chatSocketRef.current.emit("joinChannel", channelId, (response) =>{
+        if (!response.success) showToast(response.err, "error");
+      });
     });
 
     chatSocketRef.current.on("messageReceived", (newMessageReceived) => {

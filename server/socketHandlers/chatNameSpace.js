@@ -1,11 +1,10 @@
-const EventEmitter = require("events");
 const jwt = require("jsonwebtoken");
 
 const User = require("../models/userModel");
 const { errors } = require("../messages");
+const { getIdType } = require("../utils/messageUtils");
 
-
-const channelEvents = new EventEmitter();
+const { channelEvents } = require("../controllers/channelController");
 
 function chatNameSpaseHandler(io) {
   const chatNameSpace = io.of("/chat");
@@ -31,9 +30,26 @@ function chatNameSpaseHandler(io) {
     const userId = socket.userId;
     userSocketMap[userId] = socket.id;
 
-    socket.on("joinChannel", async (channelId) => {
-      socket.join(channelId);
-      socket.channelId = channelId;
+    socket.on("joinChannel", async (channelId, callback) => {
+      try {
+        const { type, gameExists } = await getIdType(channelId);
+        if (type === "game" && !gameExists) {
+          return callback({
+            success: false,
+            err: errors.CHANNEL_ACCESS_FORBIDDEN,
+          });
+        }
+
+        socket.join(channelId);
+        socket.channelId = channelId;
+
+        callback({ success: true });
+      } catch (err) {
+        callback({
+          success: false,
+          err: "An unexpected error occurred.",
+        });
+      }
     });
 
     socket.on("disconnect", async () => {
@@ -83,4 +99,4 @@ function chatNameSpaseHandler(io) {
   // userEvents.on("profileUpdated", (user) => { });
 }
 
-module.exports = { chatNameSpaseHandler, channelEvents };
+module.exports = { chatNameSpaseHandler };
