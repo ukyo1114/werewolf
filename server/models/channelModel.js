@@ -29,6 +29,10 @@ const channelModel = mongoose.Schema(
       type: String,
       maxlength: 20,
     },
+    hasPassword: {
+      type: Boolean,
+      default: false,
+    },
     blockUsers: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -39,9 +43,9 @@ const channelModel = mongoose.Schema(
   { timestamps: true },
 );
 
-channelModel.virtual("hasPassword").get(function () {
+/* channelModel.virtual("hasPassword").get(function () {
   return !!this.password;
-});
+}); */
 
 channelModel.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
@@ -55,6 +59,9 @@ channelModel.pre("validate", function (next) {
 
 channelModel.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
+  
+  this.hasPassword = Boolean(this.password);
+
   if (this.password === null) return next();
 
   const salt = await bcrypt.genSalt(10);

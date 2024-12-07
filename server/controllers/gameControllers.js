@@ -1,36 +1,24 @@
+const asyncHandler = require("express-async-handler");
+
 const Game = require("../models/gameModel");
 const User = require("../models/userModel");
-const asyncHandler = require("express-async-handler");
 const { messages, errors } = require("../messages");
 const CustomError = require("../classes/CustomError");
 const {
-  handleServerError,
-  checkErrorMessage,
+  handleServerError, checkErrorMessage,
 } = require("../utils/handleError");
-const { channelEvents } = require("./channelController");
+const { channelEvents } = require("./channelControllers");
 
 const games = {};
 
-const checkGame = (req, res, next) => {
-  const playerId = req.userId;
-  const { gameId } = req.body;
-  const game = games[gameId];
+const checkGame = (source = "body") => (req, res, next) => {
+  const { userId, [source]: { gameId } } = req;
 
+  const game = games[gameId];
   if (!game) throw new CustomError(404, errors.GAME_NOT_FOUND);
   if (game.isProcessing) throw new CustomError(409, errors.GAME_IS_PROCESSING);
 
-  req.playerId = playerId;
-  req.game = game;
-  next();
-};
-
-const getGame = (req, res, next) => {
-  const playerId = req.userId;
-  const gameId = req.params.gameId;
-  const game = games[gameId];
-  if (!game) throw new CustomError(404, errors.GAME_NOT_FOUND);
-
-  req.playerId = playerId;
+  req.playerId = userId;
   req.game = game;
   next();
 };
@@ -202,7 +190,6 @@ const getAttackHistory = (req, res) => {
 module.exports = {
   games,
   checkGame,
-  getGame,
   joinGame,
   getPlayerState,
   receiveVote,

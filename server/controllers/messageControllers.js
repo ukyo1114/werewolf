@@ -6,7 +6,7 @@ const {
   canUserAccessChannel,
   usersCanReceive,
 } = require("../utils/messageUtils");
-const { channelEvents } = require("./channelController");
+const { channelEvents } = require("./channelControllers");
 
 const sendMessage = asyncHandler(async (req, res) => {
   const { content, channelId } = req.body;

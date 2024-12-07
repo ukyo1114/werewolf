@@ -3,7 +3,6 @@ const { body, param } = require("express-validator");
 
 const {
   checkGame,
-  getGame,
   joinGame,
   getPlayerState,
   receiveVote,
@@ -15,7 +14,7 @@ const {
   getMediumResult,
   getGuardHistory,
   getAttackHistory,
-} = require("../controllers/gameController");
+} = require("../controllers/gameControllers");
 const { protect } = require("../middleware/authMiddleware");
 const validateRequest = require("../middleware/validateRequest");
 
@@ -36,37 +35,39 @@ const selectedUserChain =
     .isMongoId()
     .withMessage("選択されたユーザーが無効です");
 
-const defineGetRoute = (route, controllers) => {
+const defineGetRoute = (route, controller) => {
   router.get(
     route,
     [gameIdChainParam],
     validateRequest,
-    ...controllers
+    checkGame(),
+    controller,
   );
 };
 
-const definePostRoute = (route, controllers) => {
+const definePostRoute = (route, controller) => {
   router.post(
     route,
     [gameIdChainBody, selectedUserChain],
     validateRequest,
-    ...controllers
+    checkGame("params"),
+    controller,
   );
 };
 
 router.use(protect());
 
-defineGetRoute("/join/:gameId", [getGame, joinGame]);
-defineGetRoute("/player-state/:gameId", [getGame, getPlayerState]);
-defineGetRoute("/vote-history/:gameId", [getGame, getVoteHistory]);
-defineGetRoute("/fortune-result/:gameId", [getGame, getFortuneResult]);
-defineGetRoute("/medium-result/:gameId", [getGame, getMediumResult]);
-defineGetRoute("/guard-history/:gameId", [getGame, getGuardHistory]);
-defineGetRoute("/attack-history/:gameId", [getGame, getAttackHistory]);
+defineGetRoute("/join/:gameId", joinGame);
+defineGetRoute("/player-state/:gameId", getPlayerState);
+defineGetRoute("/vote-history/:gameId", getVoteHistory);
+defineGetRoute("/fortune-result/:gameId", getFortuneResult);
+defineGetRoute("/medium-result/:gameId", getMediumResult);
+defineGetRoute("/guard-history/:gameId", getGuardHistory);
+defineGetRoute("/attack-history/:gameId", getAttackHistory);
 
-definePostRoute("/vote", [checkGame, receiveVote]);
-definePostRoute("/fortune", [checkGame, receiveFortuneTarget]);
-definePostRoute("/guard", [checkGame, receiveGuardTarget]);
-definePostRoute("/attack", [checkGame, receiveAttackTarget]);
+definePostRoute("/vote", receiveVote);
+definePostRoute("/fortune", receiveFortuneTarget);
+definePostRoute("/guard", receiveGuardTarget);
+definePostRoute("/attack", receiveAttackTarget);
 
 module.exports = router;

@@ -4,7 +4,7 @@ const {
   getBlockUsers,
   registerBlock,
   cancelBlock,
-} = require("../controllers/blockController");
+} = require("../controllers/blockControllers");
 const { protect } = require("../middleware/authMiddleware");
 const { body, param } = require("express-validator");
 const validateRequest = require("../middleware/validateRequest");

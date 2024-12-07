@@ -3,7 +3,7 @@ const User = require("../models/userModel");
 const { errors } = require("../messages");
 
 const { gameEvents } = require("../classes/GameState");
-const { games } = require("../controllers/gameController");
+const { games } = require("../controllers/gameControllers");
 
 function gameNameSpaceHandler(io) {
   const gameNameSpace = io.of("/game");

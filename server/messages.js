@@ -53,6 +53,7 @@ const errors = {
   CHANNEL_ACCESS_FORBIDDEN: "チャンネルを利用できません",
   IMAGE_MISSING: "画像が提供されていません",
   EMAIL_NOT_REGISTERED: "メールアドレスが登録されていません",
+  CHANNEL_CREATION_FAILED: "チャンネルの作成中にエラーが発生しました",
 };
 
 const gameMaster = {

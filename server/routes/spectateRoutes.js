@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const getGameList = require("../controllers/spectateController");
+const getGameList = require("../controllers/spectateControllers");
 const { protect } = require("../middleware/authMiddleware");
 const { param } = require("express-validator");
 const validateRequest = require("../middleware/validateRequest");

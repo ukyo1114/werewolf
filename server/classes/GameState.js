@@ -3,8 +3,8 @@ const Game = require("../models/gameModel");
 
 const { gameMaster } = require("../messages");
 
-const { games } = require("../controllers/gameController");
-const { channelEvents } = require("../controllers/channelController");
+const { games } = require("../controllers/gameControllers");
+const { channelEvents } = require("../controllers/channelControllers");
 
 const PlayerManager  = require("./PlayerManager");
 const VoteManager    = require("./VoteManager");

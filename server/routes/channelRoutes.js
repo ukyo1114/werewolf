@@ -1,12 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const {
-  fetchChannelList,
+  getChannelList,
   createChannel,
   channelSettings,
-  enterToChannel,
+  joinChannel,
   leaveChannel,
-} = require("../controllers/channelController");
+} = require("../controllers/channelControllers");
 const { protect } = require("../middleware/authMiddleware");
 const { body } = require("express-validator");
 const validateRequest = require("../middleware/validateRequest");
@@ -49,7 +49,7 @@ const passwordChain =
 
 router.use(protect());
 
-router.get("/list", fetchChannelList);
+router.get("/list", getChannelList);
 
 router.post(
   "/create",
@@ -69,7 +69,7 @@ router.post(
   "/enter",
   [channelIdChain, passwordChain],
   validateRequest,
-  enterToChannel
+  joinChannel
 );
 
 router.put("/leave", [channelIdChain], validateRequest, leaveChannel);

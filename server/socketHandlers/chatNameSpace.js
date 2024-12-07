@@ -4,7 +4,7 @@ const User = require("../models/userModel");
 const { errors } = require("../messages");
 const { getIdType } = require("../utils/messageUtils");
 
-const { channelEvents } = require("../controllers/channelController");
+const { channelEvents } = require("../controllers/channelControllers");
 
 function chatNameSpaseHandler(io) {
   const chatNameSpace = io.of("/chat");

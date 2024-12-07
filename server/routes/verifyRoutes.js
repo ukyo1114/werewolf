@@ -4,7 +4,7 @@ const { query, body } = require("express-validator");
 const validateRequest = require("../middleware/validateRequest");
 const {
   verifyEmail, resend, requestPasswordReset, resetPassword,
-} = require("../controllers/verifyController");
+} = require("../controllers/verifyControllers");
 const { protect } = require("../middleware/authMiddleware");
 
 const router = express.Router();

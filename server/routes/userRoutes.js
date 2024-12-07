@@ -5,7 +5,7 @@ const {
   authUser,
   updateProfile,
   updateUserSettings,
-} = require("../controllers/userController");
+} = require("../controllers/userControllers");
 const { protect } = require("../middleware/authMiddleware");
 const { body } = require("express-validator");
 const validateRequest = require("../middleware/validateRequest");

@@ -3,7 +3,7 @@ const router = express.Router();
 const {
   sendMessage,
   getMessages,
-} = require("../controllers/messageController");
+} = require("../controllers/messageControllers");
 const { protect } = require("../middleware/authMiddleware");
 const { body, param, query } = require("express-validator");
 const validateRequest = require("../middleware/validateRequest");

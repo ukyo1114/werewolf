@@ -5,7 +5,7 @@ const Channel = require("../models/channelModel");
 const Game = require("../models/gameModel");
 const CustomError = require("../classes/CustomError");
 const { errors } = require("../messages");
-const { games } = require("../controllers/gameController");
+const { games } = require("../controllers/gameControllers");
 
 const buildMessageQuery = async (channelId, messageId, userId) => {
   const query = { channel: channelId };
