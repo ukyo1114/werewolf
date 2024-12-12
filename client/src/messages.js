@@ -45,4 +45,7 @@ export const messages = {
   },
   NAVIGATE_GAME: "参加中のゲームに移動しました",
   NO_ACTIVE_GAME: "進行中のゲームがありません",
+  LEFT_CHANNEL: "チャンネルから退出しました",
+  BLOCK_COMPLETED: "ブロックしました",
+  BLOCK_CANCEL_COMPLETED: "ブロックを解除しました",
 };

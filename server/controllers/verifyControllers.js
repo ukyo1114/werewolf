@@ -6,7 +6,7 @@ const { errors } = require("../messages");
 
 const { genVerificationToken } = require("../utils/generateToken");
 const { sendMail } = require("../utils/sendMail");
-const { changeEmail, completeVerification } = require("../utils/verifyUtils");
+const { completeVerification } = require("../utils/verifyUtils");
 const { decodeToken } = require("../utils/decodeToken");
 
 const verifyEmail = asyncHandler(async (req, res) => {
@@ -18,11 +18,13 @@ const verifyEmail = asyncHandler(async (req, res) => {
   }
 
   if (userId) {
-    await changeEmail(userId, email);
+    const user = await User.findByIdAndUpdate(userId, { email });
+    if (!user) throw new CustomError(400, errors.INVALID_TOKEN);
     return res.status(200).send("メールアドレスの変更が完了しました");
   }
 
   await completeVerification(email, token);
+  
   res.status(200).send("メールアドレスの確認が完了しました");
 });
 
@@ -38,7 +40,7 @@ const resend = asyncHandler(async (req, res) => {
   if (!user) throw new CustomError(404, errors.USER_NOT_FOUND);
   if (user.isVerified) throw new CustomError(409, "すでに認証済みです");
 
-  const verificationToken = genVerificationToken(email);
+  const verificationToken = genVerificationToken({ email });
   await User.findOneAndUpdate({ email }, { verificationToken });
   await sendMail(email, verificationToken);
 
@@ -51,11 +53,14 @@ const requestPasswordReset = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email }).select("isVerified").lean();
   if (!user) throw new CustomError(400, errors.EMAIL_NOT_REGISTERED);
   if (!user.isVerified) {
-    const token = genVerificationToken(email);
+    const token = genVerificationToken({ email });
     return res.status(403).json({ token });
   }
 
-  const verificationToken = genVerificationToken(email, action="resetPassword");
+  const verificationToken = genVerificationToken({
+    email,
+    action: "resetPassword",
+  });
   await sendMail(email, verificationToken, "resetPassword");
 
   res.status(202).send();

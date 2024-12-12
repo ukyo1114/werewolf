@@ -11,12 +11,13 @@ import useNotification from "../../hooks/useNotification";
 import DisplayUser from "../miscellaneous/DisplayUser.jsx";
 import ModalButton from "../miscellaneous/ModalButton.jsx";
 import { StyledText } from "../miscellaneous/CustomComponents.jsx";
+import { messages } from "../../messages.js";
 
 const BlockModal = () => {
   const { user, currentChannel } = useUserState();
   const [blockUserList, setBlockUserList] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [selectedBlockUser, setSelectedBlockUser] = useState(null);
+  const [selectedBUser, setSelectedBUser] = useState(null);
   const showToast = useNotification();
   const { _id: channelId, channelAdmin } = currentChannel;
 
@@ -26,12 +27,12 @@ const BlockModal = () => {
     try {
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
 
-      const { data } = await axios.get(
+      const { data: { blockUsers } } = await axios.get(
         `api/block/user-list/${channelId}`,
         config,
       );
       
-      setBlockUserList(data);
+      setBlockUserList(blockUsers);
     } catch (error) {
       showToast(error?.response?.data?.error || "ブロック済みユーザーの取得に失敗しました", "error");
     }
@@ -57,8 +58,8 @@ const BlockModal = () => {
         </TabPanel>
         <TabPanel key="cancel" w="100%" p={0} display="flex" overflow="hidden">
           <BlockedUserListTab
-            selectedBlockUser={selectedBlockUser}
-            setSelectedBlockUser={setSelectedBlockUser}
+            selectedBUser={selectedBUser}
+            setSelectedBUser={setSelectedBUser}
             blockUserList={blockUserList}
             setBlockUserList={setBlockUserList}
           />
@@ -82,17 +83,20 @@ const UserListTab = ({
     try {
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
 
-      const { data } = await axios.put(
+      await axios.put(
         "api/block/register",
-        { channelId, selectedUser: selectedUser },
+        { channelId, selectedUser },
         config,
       );
+
       setBlockUserList((prevBlockUserList) => {
-        if (!prevBlockUserList.some((user) => user._id === data)) {
-          const blockedUser = users.find((user) => user._id === data);
+        if (!prevBlockUserList.some((user) => user._id === selectedUser)) {
+          const blockedUser = users.find((user) => user._id === selectedUser);
           return [...prevBlockUserList, blockedUser];
         }
-      }); // 既にブロックされているときの処理を追加する
+      });
+
+      showToast(messages.BLOCK_COMPLETED, "success");
       setSelectedUser(null);
     } catch (error) {
       showToast(error?.response?.data?.error || "ブロックに失敗しました", "error");
@@ -137,8 +141,8 @@ const UserListTab = ({
 };
 
 const BlockedUserListTab = ({
-  selectedBlockUser,
-  setSelectedBlockUser,
+  selectedBUser,
+  setSelectedBUser,
   blockUserList,
   setBlockUserList,
 }) => {
@@ -151,17 +155,19 @@ const BlockedUserListTab = ({
     try {
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
 
-      const { data } = await axios.put(
-        "api/block/cancel", { channelId, selectedBlockUser }, config,
+      await axios.put(
+        "api/block/cancel", { channelId, selectedBUser }, config,
       );
 
       setBlockUserList((prevBlockUserList) => {
-        const updatedBlockUserList = prevBlockUserList.filter((user) =>
-          data.some((u) => u === user._id)
+        const updatedBUserList = prevBlockUserList.filter((user) =>
+          user._id !== selectedBUser
         )
-        return updatedBlockUserList;
+        return updatedBUserList;
       })
-      setSelectedBlockUser(null);
+
+      showToast(messages.BLOCK_CANCEL_COMPLETED, "success");
+      setSelectedBUser(null);
     } catch (error) {
       showToast(error.response?.data?.error || "ブロック済ユーザーの取得に失敗しました", "error");
     }
@@ -169,8 +175,8 @@ const BlockedUserListTab = ({
     user,
     channelId,
     channelAdmin,
-    selectedBlockUser,
-    setSelectedBlockUser,
+    selectedBUser,
+    setSelectedBUser,
     setBlockUserList,
     showToast,
   ]);
@@ -184,10 +190,10 @@ const BlockedUserListTab = ({
               key={u._id}
               user={u}
               cursor="pointer"
-              onClick={() => setSelectedBlockUser(u._id)}
-              bg={selectedBlockUser === u._id ? "green.100" : "white"}
+              onClick={() => setSelectedBUser(u._id)}
+              bg={selectedBUser === u._id ? "green.100" : "white"}
               _hover={{
-                bg: selectedBlockUser !== u._id ? "gray.200" : undefined,
+                bg: selectedBUser !== u._id ? "gray.200" : undefined,
               }}
             />
           ))
@@ -196,7 +202,7 @@ const BlockedUserListTab = ({
         )}
       </Stack>
 
-      <ModalButton onClick={cancelBlock} isDisabled={!selectedBlockUser}>
+      <ModalButton onClick={cancelBlock} isDisabled={!selectedBUser}>
         解除
       </ModalButton>
     </Stack>

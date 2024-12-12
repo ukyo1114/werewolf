@@ -1,47 +1,68 @@
 const asyncHandler = require("express-async-handler");
+
 const Message = require("../models/messageModel");
-const {
-  buildMessageQuery,
-  getSendMessageType,
-  canUserAccessChannel,
-  usersCanReceive,
-} = require("../utils/messageUtils");
+const CustomError = require("../classes/CustomError");
 const { channelEvents } = require("./channelControllers");
+const { errors } = require("../messages");
+
+const userGroups = {};
 
 const sendMessage = asyncHandler(async (req, res) => {
-  const { content, channelId } = req.body;
-  const userId = req.userId;
-  await canUserAccessChannel(channelId, userId);
-  const messageType = await getSendMessageType(channelId, userId);
-  const users = await usersCanReceive(channelId, messageType);
+  const { userId, body: { content, channelId } } = req;
 
-  const newMessage = {
+  // ChannelManagerから情報を取得
+  const userGroup = userGroups[channelId];
+  if (!userGroup) throw new CustomError(403, errors.CHANNEL_ACCESS_FORBIDDEN);
+  const { messageType } = userGroup.getSendMessageType(userId);
+  const { socketIds } = userGroup.getMessageReceivers(messageType);
+
+  const message = await Message.create({
     sender: userId, content, channel: channelId, messageType,
-  };
-
-  const message = await Message.create(newMessage);
-  channelEvents.emit("newMessage", message, users);
+  });
   
-  res.status(201).end();
+  channelEvents.emit("newMessage", message, socketIds);
+  
+  res.status(201).send();
 });
 
 const getMessages = asyncHandler(async (req, res) => {
   const channelId = req.params.channelId;
   const { messageId } = req.query;
   const userId = req.userId;
-  await canUserAccessChannel(channelId, userId);
-  const query = await buildMessageQuery(channelId, messageId, userId);
+
+  const getReceiveMessageType = (channelId, userId) => {
+    const user = userGroups[channelId]?.users.get(userId);
+    if(!user) throw new CustomError(403, errors.CHANNEL_ACCESS_FORBIDDEN);
+  
+    if (user.status === "normal") return { $in: ["normal"] };
+    if (user.status === "werewolf") return { $in: ["normal", "werewolf"] };
+    if (user.status === "spectator") return null;
+  };
+  
+  const query = { channel: channelId }; // データベースクエリ
+  
+  const messageType = getReceiveMessageType(channelId, userId); // メッセージタイプを設定
+  if (messageType) query.messageType = messageType;
+  
+  if (messageId) { // メッセージの作成日時を設定
+    const message = await Message.findById(messageId)
+      .select("createdAt")
+      .lean();
+    if (!message) throw new CustomError(404, errors.MESSAGE_NOT_FOUND);
+    query.createdAt = { $lte: message.createdAt };
+  }
 
   let messages = await Message.find(query).sort({ createdAt: -1 }).limit(50);
   
-  if (messageId) {
+  if (messageId) { // メッセージのダブりを排除
     messages = messages.filter((msg) => msg._id.toString() !== messageId);
   }
 
-  res.json(messages);
+  res.status(201).json(messages);
 });
 
 module.exports = {
   sendMessage,
   getMessages,
+  userGroups,
 };

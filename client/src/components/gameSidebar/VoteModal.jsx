@@ -74,9 +74,10 @@ const VoteButton = ({ selectedUser, onClose }) => {
         
         await axios.post(
           "/api/game/vote",
-          { gameId: channelId, selectedUser: selectedUser },
+          { gameId: channelId, selectedUser },
           config,
         );
+
         showToast("投票しました", "success");
       } catch (error) {
         showToast(error?.response?.data?.error || "投票に失敗しました", "error");
@@ -107,9 +108,10 @@ const FortuneButton = ({ selectedUser, onClose }) => {
 
         await axios.post(
           "/api/game/fortune",
-          { gameId: channelId, selectedUser: selectedUser },
+          { gameId: channelId, selectedUser },
           config,
         );
+
         showToast("送信しました", "success");
       } catch (error) {
         showToast(error?.response?.data?.error || "送信に失敗しました", "error");
@@ -140,9 +142,10 @@ const GuardButton = ({ selectedUser, onClose }) => {
 
         await axios.post(
           "/api/game/guard",
-          { gameId: channelId, selectedUser: selectedUser },
+          { gameId: channelId, selectedUser },
           config,
         );
+
         showToast("送信しました", "success");
       } catch (error) {
         showToast(error?.response?.data?.error || "送信に失敗しました", "error");
@@ -173,9 +176,10 @@ const AttackButton = ({ selectedUser, onClose }) => {
 
         await axios.post(
           "/api/game/attack",
-          { gameId: channelId, selectedUser: selectedUser },
+          { gameId: channelId, selectedUser },
           config,
         );
+        
         showToast("送信しました", "success");
       } catch (error) {
         showToast(error?.response?.data?.error || "送信に失敗しました", "error");

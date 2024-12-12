@@ -1,3 +1,6 @@
+const { errors } = require("../messages");
+const CustomError = require("./CustomError");
+
 class MediumManager {
   constructor(players, phase) {
     this.mediumResult = new Map();
@@ -22,7 +25,9 @@ class MediumManager {
     const { currentDay, currentPhase } = this.phase;
     const medium = this.players.players.get(playerId);
 
-    if (medium?.role !== "medium" || currentPhase === "pre") return null;
+    if (medium?.role !== "medium" || currentPhase === "pre") {
+      throw new CustomError(403, errors.MEDIUM_RESULT_NOT_FOUND);
+    }
     
     const mediumResult = {};
 

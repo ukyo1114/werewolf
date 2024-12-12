@@ -14,7 +14,7 @@ describe("isUserAdmin", () => {
     jest.clearAllMocks();
   });
 
-  it("チャンネルが存在しない場合、404エラーを返すこと", async () => {
+  it("チャンネルが存在しない場合、404エラーを返す", async () => {
     Channel.findById.mockReturnValueOnce({
       select: jest.fn().mockReturnThis(),
       lean: jest.fn().mockResolvedValueOnce(null),
@@ -26,7 +26,7 @@ describe("isUserAdmin", () => {
     });
   });
 
-  it("ユーザーが管理者でない場合、403エラーを返すこと", async () => {
+  it("ユーザーが管理者でない場合、falseを返す", async () => {
     Channel.findById.mockReturnValueOnce({
       select: jest.fn().mockReturnThis(),
       lean: jest.fn().mockResolvedValueOnce({
@@ -34,20 +34,20 @@ describe("isUserAdmin", () => {
       }),
     });
 
-    await expect(isUserAdmin(channelId, userId)).rejects.toMatchObject({
-      statusCode: 403,
-      message: errors.PERMISSION_DENIED,
+    await expect(isUserAdmin(channelId, userId)).resolves.toMatchObject({
+      isChAdmin: false,
     });
   });
 
-  it("ユーザーが管理者である場合、trueを返すこと", async () => {
+  it("ユーザーが管理者である場合、trueを返す", async () => {
     Channel.findById.mockReturnValueOnce({
       select: jest.fn().mockReturnThis(),
       lean: jest.fn().mockResolvedValueOnce({
         channelAdmin: "testUserId",
       }),
     });
-
-    await expect(isUserAdmin(channelId, userId)).resolves.toBe(true);
+    await expect(isUserAdmin(channelId, userId)).resolves.toMatchObject({
+      isChAdmin: true,
+    });
   });
 });

@@ -38,7 +38,7 @@ const CreateChannel = () => {
         password: isPasswordEnabled ? password : "", 
       }
 
-      const { data } = await axios.post(
+      const { data: { channel } } = await axios.post(
         "/api/channel/create",
         payload,
         config,
@@ -46,7 +46,7 @@ const CreateChannel = () => {
       
       actions.setSubmitting(false);
       showToast(messages.CHANNEL_CREATED, "success");
-      cDispatch({ type: "JOIN_CHANNEL", payload: data });
+      cDispatch({ type: "JOIN_CHANNEL", payload: channel });
     } catch (error) {
       const errorMessage =
         error?.response?.data?.error || errors.CHANNEL_CREATION_FAILED;

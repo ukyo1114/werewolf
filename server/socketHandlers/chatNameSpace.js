@@ -2,13 +2,12 @@ const jwt = require("jsonwebtoken");
 
 const User = require("../models/userModel");
 const { errors } = require("../messages");
-const { getIdType } = require("../utils/messageUtils");
-
+const { userGroups } = require("../controllers/messageControllers");
 const { channelEvents } = require("../controllers/channelControllers");
+const { ChannelManager } = require("../classes/ChannelManager");
 
 function chatNameSpaseHandler(io) {
   const chatNameSpace = io.of("/chat");
-  const userSocketMap = {};
 
   chatNameSpace.use(async (socket, next) => {
     const token = socket.handshake.auth.token;
@@ -28,44 +27,37 @@ function chatNameSpaseHandler(io) {
 
   chatNameSpace.on("connection", (socket) => {
     const userId = socket.userId;
-    userSocketMap[userId] = socket.id;
 
     socket.on("joinChannel", async (channelId, callback) => {
       try {
-        const { type, gameExists } = await getIdType(channelId);
-        if (type === "game" && !gameExists) {
-          return callback({
-            success: false,
-            err: errors.CHANNEL_ACCESS_FORBIDDEN,
-          });
-        }
+        const userGroup = userGroups[channelId]
+          || await ChannelManager.createUserGroup(channelId);
 
+        await userGroup.userJoined(userId, socket.id);
         socket.join(channelId);
         socket.channelId = channelId;
-
         callback({ success: true });
-      } catch (err) {
+      } catch (error) {
         callback({
           success: false,
-          err: "An unexpected error occurred.",
+          err: error.message || "An unexpected error occurred.",
         });
       }
     });
 
     socket.on("disconnect", async () => {
-      delete userSocketMap[userId];
+      userGroups[socket?.channelId]?.userLeft(userId);
     });
   });
 
-  channelEvents.on("newMessage", (message, users) => {
+  channelEvents.on("newMessage", (message, socketIds) => {
     const { channel, messageType } = message;
     const channelId = channel.toString();
 
     if (messageType === "normal") {
       chatNameSpace.to(channelId).emit("messageReceived", message);
     } else {
-      users.forEach((userId) => {
-        const socketId = userSocketMap[userId];
+      socketIds.forEach((socketId) => {
         chatNameSpace.to(socketId).emit("messageReceived", message);
       });
     }
@@ -94,9 +86,7 @@ function chatNameSpaseHandler(io) {
   channelEvents.on("cancelBlockUser", (data) => {
     const { channelId, blockUser } = data;
     chatNameSpace.to(channelId).emit("cancelBlockUser", blockUser);
-  })
-
-  // userEvents.on("profileUpdated", (user) => { });
+  });
 }
 
 module.exports = { chatNameSpaseHandler };

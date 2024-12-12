@@ -1,5 +1,6 @@
 const _ = require("lodash");
 const { errors } = require("../messages");
+const CustomError = require("./CustomError");
 
 class VoteManager {
   constructor(players, phase) {
@@ -52,7 +53,11 @@ class VoteManager {
 
   getVoteHistory() {
     const { currentDay, currentPhase } = this.phase;
-    if (currentPhase === "pre") return null;
+
+    if (currentPhase === "pre") {
+      throw new CustomError(403, errors.VOTE_HISTORY_NOT_FOUND);
+    }
+    
     const voteHistory = {};
 
     this.voteHistory.forEach((votes, day) => {

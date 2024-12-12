@@ -31,7 +31,7 @@ const Channel = () => {
     messagesCompletedRef,
   });
 
-  useChatSocket({ mDispatch });
+  const isSocketConnected = useChatSocket({ mDispatch });
 
   const handleSendMessage = async (values, actions) => {
     const { newMessage } = values;
@@ -41,7 +41,7 @@ const Channel = () => {
   };
 
   const handleScroll = useCallback(async () => { // 外部化
-    if (scrollRef.current) {
+    if (scrollRef.current && isSocketConnected) {
       const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
       if (scrollTop >= 0) {
         isScrollRef.current = false;
@@ -59,7 +59,7 @@ const Channel = () => {
         }, 0);
       }
     }
-  }, [fetchMessages]);
+  }, [isSocketConnected, fetchMessages]);
 
   useEffect(() => {
     if (blockUsers?.some((u) => u === user._id)) {
@@ -68,8 +68,8 @@ const Channel = () => {
   }, [user._id, blockUsers, cDispatch]);
 
   useEffect(() => {
-    if (messages.length === 0) fetchMessages();
-  }, [messages, fetchMessages]);
+    if (isSocketConnected && messages.length === 0) fetchMessages();
+  }, [isSocketConnected, messages, fetchMessages]);
 
   useEffect(() => {
     if (scrollRef.current) {

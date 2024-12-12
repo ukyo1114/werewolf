@@ -29,18 +29,16 @@ const modeCon = {
   },
 };
 
-const createEmail = (email, verificationToken, mode) => {
+const sendMail = async(email, verificationToken, mode = "verify") => {
   const config = modeCon[mode](verificationToken);
-
-  return { from: process.env.EMAIL_USER,  to: email, ...config };
-};
-
-const sendMail = async(email, verificationToken, mode="verify") => {
-  const mailOptions = createEmail(email, verificationToken, mode);
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: email, 
+    ...config,
+  }
 
   try {
-    const info = await transporter.sendMail(mailOptions);
-    // console.log("Email sent: ", info.response);
+    await transporter.sendMail(mailOptions);
   } catch (error) {
     console.error("Error sending email: ", error);
   }

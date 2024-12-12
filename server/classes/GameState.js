@@ -23,7 +23,7 @@ class GameState {
     this.channelId = game.channel.toString();
     this.gameId = game._id.toString();
     this.result = { value: "running" };
-    this.players = new PlayerManager(game.users);
+    this.players = new PlayerManager(this.gameId, game.users);
     this.phase = new PhaseManager(this.eventEmitter, this.result);
     this.votes = new VoteManager(this.players, this.phase);
     this.fortune = new FortuneManager(this.players, this.phase);
@@ -170,12 +170,13 @@ class GameState {
     const game = Object.values(games).find((game) =>
       Array.from(game.players.players.values()).some((pl) => pl._id === userId)
     );
-    if (!game) return null;
+    if (!game) return { gameId: null };
+
     const currentPhase = game.phase.currentPhase;
     const player = game.players.getPlayerById(userId);
     const isPlaying = (currentPhase !== "finished" && player.status === "alive");
 
-    return isPlaying ? game.gameId : null;
+    return { gameId: isPlaying ? game.gameId : null };
   }
 }
 

@@ -1,24 +1,22 @@
 const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
 const {
-  generateToken, genVerificationToken, genEmailChangeToken
+  generateToken,
+  genVerificationToken,
 } = require("../utils/generateToken");
 const { GameState } = require("../classes/GameState");
 const { errors } = require("../messages");
 const CustomError = require("../classes/CustomError");
-const {
-  getUserById,
-  matchPassword,
-  uploadPicture,
-} = require("../utils/userUtils");
+const { uploadPicture } = require("../utils/userUtils");
 const { sendMail } = require("../utils/sendMail");
 
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password, pic } = req.body;
-  const userExists = await User.exists({ email });
-  if (userExists) throw new CustomError(400, errors.EMAIL_ALREADY_REGISTERED);
 
-  const verificationToken = genVerificationToken(email);
+  const emailExists = await User.exists({ email });
+  if (emailExists) throw new CustomError(400, errors.EMAIL_ALREADY_REGISTERED);
+
+  const verificationToken = genVerificationToken({ email });
   const user = await User.create({
     name, email, password, pic: null, verificationToken
   });
@@ -28,25 +26,22 @@ const registerUser = asyncHandler(async (req, res) => {
 
   const userId = user._id.toString();
   const filePath = await uploadPicture(userId, pic);
+  await User.findByIdAndUpdate(userId, { pic: filePath });
 
-  const userWithoutPass = await getUserById(user._id, false);
-  userWithoutPass.pic = filePath;
-
-  await userWithoutPass.save();
-
-  const token = genVerificationToken(email);
+  const token = genVerificationToken({ email });
   res.status(201).json({ token });
 });
 
 const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
+
   const user = await User.findOne({ email });
   if (!user || !(await user.matchPassword(password))) {
     throw new CustomError(401, errors.INVALID_EMAIL_OR_PASSWORD);
   }
 
   if (!user.isVerified) {
-    const token = genVerificationToken(email);
+    const token = genVerificationToken({ email });
     return res.status(403).json({ token });
   }
 
@@ -77,18 +72,24 @@ const updateProfile = asyncHandler(async (req, res) => {
 const updateUserSettings = asyncHandler(async (req, res) => {
   const { userId, body: { email, currentPassword, newPassword } } = req;
 
-  await matchPassword(userId, currentPassword);
+  // パスワード認証
+  const user = await User.findById(userId).select("password");
+  const isPasswordMatch = await user.matchPassword(currentPassword);
+  if (!isPasswordMatch) throw new CustomError(401, errors.INVALID_PASSWORD);
 
   if (email) {
-    const userExists = await User.exists({ email });
-    if (userExists) throw new CustomError(400, errors.EMAIL_ALREADY_REGISTERED);
+    const emailExists = await User.exists({ email });
+    if (emailExists) {
+      throw new CustomError(400, errors.EMAIL_ALREADY_REGISTERED);
+    }
 
-    const verificationToken = genEmailChangeToken(userId, email);
+    const verificationToken = genVerificationToken({ userId, email });
     await sendMail(email, verificationToken);
   };
   
   if (newPassword) {
-    const user = await getUserById(userId, !!newPassword);
+    // バリデーション回避のためにパスワードフィールドを除外してユーザーを取得
+    const user = await User.findById(userId).select("-password");
     user.password = newPassword;
     await user.save();
   };

@@ -1,5 +1,6 @@
 const _ = require("lodash");
 const { errors } = require("../messages");
+const CustomError = require("./CustomError");
 
 class FortuneManager {
   constructor(players, phase) {
@@ -56,7 +57,9 @@ class FortuneManager {
   getFortuneResult(playerId) {
     const { currentDay, currentPhase } = this.phase;
     const seer = this.players.players.get(playerId);
-    if (seer?.role !== "seer" || currentPhase === "pre") return null;
+    if (seer?.role !== "seer" || currentPhase === "pre") {
+      throw new CustomError(403, errors.FORTUNE_RESULT_NOT_FOUND);
+    }
 
     const fortuneResult = {};
 

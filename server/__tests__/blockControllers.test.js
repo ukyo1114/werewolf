@@ -48,7 +48,7 @@ describe("Block Controllers", () => {
 
   describe("getBlockUsers", () => {
     it("ブロックユーザーリストを取得", async () => {
-      isUserAdmin.mockResolvedValueOnce();
+      isUserAdmin.mockResolvedValueOnce({ isChAdmin: true });
 
       Channel.findById.mockReturnValueOnce({
         select: jest.fn().mockReturnThis(),
@@ -74,7 +74,7 @@ describe("Block Controllers", () => {
 
   describe("registerBlock", () => {
     it("ブロックユーザーを追加", async () => {
-      isUserAdmin.mockResolvedValueOnce();
+      isUserAdmin.mockResolvedValueOnce({ isChAdmin: true });
       Channel.updateOne.mockResolvedValueOnce({ nModified: 1 });
 
       const res = await request(app)
@@ -90,7 +90,7 @@ describe("Block Controllers", () => {
     });
 
     it("自分自身をブロックしようとすると403エラーを返す", async () => {
-      isUserAdmin.mockResolvedValueOnce();
+      isUserAdmin.mockResolvedValueOnce({ isChAdmin: true });
       Channel.updateOne.mockResolvedValueOnce({ nModified: 1 });
 
       const res = await request(app)
@@ -104,7 +104,7 @@ describe("Block Controllers", () => {
 
   describe("cancelBlock", () => {
     it("ブロックを解除", async () => {
-      isUserAdmin.mockResolvedValueOnce();
+      isUserAdmin.mockResolvedValueOnce({ isChAdmin: true });
       Channel.findByIdAndUpdate.mockResolvedValueOnce({ nModified: 1 });
 
       const res = await request(app)

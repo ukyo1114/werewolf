@@ -25,7 +25,7 @@ function entryNameSpaseHandler(io) {
 
   entryNameSpace.on("connection", (socket) => {
     const userId = socket.userId;
-    const gameId = GameState.isPlayingGame(userId);
+    const { gameId } = GameState.isPlayingGame(userId);
     socket.emit("connect_response", { gameId });
 
     socket.on("joinChannel", (channelId, callback) => {
@@ -39,22 +39,18 @@ function entryNameSpaseHandler(io) {
     });
 
     socket.on("registerEntry", () => {
-      const userId = socket.userId;
-      const channelId = socket.channelId;
-      const users = entryUsers[channelId];
-      if (users) users.register(socket.id, userId);
+      const { userId, channelId, id: socketId } = socket;
+      entryUsers[channelId]?.users.register(socketId, userId);
     });
 
     socket.on("cancelEntry", () => {
-      const channelId = socket.channelId;
-      const users = entryUsers[channelId];
-      if (users) users.cancel(socket.id);
+      const { channelId, id: socketId } = socket;
+      entryUsers[channelId]?.users.cancel(socketId);
     });
 
     socket.on("disconnect", () => {
-      const channelId = socket.channelId;
-      const users = entryUsers[channelId];
-      if (channelId && users) users.cancel(socket.id);
+      const { channelId, id: socketId } = socket;
+      entryUsers[channelId]?.cancel(socketId);
     });
   });
 

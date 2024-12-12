@@ -15,7 +15,6 @@ jest.mock("../models/channelModel", () => ({
 
 jest.mock("../utils/channelUtils", () => ({
   isUserAdmin: jest.fn(),
-  getChannelById: jest.fn(),
 }));
 
 const Channel = require("../models/channelModel");

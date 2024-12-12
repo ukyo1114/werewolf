@@ -12,12 +12,12 @@ export const useJoinChannel = () => {
     try {
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
 
-      const { data } = await axios.post(
+      const { data: { channel } } = await axios.post(
         "/api/channel/enter",
         { channelId: channelId, password: password || "" },
         config,
       );
-      cDispatch({ type: "JOIN_CHANNEL", payload: data });
+      cDispatch({ type: "JOIN_CHANNEL", payload: channel });
     } catch (error) {
       showToast(error?.response?.data?.error || errors.CHANNEL_ENTER_FAILED, "error");
     }

@@ -24,6 +24,7 @@ import {
 import { SideBar } from "../miscellaneous/SideBar.jsx";
 import SpectatorModal from "./spectate/SpectatorModal.jsx";
 import { DisplayChDescription } from "../miscellaneous/DisplayChDescription.jsx";
+import { messages } from "../../messages.js";
 
 const ChannelSidebar = () => {
   const { user, currentChannel, cDispatch } = useUserState();
@@ -41,11 +42,9 @@ const ChannelSidebar = () => {
     try {
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
 
-      const { data } = await axios.put(
-        `/api/channel/leave`, { channelId }, config,
-      );
+      await axios.put(`/api/channel/leave`, { channelId }, config);
 
-      showToast(data.message, "success");
+      showToast(messages.LEFT_CHANNEL, "success");
       cDispatch({ type: "LEAVE_CHANNEL"});
     } catch (error) {
       showToast(error?.response?.data?.error, "error");

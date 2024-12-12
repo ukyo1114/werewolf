@@ -1,5 +1,6 @@
 const _ = require("lodash");
 const { errors } = require("../messages");
+const CustomError = require("./CustomError");
 
 class AttackManager {
   constructor(players, phase, guard) {
@@ -50,7 +51,10 @@ class AttackManager {
   getAttackHistory(playerId) {
     const { currentDay, currentPhase } = this.phase;
     const werewolf = this.players.players.get(playerId);
-    if (werewolf?.role !== "werewolf" || currentPhase === "pre") return null;
+    
+    if (werewolf?.role !== "werewolf" || currentPhase === "pre") {
+      throw new CustomError(403, errors.ATTACK_HISTORY_NOT_FOUND)
+    };
 
     const attackHistory = {};
 

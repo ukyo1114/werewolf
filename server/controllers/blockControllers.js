@@ -9,14 +9,15 @@ const { isUserAdmin } = require("../utils/channelUtils");
 const getBlockUsers = asyncHandler(async (req, res) => {
   const { params: { channelId }, userId } = req;
 
-  await isUserAdmin(channelId, userId);
+  const { isChAdmin } = await isUserAdmin(channelId, userId);
+  if (!isChAdmin) throw new CustomError(403, errors.PERMISSION_DENIED);
 
   const { blockUsers } = await Channel.findById(channelId)
     .select("blockUsers")
     .populate("blockUsers", "_id name pic")
     .lean();
 
-  res.status(200).json({ blockUsers }); // client側の実装を確認
+  res.status(200).json({ blockUsers });
 });
 
 const registerBlock = asyncHandler(async (req, res) => {
@@ -24,7 +25,8 @@ const registerBlock = asyncHandler(async (req, res) => {
   
   if (selectedUser === userId) throw new CustomError(403, errors.SELF_BLOCK);
 
-  await isUserAdmin(channelId, userId);
+  const { isChAdmin } = await isUserAdmin(channelId, userId);
+  if (!isChAdmin) throw new CustomError(403, errors.PERMISSION_DENIED);
 
   await Channel.updateOne(
     { _id: channelId },
@@ -36,13 +38,14 @@ const registerBlock = asyncHandler(async (req, res) => {
 
   channelEvents.emit("registerBlockUser", { channelId, blockUser: selectedUser });
 
-  res.status(200).send(); // client側の実装を確認
+  res.status(200).send();
 });
 
 const cancelBlock = asyncHandler(async (req, res) => {
-  const { body: { channelId, selectedBUser }, userId } = req; // client側の実装を確認
+  const { body: { channelId, selectedBUser }, userId } = req;
 
-  await isUserAdmin(channelId, userId);
+  const { isChAdmin } = await isUserAdmin(channelId, userId);
+  if (!isChAdmin) throw new CustomError(403, errors.PERMISSION_DENIED);
 
   await Channel.findByIdAndUpdate(
     channelId, { $pull: { blockUsers: selectedBUser } }
@@ -52,7 +55,7 @@ const cancelBlock = asyncHandler(async (req, res) => {
     "cancelBlockUser", { channelId, blockUser: selectedBUser }
   );
 
-  res.status(200).send(); // client側の実装を確認
+  res.status(200).send();
 });
 
 module.exports = {

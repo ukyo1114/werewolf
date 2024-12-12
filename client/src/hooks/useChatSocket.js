@@ -1,9 +1,10 @@
-import { useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
 import useNotification from "./useNotification";
 import { useUserState } from "../context/UserProvider.jsx";
 
 const useChatSocket = ({ mDispatch }) => {
+  const [isSocketConnected, setIsSocketConnected] = useState(false);
   const { user, currentChannel, cDispatch } = useUserState();
   const { _id: channelId } = currentChannel;
 
@@ -20,8 +21,12 @@ const useChatSocket = ({ mDispatch }) => {
     );
 
     chatSocketRef.current.on("connect", () => {
-      chatSocketRef.current.emit("joinChannel", channelId, (response) =>{
-        if (!response.success) showToast(response.err, "error");
+      chatSocketRef.current.emit("joinChannel", channelId, (response) => {
+        if (response.success) {
+          setIsSocketConnected(true);
+        } else {
+          showToast(response.err, "error");
+        }
       });
     });
 
@@ -59,7 +64,9 @@ const useChatSocket = ({ mDispatch }) => {
         chatSocketRef.current = null;
       }
     };
-  }, [user.token, channelId, cDispatch, mDispatch, showToast]);
+  }, [user.token, channelId, setIsSocketConnected, cDispatch, mDispatch, showToast]);
+
+  return isSocketConnected;
 };
 
 export default useChatSocket;

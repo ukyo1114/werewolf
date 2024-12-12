@@ -43,7 +43,7 @@ router.put(
 
 router.put(
   "/cancel",
-  [channelIdChainBody, createSelectedUserChain("selectedBlockUser")],
+  [channelIdChainBody, createSelectedUserChain("selectedBUser")],
   validateRequest,
   cancelBlock
 );

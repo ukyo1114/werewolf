@@ -1,5 +1,6 @@
 const _ = require("lodash");
 const { errors } = require("../messages");
+const CustomError = require("./CustomError");
 
 class GuardManager {
   constructor(players, phase) {
@@ -46,7 +47,10 @@ class GuardManager {
   getGuardHistory(playerId) {
     const { currentDay, currentPhase } = this.phase;
     const hunter = this.players.players.get(playerId);
-    if (hunter?.role !== "hunter" || currentPhase === "pre") return null;
+    
+    if (hunter?.role !== "hunter" || currentPhase === "pre") {
+      throw new CustomError(403, errors.GUARD_HISTORY_NOT_FOUND);
+    }
 
     const guardHistory = {};
 

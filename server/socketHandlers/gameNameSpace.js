@@ -26,7 +26,7 @@ function gameNameSpaceHandler(io) {
   gameNameSpace.on("connection", (socket) => {
     socket.on("joinGame", (gameId, callback) => {
       const game = games[gameId];
-      if (!game) return callback({ gameState : null });
+      if (!game) return callback({ gameState: null });
       
       const gameState = game.getGameState();
       socket.join(gameId);

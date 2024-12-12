@@ -1,5 +1,7 @@
 const _ = require("lodash");
 
+const { userGroups } = require("../controllers/messageControllers");
+ 
 class PlayerManager {
   static roles = [
     "villager",
@@ -14,9 +16,10 @@ class PlayerManager {
     "madman",
   ];
 
-  constructor(users, assignDefaultRoles = true) {
+  constructor(gameId, users) {
+    this.gameId = gameId;
     this.setPlayers(users);
-    if (assignDefaultRoles) this.assignRoles(PlayerManager.roles);
+    this.assignRoles(PlayerManager.roles);
   }
 
   setPlayers(users) {
@@ -42,12 +45,17 @@ class PlayerManager {
 
   kill(playerId) {
     const player = this.players.get(playerId);
-    if (player) player.status = "dead";
+
+    if (player) {
+      userGroups[this.gameId].users.get(playerId).eventEmitter.emit("kill");
+      player.status = "dead";
+    }
   }
 
   getPlayerState(playerId) {
     const player = this.players.get(playerId);
     if (!player) return { _id: playerId, status: "spectator", role: "" };
+    
     if (player.role !== "werewolf") return player;
     
     player.partnerId = this.getWerewolfPartner(playerId);

@@ -3,12 +3,9 @@ const asyncHandler = require("express-async-handler");
 
 const Channel = require("../models/channelModel");
 const User = require("../models/userModel");
-const { messages, errors } = require("../messages");
+const { errors } = require("../messages");
 const CustomError = require("../classes/CustomError");
-const {
-  getChannelById,
-  isUserAdmin,
-} = require("../utils/channelUtils");
+const { isUserAdmin } = require("../utils/channelUtils");
 
 const channelEvents = new EventEmitter();
 
@@ -25,7 +22,7 @@ const getChannelList = asyncHandler(async (req, res) => {
     throw new CustomError(404, errors.CHANNEL_NOT_FOUND);
   }
 
-  res.status(200).json({ channelList }); // client側の実装を確認
+  res.status(200).json({ channelList });
 });
 
 const createChannel = asyncHandler(async (req, res) => {
@@ -44,14 +41,15 @@ const createChannel = asyncHandler(async (req, res) => {
     .populate("users", "_id name pic")
     .lean();
 
-  res.status(201).json({ channel }); // client側の実装を確認
+  res.status(201).json({ channel });
 });
 
 const channelSettings = asyncHandler(async (req, res) => {
   const { channelId, channelName, description, password } = req.body;
   const { userId } = req;
 
-  await isUserAdmin(channelId, userId);
+  const { isChAdmin } = await isUserAdmin(channelId, userId);
+  if (!isChAdmin) throw new CustomError(403, errors.PERMISSION_DENIED);
 
   const channel = await Channel.findById(channelId).select("-password");
   if (channelName) channel.channelName = channelName;
@@ -71,15 +69,20 @@ const channelSettings = asyncHandler(async (req, res) => {
 const joinChannel = asyncHandler(async (req, res) => {
   const { body: { channelId, password }, userId } = req;
 
-  const channel = await getChannelById(channelId);
+  const channel = await Channel.findById(channelId);
+  if (!channel) throw new CustomError(404, errors.CHANNEL_NOT_FOUND);
 
-  if (channel.blockUsers.some((u) => u.toString() === userId)) {
-    throw new CustomError(403, errors.USER_BLOCKED);
-  }
+  const blockExists = await Channel.exists({
+    _id: channelId, blockUsers: userId,
+  });
+  if (blockExists) throw new CustomError(403, errors.USER_BLOCKED);
 
-  const isUserInChannel = channel.users.some((u) => u.toString() === userId);
+  const userInChannel = await Channel.exists({
+    _id: channelId, users: userId,
+  });
+
   if (
-    !isUserInChannel &&
+    !userInChannel &&
     channel.password &&
     !(await channel.matchPassword(password))
   ) throw new CustomError(401, errors.INVALID_PASSWORD);
@@ -97,13 +100,13 @@ const joinChannel = asyncHandler(async (req, res) => {
 
   channelEvents.emit("userJoined", { channelId, user }); 
 
-  res.status(200).json({ channel: fullChannel }); // client側の実装を確認
+  res.status(200).json({ channel: fullChannel });
 });
 
 const leaveChannel = asyncHandler(async (req, res) => {
   const { body: { channelId }, userId } = req;
 
-  const isChAdmin = await isUserAdmin(channelId, userId);
+  const { isChAdmin } = await isUserAdmin(channelId, userId);
   if (isChAdmin) throw new CustomError(403, errors.PERMISSION_DENIED);
 
   await Channel.findByIdAndUpdate(
@@ -113,7 +116,7 @@ const leaveChannel = asyncHandler(async (req, res) => {
 
   channelEvents.emit("userLeft", { channelId, userId });
 
-  res.status(200).send(); // client側の実装を確認
+  res.status(200).send();
 });
 
 module.exports = {

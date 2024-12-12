@@ -31,9 +31,11 @@ const ChannelList = ({ showJoinedCh }) => {
     try {
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
 
-      const { data } = await axios.get("/api/channel/list", config);
-      data.sort((a, b) => b.users.length - a.users.length);
-      setChannelList(data);
+      const { data: { channelList } } = await axios.get(
+        "/api/channel/list", config
+      );
+      channelList.sort((a, b) => b.users.length - a.users.length);
+      setChannelList(channelList);
     } catch (error) {
       showToast(
         error?.response?.data?.error || errors.FETCH_CHANNEL_LIST, "error"

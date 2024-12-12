@@ -6,12 +6,13 @@ const server = require("../app");
 const User = require("../models/userModel");
 const { genVerificationToken } = require("../utils/generateToken");
 const { sendMail } = require("../utils/sendMail");
-const { getUserById, uploadPicture } = require("../utils/userUtils");
+const { uploadPicture } = require("../utils/userUtils");
 
 jest.mock("../utils/connectDB", () => jest.fn());
 jest.mock("../models/userModel", () => ({
   exists: jest.fn(),
   create: jest.fn(),
+  findByIdAndUpdate: jest.fn(),
 }));
 jest.mock("../utils/generateToken", () => ({
   genVerificationToken: jest.fn(),
@@ -20,13 +21,19 @@ jest.mock("../utils/sendMail", () => ({
   sendMail: jest.fn(),
 }));
 jest.mock("../utils/userUtils", () => ({
-  getUserById: jest.fn(),
   uploadPicture: jest.fn(),
 }));
 
 afterAll(() => {
   server.close();
   jest.clearAllMocks();
+});
+
+test('Environment variables are properly set', () => {
+  const requiredEnv = ["NODE_ENV"];
+  requiredEnv.forEach(env => {
+      expect(process.env[env]).toBeDefined();
+  });
 });
 
 test("未定義のルートでindex.htmlを返す", async () => {
@@ -48,9 +55,9 @@ describe("/api/user/signup", () => {
     User.exists.mockResolvedValue(false);
     User.create.mockResolvedValue({ ...mockUser, save: jest.fn() });
     genVerificationToken.mockReturnValue(mockToken);
+    User.findByIdAndUpdate.mockResolvedValue({ nModified: 1 });
     sendMail.mockResolvedValue();
     uploadPicture.mockResolvedValue("path/to/picture.jpg");
-    getUserById.mockResolvedValue({ ...mockUser, pic: null, save: jest.fn() });
 
     const response = await request(server)
       .post("/api/user/signup")
@@ -69,6 +76,5 @@ describe("/api/user/signup", () => {
     });
     expect(sendMail).toHaveBeenCalledWith("test@example.com", mockToken);
     expect(uploadPicture).toHaveBeenCalledWith("12345", "mock-pic-data");
-    expect(getUserById).toHaveBeenCalledWith("12345", false);
   });
 });
