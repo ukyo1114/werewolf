@@ -6,13 +6,14 @@ const mockErrors = {
 
 const mockPlayers = {
   players: new Map([
-    ["villager", { _id: "villager", role: "villager", status: "alive" }],
-    ["seer", { _id: "seer", role: "seer", status: "alive" }],
-    ["medium", { _id: "medium", role: "medium", status: "alive" }],
-    ["hunter", { _id: "hunter", role: "hunter", status: "alive" }],
-    ["werewolf1", { _id: "werewolf1", role: "werewolf", status: "alive" }],
-    ["werewolf2", { _id: "werewolf2", role: "werewolf", status: "alive" }],
-    ["madman", { _id: "madman", role: "madman", status: "alive" }],
+    ["villager1", { _id: "villager1", name: "villager1", role: "villager", status: "alive" }],
+    ["villager2", { _id: "villager2", name: "villager2", role: "villager", status: "dead" }],
+    ["seer", { _id: "seer", name: "seer", role: "seer", status: "alive" }],
+    ["medium", { _id: "medium", name: "medium", role: "medium", status: "alive" }],
+    ["hunter", { _id: "hunter", name: "hunter", role: "hunter", status: "alive" }],
+    ["werewolf1", { _id: "werewolf1", name: "werewolf1", role: "werewolf", status: "alive" }],
+    ["werewolf2", { _id: "werewolf2", name: "werewolf2", role: "werewolf", status: "dead" }],
+    ["madman", { _id: "madman", name: "madman", role: "madman", status: "alive" }],
   ]),
   getFilteredPlayers: jest.fn((filterFn) =>
     Array.from(mockPlayers.players.values()).filter(filterFn)
@@ -32,45 +33,80 @@ const mockGuard = {
   guard: jest.fn((id) => (id === "seer")),
 };
 
-test("receiveAttackTarget sets attack target for the current day", () => {
-  const attackManager = new AttackManager(mockPlayers, mockPhase, mockGuard);
+describe("receiveAttackTarget", () => {
+  test("receiveAttackTarget sets attack target for the current day", () => {
+    const attackManager = new AttackManager(mockPlayers, mockPhase, mockGuard);
 
-  attackManager.receiveAttackTarget("werewolf1", "villager");
+    attackManager.receiveAttackTarget("werewolf1", "villager1");
 
-  const history = attackManager.attackHistory.get(mockPhase.currentDay);
-  expect(history).toEqual({ playerId: "villager" });
+    const history = attackManager.attackHistory.get(mockPhase.currentDay);
+    expect(history).toEqual({ playerId: "villager1" });
+  });
+
+  test("receiveAttackTarget throws error for invalid attack", () => {
+    const attackManager = new AttackManager(mockPlayers, mockPhase, mockGuard);
+
+    expect(() => { // role = werewolfを襲撃
+      attackManager.receiveAttackTarget("werewolf1", "werewolf2");
+    }).toThrow(mockErrors.INVALID_ATTACK);
+
+    expect(() => { // role = villagerが襲撃
+      attackManager.receiveAttackTarget("villager1", "seer");
+    }).toThrow(mockErrors.INVALID_ATTACK);
+    
+    expect(() => { // 死亡したプレイヤーが襲撃
+      attackManager.receiveAttackTarget("werewolf2", "villager1");
+    }).toThrow(mockErrors.INVALID_ATTACK);
+
+    expect(() => { // 死亡したプレイヤーを襲撃
+      attackManager.receiveAttackTarget("werewolf1", "villager2");
+    }).toThrow(mockErrors.INVALID_ATTACK);
+  });
+
+  test("receiveAttackTarget does not allow attacks outside of 'night' phase", () => {
+    const originalPhase = mockPhase.currentPhase;
+    mockPhase.currentPhase = "day";
+
+    const attackManager = new AttackManager(mockPlayers, mockPhase, mockGuard);
+
+    expect(() => { // 昼に襲撃
+      attackManager.receiveAttackTarget("werewolf1", "villager1");
+    }).toThrow(mockErrors.INVALID_ATTACK);
+
+    mockPhase.currentPhase = originalPhase;
+  });
 });
 
-test("receiveAttackTarget throws error for invalid attack", () => {
-  const attackManager = new AttackManager(mockPlayers, mockPhase, mockGuard);
+describe("attack", () => {
+  test("attack kills target if not guarded", () => {
+    const attackManager = new AttackManager(mockPlayers, mockPhase, mockGuard);
+    attackManager.receiveAttackTarget("werewolf1", "villager1");
 
-  expect(() => { // werewolfを襲撃
-    attackManager.receiveAttackTarget("werewolf1", "werewolf2");
-  }).toThrow(mockErrors.INVALID_ATTACK);
+    const result = attackManager.attack();
 
-  expect(() => { // villagerが襲撃
-    attackManager.receiveAttackTarget("villager", "seer");
-  }).toThrow(mockErrors.INVALID_ATTACK);
-});
+    expect(result.attackedPlayer).toBe("villager1");
+    expect(mockPlayers.players.get("villager1").status).toBe("dead");
+  });
 
-test("attack kills target if not guarded", () => {
-  const attackManager = new AttackManager(mockPlayers, mockPhase, mockGuard);
-  attackManager.receiveAttackTarget("werewolf1", "villager");
+  test("attack does not kill target if guarded", () => {
+    const attackManager = new AttackManager(mockPlayers, mockPhase, mockGuard);
+    attackManager.receiveAttackTarget("werewolf1", "seer");
 
-  const result = attackManager.attack();
+    const result = attackManager.attack();
 
-  expect(result._id).toBe("villager");
-  expect(mockPlayers.players.get("villager").status).toBe("dead");
-});
+    expect(result.attackedPlayer).toBeNull();;
+    expect(mockPlayers.players.get("seer").status).toBe("alive");
+  });
 
-test("attack does not kill target if guarded", () => {
-  const attackManager = new AttackManager(mockPlayers, mockPhase, mockGuard);
-  attackManager.receiveAttackTarget("werewolf1", "seer");
+  test("getRandomAttackTarget selects a random non-werewolf target", () => {
+    const attackManager = new AttackManager(mockPlayers, mockPhase, mockGuard);
+    const spy = jest.spyOn(attackManager, "getRandomAttackTarget");
 
-  const result = attackManager.attack();
+    const result = attackManager.attack();
 
-  expect(result).toBeNull();;
-  expect(mockPlayers.players.get("seer").status).toBe("alive");
+    expect(result).toHaveProperty("attackedPlayer");
+    expect(spy).toHaveBeenCalled();
+  });
 });
 
 test("getRandomAttackTarget selects a random non-werewolf target", () => {

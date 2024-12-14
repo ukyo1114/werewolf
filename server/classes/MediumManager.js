@@ -9,12 +9,11 @@ class MediumManager {
   }
 
   medium(targetId) {
-    const { currentDay, currentPhase } = this.phase;
+    const { currentDay } = this.phase;
     const medium = this.players.findPlayerByRole("medium");
-    const target = this.players.players.get(targetId);
-    
-    if (medium?.status !== "alive" || currentPhase !== "night") return;
+    if (medium?.status !== "alive") return;
 
+    const target = this.players.players.get(targetId);
     this.mediumResult.set(currentDay, {
       playerId: target._id,
       team: target.role !== "werewolf" ? "villagers" : "werewolves",
@@ -23,9 +22,9 @@ class MediumManager {
 
   getMediumResult(playerId) {
     const { currentDay, currentPhase } = this.phase;
-    const medium = this.players.players.get(playerId);
+    const player = this.players.players.get(playerId);
 
-    if (medium?.role !== "medium" || currentPhase === "pre") {
+    if (player?.role !== "medium" || currentPhase === "pre") {
       throw new CustomError(403, errors.MEDIUM_RESULT_NOT_FOUND);
     }
     

@@ -47,7 +47,7 @@ const GameTimer = () => {
   }, [isGame, fetchUserState, uDispatch]);
 
   useEffect(() => {
-    if (gameSocketRef.current) return;
+    if (gameSocketRef.current || !isGame) return;
 
     const auth = { auth: { token: user.token } };
     gameSocketRef.current = io(
@@ -94,6 +94,7 @@ const GameTimer = () => {
       }
     };
   }, [
+    isGame,
     user.token,
     channelId,
     channel,

@@ -47,7 +47,7 @@ class PlayerManager {
     const player = this.players.get(playerId);
 
     if (player) {
-      userGroups[this.gameId].users.get(playerId).eventEmitter.emit("kill");
+      userGroups[this.gameId].users.get(playerId)?.eventEmitter.emit("kill");
       player.status = "dead";
     }
   }

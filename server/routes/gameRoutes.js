@@ -40,7 +40,7 @@ const defineGetRoute = (route, controller) => {
     route,
     [gameIdChainParam],
     validateRequest,
-    checkGame(),
+    checkGame("params"),
     controller,
   );
 };
@@ -50,7 +50,7 @@ const definePostRoute = (route, controller) => {
     route,
     [gameIdChainBody, selectedUserChain],
     validateRequest,
-    checkGame("params"),
+    checkGame("body"),
     controller,
   );
 };

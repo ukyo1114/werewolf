@@ -32,7 +32,7 @@ function channelReducer(state = initialChannelState, action) {
     case "LEAVE_CHANNEL":
       return initialChannelState;
     case "USER_JOINED":{
-      const users = unionBy([action.payload], state.users, "_id");
+      const users = unionBy(state.users, [action.payload], "_id");
       return { ...state, users };
     }
     case "USER_LEFT": {

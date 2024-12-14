@@ -14,7 +14,7 @@ export const useJoinChannel = () => {
 
       const { data: { channel } } = await axios.post(
         "/api/channel/enter",
-        { channelId: channelId, password: password || "" },
+        { channelId, password: password || "" },
         config,
       );
       cDispatch({ type: "JOIN_CHANNEL", payload: channel });

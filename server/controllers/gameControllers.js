@@ -8,7 +8,7 @@ const { channelEvents } = require("./channelControllers");
 
 const games = {};
 
-const checkGame = (source = "body") => (req, res, next) => {
+const checkGame = (source) => (req, res, next) => {
   const { userId, [source]: { gameId } } = req;
 
   const game = games[gameId];

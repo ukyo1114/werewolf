@@ -40,12 +40,12 @@ function entryNameSpaseHandler(io) {
 
     socket.on("registerEntry", () => {
       const { userId, channelId, id: socketId } = socket;
-      entryUsers[channelId]?.users.register(socketId, userId);
+      entryUsers[channelId]?.register(socketId, userId);
     });
 
     socket.on("cancelEntry", () => {
       const { channelId, id: socketId } = socket;
-      entryUsers[channelId]?.users.cancel(socketId);
+      entryUsers[channelId]?.cancel(socketId);
     });
 
     socket.on("disconnect", () => {

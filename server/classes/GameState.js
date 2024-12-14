@@ -73,8 +73,8 @@ class GameState {
 
   async handleNightPhaseEnd() {
     this.fortune.fortune();
-    const player = this.attack.attack();
-    await this.sendMessage(gameMaster.ATTACK(player?.name));
+    const { attackedPlayer } = this.attack.attack();
+    await this.sendMessage(gameMaster.ATTACK(attackedPlayer));
     await this.judgement();
     if (this.result.value === "running") {
       await this.sendMessage(gameMaster.MORNING);
@@ -131,18 +131,11 @@ class GameState {
   }
 
   getGameState() {
+    const { currentDay, currentPhase, changedAt } = this.phase;
+    const phase = { currentDay, currentPhase, changedAt };
     const users = this.players.getPlayersWithoutRole();
-    const phase = {
-      currentDay: this.phase.currentDay,
-      currentPhase: this.phase.currentPhase,
-      changedAt: this.phase.changedAt,
-    }
 
-    return {
-      gameId: this.gameId,
-      users: users,
-      phase: phase,
-    };
+    return { gameId: this.gameId, users, phase };
   }
 
   async sendMessage(message) {
@@ -163,10 +156,11 @@ class GameState {
 
   static isUserInGame(userId) {
     const game = Object.values(games).find((game) => game.players.players.has(userId));
-    return !! game && game.result.value === "running";
+    return Boolean(game && game.result.value === "running");
   }
 
   static isPlayingGame(userId) {
+    // 参加中のゲームを検索
     const game = Object.values(games).find((game) =>
       Array.from(game.players.players.values()).some((pl) => pl._id === userId)
     );

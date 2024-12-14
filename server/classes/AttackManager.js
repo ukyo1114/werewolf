@@ -26,15 +26,17 @@ class AttackManager {
 
   attack() {
     const { currentDay } = this.phase;
-    const attackTargetId = this.attackHistory.get(currentDay)?.playerId ||
-      this.getRandomAttackTarget();
-    const result = this.guard.guard(attackTargetId);
+    const attackTargetId = this.attackHistory.get(currentDay)?.playerId
+      || this.getRandomAttackTarget();
+    const guardResult = this.guard.guard(attackTargetId);
 
-    if (!result) {
+    if (!guardResult) {
       this.players.kill(attackTargetId);
-      return this.players.players.get(attackTargetId);
+      // return this.players.players.get(attackTargetId);
+      return { attackedPlayer: this.players.players.get(attackTargetId).name }
     }
-    return null;
+    // return null;
+    return { attackedPlayer: null };
   }
 
   getRandomAttackTarget() {
@@ -50,9 +52,9 @@ class AttackManager {
 
   getAttackHistory(playerId) {
     const { currentDay, currentPhase } = this.phase;
-    const werewolf = this.players.players.get(playerId);
+    const player = this.players.players.get(playerId);
     
-    if (werewolf?.role !== "werewolf" || currentPhase === "pre") {
+    if (player?.role !== "werewolf" || currentPhase === "pre") {
       throw new CustomError(403, errors.ATTACK_HISTORY_NOT_FOUND)
     };
 

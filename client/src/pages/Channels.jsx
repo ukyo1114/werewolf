@@ -28,9 +28,9 @@ const Channels = () => {
   }, [channelId]);
 
   useEffect(() => {
-    const currentMode = channelId ? (
-      isGame ? "game" : "channel"
-    ) : "channelList";
+    const currentMode = channelId
+      ? (isGame ? "game" : "channel")
+      : "channelList";
     setMode(currentMode);
   }, [isGame, setMode, channelId]);
 

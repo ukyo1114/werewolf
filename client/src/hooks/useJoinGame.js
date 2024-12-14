@@ -12,9 +12,10 @@ const useJoinGame = () => {
   const joinGame = useCallback(async (gameId) => {
     try {
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
-      const { data } = await axios.get(`/api/game/join/${gameId}`, config);
+      const { data: { game } } = await axios.get(`/api/game/join/${gameId}`, config);
+      console.log("game", game);
 
-      cDispatch({ type: "JOIN_GAME", payload: data });
+      cDispatch({ type: "JOIN_GAME", payload: game });
     } catch (error) {
       showToast(error?.response?.data?.error || errors.CHANNEL_ENTER_FAILED, "error");
     }

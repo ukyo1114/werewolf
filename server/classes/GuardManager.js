@@ -46,9 +46,9 @@ class GuardManager {
 
   getGuardHistory(playerId) {
     const { currentDay, currentPhase } = this.phase;
-    const hunter = this.players.players.get(playerId);
+    const player = this.players.players.get(playerId);
     
-    if (hunter?.role !== "hunter" || currentPhase === "pre") {
+    if (player?.role !== "hunter" || currentPhase === "pre") {
       throw new CustomError(403, errors.GUARD_HISTORY_NOT_FOUND);
     }
 

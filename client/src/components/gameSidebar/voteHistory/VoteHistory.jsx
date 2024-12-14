@@ -73,12 +73,12 @@ const VoteHistory = () => {
       try {
         const config = { headers: { Authorization: `Bearer ${user.token}` } };
 
-        const { data } = await axios.get(
+        const { data: { voteHistory } } = await axios.get(
           `/api/game/vote-history/${channelId}`,
           config,
         );
 
-        setVoteHistory(data);
+        setVoteHistory(voteHistory);
       } catch (error) {
         showToast(
           error?.response?.data?.error || errors.FETCH_VOTE_HISTORY_FAILED,
@@ -147,11 +147,11 @@ const FortuneResult = () => {
       try {
         const config = { headers: { Authorization: `Bearer ${user.token}` } };
 
-        const { data } = await axios.get(
+        const { data: { fortuneResult } } = await axios.get(
           `/api/game/fortune-result/${channelId}`,
           config,
         );
-        setFortuneResult(data);
+        setFortuneResult(fortuneResult);
       } catch (error) {
         showToast(
           error?.response?.data?.error || errors.FETCH_FORTUNE_RESULT_FAILED,
@@ -206,11 +206,12 @@ const MediumResult = () => {
       try {
         const config = { headers: { Authorization: `Bearer ${user.token}` } };
 
-        const { data } = await axios.get(
+        const { data: { mediumResult } } = await axios.get(
           `/api/game/medium-result/${channelId}`,
           config,
         );
-        setMediumResult(data);
+        console.log("霊能結果", mediumResult);
+        setMediumResult(mediumResult);
       } catch (error) {
         showToast(
           error?.response?.data?.error || errors.FETCH_MEDIUM_RESULT_FAILED,
@@ -259,11 +260,11 @@ const GuardHistory = () => {
       try {
         const config = { headers: { Authorization: `Bearer ${user.token}` } };
 
-        const { data } = await axios.get(
+        const { data: { guardHistory } } = await axios.get(
           `/api/game/guard-history/${channelId}`,
           config,
         );
-        setGuardHistory(data);
+        setGuardHistory(guardHistory);
       } catch (error) {
         showToast(
           error?.response?.data?.error || errors.FETCH_GUARD_HISTORY_FAILED,
@@ -311,11 +312,11 @@ const AttackHistory = () => {
       try {
         const config = { headers: { Authorization: `Bearer ${user.token}` } };
 
-        const { data } = await axios.get(
+        const { data: { attackHistory } } = await axios.get(
           `/api/game/attack-history/${channelId}`,
           config,
         );
-        setAttackHistory(data);
+        setAttackHistory(attackHistory);
       } catch (error) {
         showToast(
           error?.response?.data?.error || errors.FETCH_ATTACK_HISTORY_FAILED,

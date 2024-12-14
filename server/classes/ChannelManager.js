@@ -23,13 +23,13 @@ class ChannelManager {
 
     if (isChannel) {
       userGroups[channelId] = new ChannelManager(channelId);
-      return { mode: "channel" };
+      return userGroups[channelId];
     } else if (isGame) {
       const game = games[channelId];
 
       if (game) {
         userGroups[channelId] = new ChannelManager(channelId, game);
-        return { mode: "game" };
+        return userGroups[channelId];
       } else {
         throw new CustomError(404, errors.GAME_NOT_FOUND);
       }
@@ -73,12 +73,13 @@ class ChannelManager {
   }
 
   getSendMessageType(userId) {
+    const user = this.users.get(userId);
+    if (!user) throw new CustomError(403, errors.MESSAGE_SENDING_FORBIDDEN);
+
     const game = this.game;
     if (!game) return { messageType: "normal" };
 
     const currentPhase = this.game.phase.currentPhase;
-    const user = this.users.get(userId);
-    if (!user) throw new CustomError(403, errors.MESSAGE_SENDING_FORBIDDEN);
 
     if (user.status === "spectator") return { messageType: "spectator" };
     if (currentPhase !== "night") {
