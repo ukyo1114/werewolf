@@ -30,11 +30,12 @@ const RequestPResetModal = () => {
       showToast(messages.PASSWORD_RESET.email(email), "success");
       actions.setSubmitting(false);
     } catch (error) {
-      const resendToken = error.response?.data;
+      const { resendToken } = error.response?.data;
       if (error.response?.status === 403 && resendToken) {
-        localStorage.setItem("resend", JSON.stringify(resendToken));
+        // localStorage.setItem("resend", JSON.stringify(resendToken));
         actions.setSubmitting(false);
-        return navigate("/verification");
+        // return navigate("/verification");
+        return navigate(`/verification/${resendToken}`);
       };
       
       const errorMessage = error.response?.data?.error || "送信に失敗しました"

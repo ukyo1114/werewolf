@@ -41,8 +41,8 @@ const authUser = asyncHandler(async (req, res) => {
   }
 
   if (!user.isVerified) {
-    const token = genVerificationToken({ email });
-    return res.status(403).json({ token });
+    const resendToken = genVerificationToken({ email });
+    return res.status(403).json({ resendToken });
   }
 
   res.json({

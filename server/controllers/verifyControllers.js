@@ -53,8 +53,8 @@ const requestPasswordReset = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email }).select("isVerified").lean();
   if (!user) throw new CustomError(400, errors.EMAIL_NOT_REGISTERED);
   if (!user.isVerified) {
-    const token = genVerificationToken({ email });
-    return res.status(403).json({ token });
+    const resendToken = genVerificationToken({ email });
+    return res.status(403).json({ resendToken });
   }
 
   const verificationToken = genVerificationToken({

@@ -45,10 +45,10 @@ const Login = () => {
       actions.setSubmitting(false);
       navigate("/chats");
     } catch (error) {
-      const { token } = error.response?.data;
-      if (error.response?.status === 403 && token) {
+      const { resendToken } = error.response?.data;
+      if (error.response?.status === 403 && resendToken) {
         actions.setSubmitting(false);
-        return navigate(`/verification/${token}`);
+        return navigate(`/verification/${resendToken}`);
       };
 
       handleError(error);
