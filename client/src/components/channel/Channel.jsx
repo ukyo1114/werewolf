@@ -18,7 +18,7 @@ import messagesReducer from "../../reducers/messageReducer";
 
 const Channel = () => {
   const [messages, mDispatch] = useReducer(messagesReducer, []);
-  const { user, currentChannel, cDispatch } = useUserState();
+  const { user, currentChannel, chDispatch } = useUserState();
   const scrollRef = useRef(null);
   const isScrollRef = useRef(null);
   const messagesCompletedRef = useRef(null);
@@ -63,9 +63,9 @@ const Channel = () => {
 
   useEffect(() => {
     if (blockUsers?.some((u) => u === user._id)) {
-      cDispatch({ type: "LEAVE_CHANNEL"});
+      chDispatch({ type: "LEAVE_CHANNEL"});
     }
-  }, [user._id, blockUsers, cDispatch]);
+  }, [user._id, blockUsers, chDispatch]);
 
   useEffect(() => {
     if (isSocketConnected && messages.length === 0) fetchMessages();

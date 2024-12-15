@@ -1,4 +1,5 @@
 import { useState, useEffect, Suspense, lazy } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { Flex, Stack } from "@chakra-ui/react";
 
@@ -14,14 +15,27 @@ const GameSidebar = lazy(() => import("../components/gameSidebar/GameSidebar.jsx
 const Channels = () => {
   const [mode, setMode] = useState(null);
   const [showJoinedCh, setShowJoinedCh] = useState(false);
-  const { user, currentChannel, isMobile } = useUserState();
+  const { user, uDispatch, currentChannel, isMobile } = useUserState();
   const { _id: channelId, isGame } = currentChannel;
+
+  const navigate = useNavigate();
 
   const modeConfig = {
     channelList: <ChannelListSidebar />,
     channel: <ChannelSidebar />,
     game: <GameSidebar />,
   };
+
+  useEffect(() => {
+    const userInfo = localStorage.getItem("userInfo");
+
+    if (!userInfo) {
+      navigate("/");
+    } else {
+      const userIn = JSON.parse(userInfo);
+      uDispatch({ type: "LOGIN", payload: userIn });
+    }
+  }, [navigate, uDispatch]);
 
   useEffect(() => {
     if (channelId) setShowJoinedCh(false);

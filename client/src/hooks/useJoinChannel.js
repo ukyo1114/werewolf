@@ -5,7 +5,7 @@ import useNotification from "./useNotification";
 import { errors } from "../messages";
 
 export const useJoinChannel = () => {
-  const { user, cDispatch } = useUserState();
+  const { user, chDispatch } = useUserState();
   const showToast = useNotification();
 
   const joinChannel = useCallback(async (channelId, password) => {
@@ -17,11 +17,11 @@ export const useJoinChannel = () => {
         { channelId, password: password || "" },
         config,
       );
-      cDispatch({ type: "JOIN_CHANNEL", payload: channel });
+      chDispatch({ type: "JOIN_CHANNEL", payload: channel });
     } catch (error) {
       showToast(error?.response?.data?.error || errors.CHANNEL_ENTER_FAILED, "error");
     }
-  }, [user.token, cDispatch, showToast]);
+  }, [user.token, chDispatch, showToast]);
 
   return joinChannel;
 };

@@ -5,7 +5,7 @@ import { useUserState } from "../context/UserProvider.jsx";
 
 const useChatSocket = ({ mDispatch }) => {
   const [isSocketConnected, setIsSocketConnected] = useState(false);
-  const { user, currentChannel, cDispatch } = useUserState();
+  const { user, currentChannel, chDispatch } = useUserState();
   const { _id: channelId } = currentChannel;
 
   const chatSocketRef = useRef(null);
@@ -35,23 +35,23 @@ const useChatSocket = ({ mDispatch }) => {
     });
 
     chatSocketRef.current.on("cSettingsChanged", (updatedChannel) => {
-      cDispatch({ type: "CHANNEL_SETTINGS", payload: updatedChannel });
+      chDispatch({ type: "CHANNEL_SETTINGS", payload: updatedChannel });
     });
 
     chatSocketRef.current.on("userJoined", (user) => {
-      cDispatch({ type: "USER_JOINED", payload: user });
+      chDispatch({ type: "USER_JOINED", payload: user });
     });
 
     chatSocketRef.current.on("userLeft", (userId) => {
-      cDispatch({ type: "USER_LEFT", payload: userId });
+      chDispatch({ type: "USER_LEFT", payload: userId });
     });
 
     chatSocketRef.current.on("registerBlockUser", (blockUser) => {
-      cDispatch({ type: "USER_BLOCKED", payload: blockUser });
+      chDispatch({ type: "USER_BLOCKED", payload: blockUser });
     });
 
     chatSocketRef.current.on("cancelBlockUser", (blockUser) => {
-      cDispatch({ type: "CANCEL_BLOCK", payload: blockUser });
+      chDispatch({ type: "CANCEL_BLOCK", payload: blockUser });
     });
 
     chatSocketRef.current.on("connect_error", (err) => {
@@ -64,7 +64,7 @@ const useChatSocket = ({ mDispatch }) => {
         chatSocketRef.current = null;
       }
     };
-  }, [user.token, channelId, setIsSocketConnected, cDispatch, mDispatch, showToast]);
+  }, [user.token, channelId, setIsSocketConnected, chDispatch, mDispatch, showToast]);
 
   return isSocketConnected;
 };

@@ -3,13 +3,20 @@ import { useNavigate } from "react-router-dom";
 
 import { Container, Box, Image } from "@chakra-ui/react";
 import Auth from "../components/home/Auth.jsx";
+import { useUserState } from "../context/UserProvider.jsx";
 
 const Home = () => {
+  const { uDispatch, chDispatch } = useUserState();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (localStorage.getItem("userInfo")) navigate("/chats");
-  }, [navigate]);
+    if (localStorage.getItem("userInfo")) {
+      navigate("/chats");
+    } else {
+      uDispatch({ type: "LOGOUT" });
+      chDispatch({ type: "LEAVE_CHANNEL" });
+    }
+  }, [navigate, uDispatch, chDispatch]);
 
   return (
     <Container

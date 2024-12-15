@@ -6,7 +6,7 @@ import useNotification from "./useNotification";
 import { errors } from "../messages";
 
 const useJoinGame = () => {
-  const { user, cDispatch } = useUserState();
+  const { user, chDispatch } = useUserState();
   const showToast = useNotification();
 
   const joinGame = useCallback(async (gameId) => {
@@ -15,11 +15,11 @@ const useJoinGame = () => {
       const { data: { game } } = await axios.get(`/api/game/join/${gameId}`, config);
       console.log("game", game);
 
-      cDispatch({ type: "JOIN_GAME", payload: game });
+      chDispatch({ type: "JOIN_GAME", payload: game });
     } catch (error) {
       showToast(error?.response?.data?.error || errors.CHANNEL_ENTER_FAILED, "error");
     }
-  }, [cDispatch, showToast, user.token]);
+  }, [chDispatch, showToast, user.token]);
 
   return joinGame;
 };

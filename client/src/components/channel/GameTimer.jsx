@@ -13,7 +13,7 @@ import { PHASE_MAP, ROLE_MAP, PHASE_DURATIONS } from "../../constants";
 import { DisplayRole, DisplayPhase } from "../miscellaneous/CustomComponents";
 
 const GameTimer = () => {
-  const { user, uDispatch, currentChannel, cDispatch } = useUserState();
+  const { user, uDispatch, currentChannel, chDispatch } = useUserState();
   const { _id: channelId, channel, isGame, phase } = currentChannel;
   const { currentDay, currentPhase, changedAt } = phase;
   const showToast = useNotification();
@@ -66,7 +66,7 @@ const GameTimer = () => {
           await joinChannel(channel._id);
         }
         
-        cDispatch({ type: "UPDATE_GAME_STATE", payload: gameState });
+        chDispatch({ type: "UPDATE_GAME_STATE", payload: gameState });
         uDispatch({ type: "UPDATE_STATUS", payload: gameState });
       } catch (error) {
         showToast(
@@ -79,7 +79,7 @@ const GameTimer = () => {
     gameSocketRef.current.on(
       "updateGameState",
       (gameState) => {
-        cDispatch({ type: "UPDATE_GAME_STATE", payload: gameState });
+        chDispatch({ type: "UPDATE_GAME_STATE", payload: gameState });
         uDispatch({ type: "UPDATE_STATUS", payload: gameState });
       }
     );
@@ -100,7 +100,7 @@ const GameTimer = () => {
     channel,
     showToast,
     uDispatch,
-    cDispatch,
+    chDispatch,
     joinChannel,
   ]);
 

@@ -27,7 +27,7 @@ import { DisplayChDescription } from "../miscellaneous/DisplayChDescription.jsx"
 import { messages } from "../../messages.js";
 
 const ChannelSidebar = () => {
-  const { user, currentChannel, cDispatch } = useUserState();
+  const { user, currentChannel, chDispatch } = useUserState();
   const { _id: channelId, channelAdmin, users } = currentChannel;
   const isAdmin = channelAdmin === user._id;
   const showToast = useNotification();
@@ -45,7 +45,7 @@ const ChannelSidebar = () => {
       await axios.put(`/api/channel/leave`, { channelId }, config);
 
       showToast(messages.LEFT_CHANNEL, "success");
-      cDispatch({ type: "LEAVE_CHANNEL"});
+      chDispatch({ type: "LEAVE_CHANNEL"});
     } catch (error) {
       showToast(error?.response?.data?.error, "error");
     }
@@ -70,7 +70,7 @@ const ChannelSidebar = () => {
 
       <SidebarButton
         label="チャンネル一覧"
-        onClick={() => cDispatch({ type: "LEAVE_CHANNEL"})}
+        onClick={() => chDispatch({ type: "LEAVE_CHANNEL" })}
       >
         <FaArrowLeft {...iconProps} />
       </SidebarButton>

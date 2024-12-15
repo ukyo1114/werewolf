@@ -24,7 +24,7 @@ import ModalButton from "../miscellaneous/ModalButton.jsx";
 
 const CreateChannel = () => {
   const showToast = useNotification();
-  const { user, cDispatch } = useUserState();
+  const { user, chDispatch } = useUserState();
 
   const handleSubmit = useCallback(async (values, actions) => {
     const { channelName, description, password, isPasswordEnabled } = values;
@@ -46,14 +46,14 @@ const CreateChannel = () => {
       
       actions.setSubmitting(false);
       showToast(messages.CHANNEL_CREATED, "success");
-      cDispatch({ type: "JOIN_CHANNEL", payload: channel });
+      chDispatch({ type: "JOIN_CHANNEL", payload: channel });
     } catch (error) {
       const errorMessage =
         error?.response?.data?.error || errors.CHANNEL_CREATION_FAILED;
       showToast(errorMessage, "error");
       actions.setSubmitting(false);
     }
-  }, [cDispatch, showToast, user.token]);
+  }, [chDispatch, showToast, user.token]);
 
   return (
     <Stack w="100%" overflow="hidden">
