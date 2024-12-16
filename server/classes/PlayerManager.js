@@ -89,8 +89,16 @@ class PlayerManager {
     );
   }
 
+  getPlayers() {
+    const players = Object.fromEntries(this.players);
+    return players;
+  }
+
   getPlayersWithoutRole() {
-    return Array.from(this.players.values()).map(({ role, ...rest }) => rest);
+    const players = Object.fromEntries(
+      Array.from(this.players.entries()).map(([key, { role, ...rest }]) => [key, rest])
+    );
+    return players;
   }
 
   // chatNameSpace

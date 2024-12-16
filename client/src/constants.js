@@ -15,7 +15,6 @@ export const RESULT_MAP = {
 export const USER_STATUS = {
   alive: "生存",
   dead: "死亡",
-  partner: "人狼",
 };
 
 export const ROLE_MAP = {

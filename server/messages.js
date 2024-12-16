@@ -54,6 +54,7 @@ const errors = {
   IMAGE_MISSING: "画像が提供されていません",
   EMAIL_NOT_REGISTERED: "メールアドレスが登録されていません",
   CHANNEL_CREATION_FAILED: "チャンネルの作成中にエラーが発生しました",
+  CHANNEL_UNAVAILABLE_DURING_GAME: "ゲーム中のためチャンネルを利用できません",
 };
 
 const gameMaster = {

@@ -13,7 +13,6 @@ const useJoinGame = () => {
     try {
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
       const { data: { game } } = await axios.get(`/api/game/join/${gameId}`, config);
-      console.log("game", game);
 
       chDispatch({ type: "JOIN_GAME", payload: game });
     } catch (error) {

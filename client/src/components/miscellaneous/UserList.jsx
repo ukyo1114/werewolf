@@ -2,7 +2,7 @@ import { Stack, Text } from "@chakra-ui/react";
 
 import DisplayUser from "./DisplayUser.jsx";
 import { StyledText } from "./CustomComponents.jsx";
-import { USER_STATUS } from "../../constants";
+import { USER_STATUS, ROLE_MAP } from "../../constants";
 import { useUserState } from "../../context/UserProvider.jsx";
 
 const UserList = ({ userList }) => {
@@ -25,7 +25,8 @@ const UserList = ({ userList }) => {
             {u.status &&
               <Text>
                 {USER_STATUS[u.status]}
-                {u._id === user.partnerId && ` 【${USER_STATUS.partner}】`}
+                {u.role && ` 【${ROLE_MAP[u.role]}】`}
+                {!u.role && u._id === user.partnerId && ` 【${ROLE_MAP.werewolf}】`}
               </Text>
             }
             </DisplayUser>

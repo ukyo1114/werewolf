@@ -133,7 +133,13 @@ class GameState {
   getGameState() {
     const { currentDay, currentPhase, changedAt } = this.phase;
     const phase = { currentDay, currentPhase, changedAt };
-    const users = this.players.getPlayersWithoutRole();
+    
+    let users;
+    if (currentPhase === "finished") {
+      users = this.players.getPlayers();
+    } else {
+      users = this.players.getPlayersWithoutRole();
+    }
 
     return { gameId: this.gameId, users, phase };
   }
@@ -160,10 +166,8 @@ class GameState {
   }
 
   static isPlayingGame(userId) {
-    // 参加中のゲームを検索
-    const game = Object.values(games).find((game) =>
-      Array.from(game.players.players.values()).some((pl) => pl._id === userId)
-    );
+    const game = Object.values(games).find((game) => game.players.players.has(userId));
+
     if (!game) return { gameId: null };
 
     const currentPhase = game.phase.currentPhase;

@@ -32,10 +32,8 @@ class AttackManager {
 
     if (!guardResult) {
       this.players.kill(attackTargetId);
-      // return this.players.players.get(attackTargetId);
       return { attackedPlayer: this.players.players.get(attackTargetId).name }
     }
-    // return null;
     return { attackedPlayer: null };
   }
 

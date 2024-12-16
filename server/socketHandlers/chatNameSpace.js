@@ -5,6 +5,7 @@ const { errors } = require("../messages");
 const { userGroups } = require("../controllers/messageControllers");
 const { channelEvents } = require("../controllers/channelControllers");
 const { ChannelManager } = require("../classes/ChannelManager");
+const { GameState } = require("../classes/GameState");
 
 function chatNameSpaseHandler(io) {
   const chatNameSpace = io.of("/chat");
@@ -29,6 +30,15 @@ function chatNameSpaseHandler(io) {
     const userId = socket.userId;
 
     socket.on("joinChannel", async (channelId, callback) => {
+      const { gameId } = GameState.isPlayingGame(userId);
+      console.log("joinChannel gameId:", gameId);
+      if (gameId && gameId !== channelId) {
+        return callback({
+          success: false,
+          err: errors.CHANNEL_UNAVAILABLE_DURING_GAME,
+        });
+      }
+
       try {
         const userGroup = userGroups[channelId]
           || await ChannelManager.createUserGroup(channelId);

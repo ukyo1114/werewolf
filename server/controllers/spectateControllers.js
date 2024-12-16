@@ -19,22 +19,19 @@ async function getGamesByChannelId(channelId) {
 };
 
 async function createGameList(games) {
-  const gameListPromises  = games.map(async (game) => {
+  const gameListPromises = games.map(async (game) => {
     const { gameId, result, phase } = game;
-    const { currentDay, currentPhase } = phase; 
-    const players = await getPlayers(Array.from(game.players.players.keys()));
+    const { currentDay, currentPhase } = phase;
+
+    const playerIds = Array.from(game.players.players.keys());
+    const players = await User.find({ _id: { $in: playerIds } })
+      .populate("_id name pic");
 
     return { gameId, players, currentDay, currentPhase, result: result.value };
   });
 
   const gameList = await Promise.all(gameListPromises);
   return gameList;
-}
-
-async function getPlayers(array) {
-  const players = await User.find({ _id: { $in: array } })
-    .populate("_id name pic");
-  return players;
 }
 
 module.exports = getGameList;

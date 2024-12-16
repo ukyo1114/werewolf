@@ -210,7 +210,6 @@ const MediumResult = () => {
           `/api/game/medium-result/${channelId}`,
           config,
         );
-        console.log("霊能結果", mediumResult);
         setMediumResult(mediumResult);
       } catch (error) {
         showToast(

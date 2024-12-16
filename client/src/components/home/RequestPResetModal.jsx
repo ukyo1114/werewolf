@@ -32,9 +32,7 @@ const RequestPResetModal = () => {
     } catch (error) {
       const { resendToken } = error.response?.data;
       if (error.response?.status === 403 && resendToken) {
-        // localStorage.setItem("resend", JSON.stringify(resendToken));
         actions.setSubmitting(false);
-        // return navigate("/verification");
         return navigate(`/verification/${resendToken}`);
       };
       

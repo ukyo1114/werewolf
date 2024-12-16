@@ -53,8 +53,10 @@ function channelReducer(state = initialChannelState, action) {
       return { ...state, channelName, description };
     }
     case "UPDATE_GAME_STATE": {
+      const updatedUsersObj = action.payload.users;
+
       const users = state.users.map((user) => {
-        const updatedUser = action.payload.users.find((u) => u._id === user._id);
+        const updatedUser = updatedUsersObj[user._id];
         return updatedUser ? { ...user, ...updatedUser } : user;
       });
       const phase = action.payload.phase;

@@ -21,7 +21,7 @@ function userReducer(state = initialUserState, action) {
     case "CHANGE_NAME":
       return { ...state, name: action.payload };
     case "UPDATE_STATUS": {
-      const user = action.payload.users.find((u) => u._id === state._id);
+      const user = action.payload.users[state._id];
       return user ? { ...state, status: user.status } : state;
     }
     default:
