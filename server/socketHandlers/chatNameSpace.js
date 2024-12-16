@@ -31,7 +31,7 @@ function chatNameSpaseHandler(io) {
 
     socket.on("joinChannel", async (channelId, callback) => {
       const { gameId } = GameState.isPlayingGame(userId);
-      console.log("joinChannel gameId:", gameId);
+
       if (gameId && gameId !== channelId) {
         return callback({
           success: false,
