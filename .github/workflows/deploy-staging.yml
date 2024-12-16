@@ -20,9 +20,7 @@ jobs:
 
       - name: 依存関係をインストール
         run: |
-          cd server 
-          npm install
-          cd ../client
+          cd /client
           npm install
 
       - name: アプリをビルド
@@ -41,6 +39,10 @@ jobs:
 
       - name: サーバーにデプロイ
         run: rsync -avz ./server/ ec2-user@54.178.167.67:./werewolf/server
+
+      - name: サーバーで依存関係をインストール
+        run: |
+          ssh ec2-user@54.178.167.67 "cd /home/ec2-user/werewolf/server && rm -rf node_modules && npm ci"
         
       - name: Set permissions for node_modules binaries
         run: ssh ec2-user@54.178.167.67 "chmod -R u+x /home/ec2-user/werewolf/server/node_modules/.bin"
