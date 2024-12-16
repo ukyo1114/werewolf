@@ -31,8 +31,12 @@ const getMessages = asyncHandler(async (req, res) => {
   const userId = req.userId;
 
   const getReceiveMessageType = (channelId, userId) => {
-    const user = userGroups[channelId]?.users.get(userId);
-    if(!user) throw new CustomError(403, errors.CHANNEL_ACCESS_FORBIDDEN);
+    const userGroup = userGroups[channelId];
+    const user = userGroup?.users.get(userId);
+    if (!user) throw new CustomError(403, errors.CHANNEL_ACCESS_FORBIDDEN);
+
+    const currentPhase = userGroup.game?.phase.currentPhase;
+    if (currentPhase === "finished") return null;
   
     if (user.status === "normal") return { $in: ["normal"] };
     if (user.status === "werewolf") return { $in: ["normal", "werewolf"] };

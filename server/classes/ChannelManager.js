@@ -81,6 +81,7 @@ class ChannelManager {
 
     const currentPhase = this.game.phase.currentPhase;
 
+    if (currentPhase === "finished") return { messageType: "normal" };
     if (user.status === "spectator") return { messageType: "spectator" };
     if (currentPhase !== "night") {
       return { messageType: "normal" };
