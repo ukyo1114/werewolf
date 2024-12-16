@@ -20,7 +20,9 @@ jobs:
 
       - name: 依存関係をインストール
         run: |
-          cd /client
+          cd server 
+          npm install
+          cd ../client
           npm install
 
       - name: アプリをビルド
