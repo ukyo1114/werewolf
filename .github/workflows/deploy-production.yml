@@ -42,6 +42,10 @@ jobs:
       - name: サーバーにデプロイ
         run: rsync -avz ./server/ ec2-user@54.238.237.94:./werewolf/server
 
+      - name: サーバーで依存関係をインストール
+        run: |
+          ssh ec2-user@54.238.237.94 "cd /home/ec2-user/werewolf/server && rm -rf node_modules && npm ci"
+
       - name: Set permissions for node_modules binaries
         run: ssh ec2-user@54.238.237.94 "chmod -R u+x /home/ec2-user/werewolf/server/node_modules/.bin"
 
