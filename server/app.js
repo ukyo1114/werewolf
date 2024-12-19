@@ -27,7 +27,8 @@ connectDB();
 app.use(compression());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "public/build")));
+app.use("/lp", express.static(path.join(__dirname, "public/lp")));
+app.use("/", express.static(path.join(__dirname, "public/build")));
 
 // ルートの設定
 app.use("/robots.txt", (req, res) => {
@@ -41,6 +42,10 @@ app.use("/api/spectate", spectateRoutes);
 app.use("/api/block", blockRoutes);
 app.use("/api/game", gameRoutes);
 app.use("/api/verify", verifyRoutes);
+
+app.get("/lp", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/lp", "lp.html"));
+});
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "public/build", "index.html"));
